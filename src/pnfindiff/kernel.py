@@ -5,6 +5,10 @@ import jax.numpy as jnp
 
 
 def gram_matrix_function(k):
+    """Vectorise a kernel function such that it returns Gram matrices.
+
+    Relies on :fun:`jax.vmap`.
+    """
 
     k_inner = jax.vmap(k, (0, 0), 0)
     k_outer = jax.vmap(jax.vmap(k, (0, None), 0), (None, 1), 1)
@@ -29,6 +33,8 @@ def gram_matrix_function(k):
 
 
 def exp_quad():
+    """Exponentiated quadratic kernel."""
+
     @gram_matrix_function
     def k(x, y):
         return jnp.exp(-(x - y).dot(x - y) / 2.0)
