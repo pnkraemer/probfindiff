@@ -24,3 +24,7 @@ The technical background is explained in the paper:
 }
 ```
 Please consider citing it if you use this repository for your research. 
+
+## Misc
+
+See also: FinDiff (https://findiff.readthedocs.io/en/latest/). 
