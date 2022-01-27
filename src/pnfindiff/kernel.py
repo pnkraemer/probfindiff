@@ -13,9 +13,8 @@ def vmap_gram(k):
 
     which can be used to assemble Kernel gram matrices.
     """
-    return jax.vmap(
-        jax.vmap(k, in_axes=(0, None), out_axes=0), in_axes=(None, 1), out_axes=1
-    )
+    k_vmapped_x = jax.vmap(k, in_axes=(0, None), out_axes=0)
+    return jax.vmap(k_vmapped_x, in_axes=(None, 1), out_axes=1)
 
 
 def exp_quad():
