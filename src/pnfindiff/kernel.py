@@ -4,38 +4,24 @@ import jax
 import jax.numpy as jnp
 
 
-def gram_matrix_function(k):
-    """Vectorise a kernel function such that it returns Gram matrices.
+def vmap_gram(k):
+    r"""Vectorise a kernel function such that it returns Gram matrices.
 
-    Relies on :fun:`jax.vmap`.
+    A function :math:`k: R^d \times R^d \rightarrow R` becomes
+
+    .. math:: \tilde{k}: R^{N\times d}\times R^{d\times M} \rightarrow R^{N, M}
+
+    which can be used to assemble Kernel gram matrices.
     """
-
-    k_inner = jax.vmap(k, (0, 0), 0)
-    k_outer = jax.vmap(jax.vmap(k, (0, None), 0), (None, 1), 1)
-
-    def k_wrapped(xs, ys):
-
-        # Single element of the Gram matrix:
-        # X.shape=(d,), Y.shape=(d,) -> K.shape = ()
-        if xs.ndim == ys.ndim <= 1:
-            return k(xs, ys)
-
-        # Diagonal of the Gram matrix:
-        # X.shape=(N,d), Y.shape=(N,d) -> K.shape = (N,)
-        if xs.shape == ys.shape:
-            return k_inner(xs, ys)
-
-        # Full Gram matrix:
-        # X.shape=[N,d), Y.shape=(d,K) -> K.shape = (N,K)
-        return k_outer(xs, ys)
-
-    return k_wrapped
+    return jax.vmap(
+        jax.vmap(k, in_axes=(0, None), out_axes=0), in_axes=(None, 1), out_axes=1
+    )
 
 
 def exp_quad():
     """Exponentiated quadratic kernel."""
 
-    @gram_matrix_function
+    @vmap_gram
     def k(x, y):
         return jnp.exp(-(x - y).dot(x - y) / 2.0)
 
