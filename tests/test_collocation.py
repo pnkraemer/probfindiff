@@ -7,10 +7,10 @@ import pytest
 from pnfindiff import collocation, kernel
 
 
-@pytest.fixture
-def ks():
+@pytest.fixture(name="ks")
+def fixture_ks():
     def k(x, y):
-        return jnp.exp(-(x - y).dot(x - y)).squeeze()
+        return jnp.exp(-((x - y) ** 2))
 
     def my_grad(fun, argnums=0):
         _assure_scalar_fn = lambda *args, **kwargs: fun(*args, **kwargs).squeeze()
@@ -26,8 +26,8 @@ def ks():
     return k, lk, llk
 
 
-@pytest.fixture
-def Ks(ks, num_xs):
+@pytest.fixture(name="Ks")
+def fixture_Ks(ks, num_xs):
     xs = jnp.arange(num_xs, dtype=float).reshape((num_xs, 1))
 
     k, lk, llk = ks
