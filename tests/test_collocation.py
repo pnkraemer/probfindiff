@@ -45,3 +45,13 @@ def test_unsymmetric(Ks, num_xs):
 
     assert weights.shape == (num_xs, num_xs)
     assert unc_base.shape == (num_xs, num_xs)
+
+
+@pytest.mark.parametrize("num_xs", (10,))
+def test_symmetric(Ks, num_xs):
+
+    K, LK, LLK = Ks
+    weights, unc_base = collocation.symmetric(K=K, LK=LK, LLK=LLK)
+
+    assert weights.shape == (num_xs, num_xs)
+    assert unc_base.shape == (num_xs, num_xs)
