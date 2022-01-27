@@ -1,6 +1,7 @@
 """Kernel function functionality."""
 
 import jax
+import jax.numpy as jnp
 
 
 def gram_matrix_function(k):
@@ -25,3 +26,11 @@ def gram_matrix_function(k):
         return k_outer(xs, ys)
 
     return k_wrapped
+
+
+def exp_quad():
+    @gram_matrix_function
+    def k(x, y):
+        return jnp.exp(-(x - y).dot(x - y) / 2.0)
+
+    return k

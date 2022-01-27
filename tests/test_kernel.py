@@ -13,8 +13,7 @@ def case_exp_quad():
 
 
 def case_exp_quad_builtin():
-    k = lambda x, y: jnp.exp(-(x - y).dot(x - y))
-    return kernel.gram_matrix_function(k)
+    return kernel.exp_quad()
 
 
 @pytest_cases.parametrize_with_cases("exp_quad", cases=".")
