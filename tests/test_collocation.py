@@ -28,16 +28,16 @@ def ks():
 
 @pytest.fixture
 def Ks(ks, num_xs):
-    xs = jnp.arange(10, dtype=float).reshape((10, 1))
+    xs = jnp.arange(num_xs, dtype=float).reshape((num_xs, 1))
 
     k, lk, llk = ks
-    K = k(xs, xs.T).squeeze()
-    LK = lk(xs, xs.T).squeeze()
-    LLK = llk(xs, xs.T).squeeze()
+    K = k(xs, xs.T).reshape((num_xs, num_xs))
+    LK = lk(xs, xs.T).reshape((num_xs, num_xs))
+    LLK = llk(xs, xs.T).reshape((num_xs, num_xs))
     return K, LK, LLK
 
 
-@pytest.mark.parametrize("num_xs", (10,))
+@pytest.mark.parametrize("num_xs", (1, 3))
 def test_unsymmetric(Ks, num_xs):
 
     K, LK, LLK = Ks
@@ -47,7 +47,7 @@ def test_unsymmetric(Ks, num_xs):
     assert unc_base.shape == (num_xs, num_xs)
 
 
-@pytest.mark.parametrize("num_xs", (10,))
+@pytest.mark.parametrize("num_xs", (1, 3))
 def test_symmetric(Ks, num_xs):
 
     K, LK, LLK = Ks
