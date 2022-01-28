@@ -39,8 +39,7 @@ def batch_gram(k):
 def exp_quad():
     """Exponentiated quadratic kernel."""
 
-    @batch_gram
     def k(x, y):
         return jnp.exp(-(x - y).dot(x - y) / 2.0)
 
-    return k
+    return batch_gram(k)

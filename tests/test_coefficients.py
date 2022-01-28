@@ -1,9 +1,7 @@
 """Tests for FD coefficients."""
 
 
-import jax
 import jax.numpy as jnp
-import pytest
 import pytest_cases
 
 from pnfindiff import coefficients, diffops, kernel
@@ -23,7 +21,7 @@ def case_scattered_1d():
     L = diffops.grad()
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
-    llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
+    llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
 
     x = 0.5
     xs = jnp.array([0.5, 0.3, 0.1])

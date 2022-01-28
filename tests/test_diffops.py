@@ -1,6 +1,7 @@
 """Tests for differential operators."""
 
 import pytest_cases
+
 from pnfindiff import diffops
 
 
