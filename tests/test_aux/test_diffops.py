@@ -2,7 +2,7 @@
 
 import pytest_cases
 
-from pnfindiff.base import diffops
+from pnfindiff.aux import diffops
 
 
 def case_div():

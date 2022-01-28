@@ -5,7 +5,7 @@ import functools
 import jax.numpy as jnp
 
 from pnfindiff import collocation
-from pnfindiff.base import diffops, kernel
+from pnfindiff.aux import diffops, kernel
 
 
 def backward(x, *, dx, deriv=1, acc=2, k=None):
