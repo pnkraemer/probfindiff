@@ -2,6 +2,7 @@
 
 import jax
 
+
 def div():
     """Divergence of a function as the trace of the Jacobian."""
 
@@ -30,4 +31,5 @@ def laplace():
 def _compose(op1, op2):
     def D(fun, *, argnums=0):
         return op1(op2(fun, argnums=argnums), argnums=argnums)
+
     return D

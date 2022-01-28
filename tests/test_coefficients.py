@@ -7,14 +7,16 @@ import pytest
 import jax
 import jax.numpy as jnp
 
-def test_backward():
 
-    with pytest.raises(NotImplementedError):
-        coefficients.backward(deriv=1, acc=2, dx=0.1)
+import pytest_cases
+
+def case_backward():
+    der, acc = 1, 2
+    return  coefficients.backward(x=0.0, deriv=der, acc=acc, dx=1.)
 
 
-def test_scattered1d():
-    k = lambda x, y: jnp.exp(-jnp.dot(x - y, x-y) / 2.0)
+def case_scattered_1d():
+    k = lambda x, y: jnp.exp(-jnp.dot(x - y, x - y) / 2.0)
 
     L = diffops.grad()
     lk = L(k, argnums=0)
@@ -26,7 +28,12 @@ def test_scattered1d():
 
     x = jnp.array([0.5])
     xs = jnp.array([0.5, 0.3, 0.1])
-    a, b = coefficients.scattered1d(x=x, xs=xs, ks=(k, lk, llk))
-    assert a.shape == (3,)
-    assert b.shape == ()
+    return coefficients.scattered1d(x=x, xs=xs, ks=(k, lk, llk))
+
+    
+@pytest_cases.parametrize_with_cases("res", cases=".")
+def test_coeff_shapes_and_cov_pos(res):
+    a, b = res
+    assert a.ndim==1
+    assert b.ndim == 0
     assert b > 0.0
