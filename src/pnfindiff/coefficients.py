@@ -5,13 +5,15 @@ import jax.numpy as jnp
 
 
 def backward(x, *, deriv, dx, acc=2):
-    if deriv == 1:
-        L = diffops.grad()
-    else:
-        raise RuntimeError
+
+    match_deriv = {
+        1: diffops.grad(),
+        2: diffops.laplace(),
+    }
+    L = match_deriv[deriv]
     k_batch, k = kernel.exp_quad()
-    lk_batch, lk = kernel.vmap_gram(L(k, argnums=0))
-    llk_batch, llk = kernel.vmap_gram(L(lk, argnums=1))
+    lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
+    llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
     xs = x - jnp.arange(deriv + acc) * dx
     return scattered_1d(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
 

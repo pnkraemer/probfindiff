@@ -11,8 +11,8 @@ from pnfindiff import collocation, kernel, diffops
 def fixture_ks():
     L = diffops.grad()
     k_batch, k = kernel.exp_quad()
-    lk_batch, lk = kernel.vmap_gram(L(k, argnums=0))
-    llk_batch, llk = kernel.vmap_gram(L(lk, argnums=1))
+    lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
+    llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
 
 
     return k_batch, lk_batch, llk_batch

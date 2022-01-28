@@ -9,7 +9,7 @@ from pnfindiff import kernel, diffops
 
 def case_exp_quad():
     k = lambda x, y: jnp.exp(-(x - y).dot(x - y))
-    return kernel.vmap_gram(k)[0]
+    return kernel.batch_gram(k)[0]
 
 
 def case_exp_quad_builtin():

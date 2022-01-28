@@ -10,16 +10,20 @@ import jax.numpy as jnp
 
 import pytest_cases
 
-def case_backward():
+def case_backward_1():
     der, acc = 1, 2
-    return  coefficients.backward(x=0.0, deriv=der, acc=acc, dx=1.)
+    return coefficients.backward(x=0.0, deriv=der, acc=acc, dx=1.)
+
+def case_backward_2():
+    der, acc = 2, 2
+    return coefficients.backward(x=0.0, deriv=der, acc=acc, dx=1.)
 
 
 def case_scattered_1d():
     L = diffops.grad()
     k_batch, k = kernel.exp_quad()
-    lk_batch, lk = kernel.vmap_gram(L(k, argnums=0))
-    llk_batch, llk = kernel.vmap_gram(L(lk, argnums=1))
+    lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
+    llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
 
     x = 0.5
     xs = jnp.array([0.5, 0.3, 0.1])
