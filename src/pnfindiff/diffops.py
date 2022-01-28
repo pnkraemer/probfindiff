@@ -4,6 +4,16 @@ import jax
 import jax.numpy as jnp
 
 
+def deriv_scalar():
+    """Derivative of a scalar function."""
+
+    def D(fun, *, argnums=0):
+        grad = jax.grad(fun, argnums=argnums)
+        return lambda *args: grad(*args).squeeze()
+
+    return D
+
+
 def div():
     """Divergence of a function as the trace of the Jacobian."""
 
@@ -14,22 +24,14 @@ def div():
     return D
 
 
-def grad():
-    """Gradient of a function."""
-
-    def D(fun, *, argnums=0):
-        _assure_scalar_fn = lambda *args, **kwargs: fun(*args, **kwargs).squeeze()
-        return jax.grad(_assure_scalar_fn, argnums=argnums)
-
-    return D
-
-
 def laplace():
     """Laplace operator."""
-    return _compose(div(), grad())
+    return compose(div(), jax.grad)
 
 
-def _compose(op1, op2):
+def compose(op1, op2):
+    """Compose two differential operators."""
+
     def D(fun, *, argnums=0):
         return op1(op2(fun, argnums=argnums), argnums=argnums)
 

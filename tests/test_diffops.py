@@ -9,8 +9,8 @@ def case_div():
     return diffops.div()
 
 
-def case_grad():
-    return diffops.grad()
+def case_deriv_scalar():
+    return diffops.deriv_scalar()
 
 
 def case_laplace():

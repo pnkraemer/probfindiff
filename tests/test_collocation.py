@@ -8,7 +8,7 @@ from pnfindiff import collocation, diffops, kernel
 
 @pytest.fixture(name="ks")
 def fixture_ks():
-    L = diffops.grad()
+    L = diffops.deriv_scalar()
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))

@@ -1,5 +1,7 @@
 """Finite difference coefficients. (In 1d.)"""
 
+import functools
+
 import jax.numpy as jnp
 
 from pnfindiff import collocation, diffops, kernel
@@ -7,11 +9,9 @@ from pnfindiff import collocation, diffops, kernel
 
 def backward(x, *, deriv, dx, acc=2):
     """Backward coefficients in 1d."""
-    match_deriv = {
-        1: diffops.grad(),
-        2: diffops.laplace(),
-    }
-    L = match_deriv[deriv]
+
+    L = functools.reduce(diffops.compose, [diffops.deriv_scalar()] * deriv)
+
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))

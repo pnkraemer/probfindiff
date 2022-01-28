@@ -18,7 +18,7 @@ def case_backward_2():
 
 
 def case_scattered_1d():
-    L = diffops.grad()
+    L = diffops.deriv_scalar()
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
