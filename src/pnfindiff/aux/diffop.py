@@ -8,7 +8,7 @@ def deriv_scalar(fun, /, **kwargs):
     """Derivative of a scalar function."""
 
     grad = jax.grad(fun, **kwargs)
-    return lambda *args: grad(*args).squeeze()
+    return lambda *args: grad(*args)[0]
 
 
 def div(fun, /, **kwargs):
