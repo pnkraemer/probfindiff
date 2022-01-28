@@ -4,7 +4,7 @@ import jax
 import jax.numpy as jnp
 import pytest
 
-from pnfindiff import collocation, kernel
+from pnfindiff import collocation, kernel, diffops
 
 
 @pytest.fixture(name="ks")
@@ -12,12 +12,9 @@ def fixture_ks():
     def k(x, y):
         return jnp.exp(-((x - y) ** 2))
 
-    def my_grad(fun, argnums=0):
-        _assure_scalar_fn = lambda *args, **kwargs: fun(*args, **kwargs).squeeze()
-        return jax.grad(_assure_scalar_fn, argnums=argnums)
-
-    lk = my_grad(k, argnums=0)
-    llk = my_grad(lk, argnums=1)
+    L = diffops.grad()
+    lk = L(k, argnums=0)
+    llk = L(lk, argnums=1)
 
     k = kernel.vmap_gram(k)
     lk = kernel.vmap_gram(lk)

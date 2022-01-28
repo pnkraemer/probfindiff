@@ -24,9 +24,10 @@ def grad():
 
 def laplace():
     """Laplace operator."""
-    return compose(div(), grad())
+    return _compose(div(), grad())
 
-def compose(op1, op2):
+
+def _compose(op1, op2):
     def D(fun, *, argnums=0):
         return op1(op2(fun, argnums=argnums), argnums=argnums)
     return D
