@@ -34,7 +34,7 @@ def _differentiate_kernel(*, deriv, k):
 
 def scattered_1d(*, x, xs, ks):
     """Finite difference coefficients for scattered data."""
-    return scattered_nd(x=jnp.array([[x]]), xs=xs[:, None], ks=ks)
+    return scattered_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
 
 
 def scattered_nd(*, x, xs, ks):
@@ -44,6 +44,6 @@ def scattered_nd(*, x, xs, ks):
     n = xs.shape[0]
 
     K = k(xs, xs.T).reshape((n, n))
-    LK = lk(x, xs.T).reshape((n,))
-    LLK = llk(x, x.T).reshape(())
+    LK = lk(x[None, :], xs.T).reshape((n,))
+    LLK = llk(x[None, :], x[None, :].T).reshape(())
     return collocation.unsymmetric(K=K, LK0=LK, LLK=LLK)

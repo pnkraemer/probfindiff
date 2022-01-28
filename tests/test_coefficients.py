@@ -43,7 +43,7 @@ def case_scattered_2d():
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
 
-    x = 0.5 * jnp.ones((1, 1))
+    x = 0.5 * jnp.ones((1,))
     xs = jnp.array([0.5, 0.3, 0.1, 0.2, 0.4]).reshape((-1, 1))
     return coefficients.scattered_nd(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
 
