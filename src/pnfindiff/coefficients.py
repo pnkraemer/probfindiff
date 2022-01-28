@@ -4,26 +4,25 @@ import functools
 
 import jax.numpy as jnp
 
-from pnfindiff import collocation, diffops, kernel
+from pnfindiff import collocation
+from pnfindiff.base import diffops, kernel
 
 
-def backward(x, *, deriv, dx, acc=2, k=None):
+def backward(x, *, dx, deriv=1, acc=2, k=None):
     """Backward coefficients in 1d."""
-
-    ks = _differentiate_kernel(deriv, k)
     xs = x - jnp.arange(deriv + acc) * dx
+    ks = _differentiate_kernel(deriv=deriv, k=k)
     return scattered_1d(x=x, xs=xs, ks=ks)
 
 
-def forward(x, *, deriv, dx, acc=2, k=None):
+def forward(x, *, dx, deriv=1, acc=2, k=None):
     """Forward coefficients in 1d."""
-
-    ks = _differentiate_kernel(deriv, k)
     xs = x + jnp.arange(deriv + acc) * dx
+    ks = _differentiate_kernel(deriv=deriv, k=k)
     return scattered_1d(x=x, xs=xs, ks=ks)
 
 
-def _differentiate_kernel(deriv, k):
+def _differentiate_kernel(*, deriv, k):
     L = functools.reduce(diffops.compose, [diffops.deriv_scalar()] * deriv)
     if k is None:
         _, k = kernel.exp_quad()
@@ -35,12 +34,14 @@ def _differentiate_kernel(deriv, k):
 
 def scattered_1d(*, x, xs, ks):
     """Finite difference coefficients for scattered data."""
+    return _scattered_nd(x=jnp.array([[x]]), xs=xs[:, None], ks=ks)
+
+
+def _scattered_nd(*, x, xs, ks):
     k, lk, llk = ks
+
     n = xs.shape[0]
-    x = jnp.array([x])
-
-    K = k(xs[:, None], xs[None, :]).reshape((n, n))
-    LK = lk(x[:, None], xs[None, :]).reshape((n,))
-    LLK = llk(x[:, None], x[None, :]).reshape(())
-
+    K = k(xs, xs.T).reshape((n, n))
+    LK = lk(x, xs.T).reshape((n,))
+    LLK = llk(x, x.T).reshape(())
     return collocation.unsymmetric(K=K, LK0=LK, LLK=LLK)

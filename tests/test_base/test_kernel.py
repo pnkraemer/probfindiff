@@ -4,7 +4,7 @@
 import jax.numpy as jnp
 import pytest_cases
 
-from pnfindiff import kernel
+from pnfindiff.base import kernel
 
 
 def case_exp_quad():

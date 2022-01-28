@@ -4,7 +4,8 @@
 import jax.numpy as jnp
 import pytest_cases
 
-from pnfindiff import coefficients, diffops, kernel
+from pnfindiff import coefficients
+from pnfindiff.base import diffops, kernel
 
 
 def case_backward():
