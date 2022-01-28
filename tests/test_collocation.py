@@ -3,12 +3,13 @@
 import jax.numpy as jnp
 import pytest
 
-from pnfindiff import collocation, diffops, kernel
+from pnfindiff import collocation
+from pnfindiff.aux import diffop, kernel
 
 
 @pytest.fixture(name="ks")
 def fixture_ks():
-    L = diffops.deriv_scalar()
+    L = diffop.deriv_scalar
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
@@ -41,7 +42,7 @@ def test_unsymmetric(Ks, num_xs):
 def test_symmetric(Ks, num_xs):
 
     K, LK, LLK = Ks
-    weights, unc_base = collocation.symmetric(K=K, LK1=LK, LLK=LLK)
+    weights, unc_base = collocation.symmetric(K=K, LK1=LK.T, LLK=LLK)
 
     assert weights.shape == (num_xs, num_xs)
     assert unc_base.shape == (num_xs, num_xs)
