@@ -37,6 +37,17 @@ def case_scattered_1d():
     return coefficients.scattered_1d(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
 
 
+def case_scattered_2d():
+    L = diffops.laplace()
+    k_batch, k = kernel.exp_quad()
+    lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
+    llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
+
+    x = 0.5 * jnp.ones((1, 1))
+    xs = jnp.array([0.5, 0.3, 0.1, 0.2, 0.4]).reshape((-1, 1))
+    return coefficients.scattered_nd(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
+
+
 @pytest_cases.parametrize_with_cases("res", cases=".")
 def test_coeff_shapes_and_cov_pos(res):
     a, b = res
