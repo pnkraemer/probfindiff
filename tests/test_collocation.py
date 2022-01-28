@@ -42,7 +42,7 @@ def test_unsymmetric(Ks, num_xs):
 def test_symmetric(Ks, num_xs):
 
     K, LK, LLK = Ks
-    weights, unc_base = collocation.symmetric(K=K, LK1=LK, LLK=LLK)
+    weights, unc_base = collocation.symmetric(K=K, LK1=LK.T, LLK=LLK)
 
     assert weights.shape == (num_xs, num_xs)
     assert unc_base.shape == (num_xs, num_xs)
