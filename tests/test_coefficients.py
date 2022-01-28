@@ -26,11 +26,11 @@ def case_scattered_1d():
     lk = kernel.vmap_gram(lk)
     llk = kernel.vmap_gram(llk)
 
-    x = jnp.array([0.5])
+    x = 0.5
     xs = jnp.array([0.5, 0.3, 0.1])
-    return coefficients.scattered1d(x=x, xs=xs, ks=(k, lk, llk))
+    return coefficients.scattered_1d(x=x, xs=xs, ks=(k, lk, llk))
 
-    
+
 @pytest_cases.parametrize_with_cases("res", cases=".")
 def test_coeff_shapes_and_cov_pos(res):
     a, b = res

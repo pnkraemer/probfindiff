@@ -18,14 +18,14 @@ def backward(x, *, deriv, dx, acc=2):
     lk = kernel.vmap_gram(lk)
     llk = kernel.vmap_gram(llk)
 
-    x = jnp.array([x])
     xs = x - jnp.arange(deriv + acc) * dx
-    return scattered1d(x=x, xs=xs, ks=(k, lk, llk))
+    return scattered_1d(x=x, xs=xs, ks=(k, lk, llk))
 
 
-def scattered1d(*, x, xs, ks):
+def scattered_1d(*, x, xs, ks):
     k, lk, llk = ks
     n = xs.shape[0]
+    x = jnp.array([x])
 
     K = k(xs[:, None], xs[None, :]).reshape((n, n))
     LK = lk(x[:, None], xs[None, :]).reshape((n,))
