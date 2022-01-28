@@ -4,7 +4,7 @@ import jax
 import jax.numpy as jnp
 import pytest
 
-from pnfindiff import collocation, kernel, diffops
+from pnfindiff import collocation, diffops, kernel
 
 
 @pytest.fixture(name="ks")
@@ -13,7 +13,6 @@ def fixture_ks():
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
-
 
     return k_batch, lk_batch, llk_batch
 

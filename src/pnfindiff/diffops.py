@@ -3,6 +3,7 @@
 import jax
 import jax.numpy as jnp
 
+
 def div():
     """Divergence of a function as the trace of the Jacobian."""
 
