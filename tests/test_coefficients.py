@@ -16,19 +16,14 @@ def case_backward():
 
 
 def case_scattered_1d():
-    k = lambda x, y: jnp.exp(-jnp.dot(x - y, x - y) / 2.0)
-
     L = diffops.grad()
-    lk = L(k, argnums=0)
-    llk = L(lk, argnums=1)
-
-    k = kernel.vmap_gram(k)
-    lk = kernel.vmap_gram(lk)
-    llk = kernel.vmap_gram(llk)
+    k_batch, k = kernel.exp_quad()
+    lk_batch, lk = kernel.vmap_gram(L(k, argnums=0))
+    llk_batch, llk = kernel.vmap_gram(L(lk, argnums=1))
 
     x = 0.5
     xs = jnp.array([0.5, 0.3, 0.1])
-    return coefficients.scattered_1d(x=x, xs=xs, ks=(k, lk, llk))
+    return coefficients.scattered_1d(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
 
 
 @pytest_cases.parametrize_with_cases("res", cases=".")

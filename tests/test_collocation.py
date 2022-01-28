@@ -9,18 +9,13 @@ from pnfindiff import collocation, kernel, diffops
 
 @pytest.fixture(name="ks")
 def fixture_ks():
-    def k(x, y):
-        return jnp.exp(-((x - y) ** 2))
-
     L = diffops.grad()
-    lk = L(k, argnums=0)
-    llk = L(lk, argnums=1)
+    k_batch, k = kernel.exp_quad()
+    lk_batch, lk = kernel.vmap_gram(L(k, argnums=0))
+    llk_batch, llk = kernel.vmap_gram(L(lk, argnums=1))
 
-    k = kernel.vmap_gram(k)
-    lk = kernel.vmap_gram(lk)
-    llk = kernel.vmap_gram(llk)
 
-    return k, lk, llk
+    return k_batch, lk_batch, llk_batch
 
 
 @pytest.fixture(name="Ks")

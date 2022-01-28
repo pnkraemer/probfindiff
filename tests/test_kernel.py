@@ -4,16 +4,16 @@
 import jax.numpy as jnp
 import pytest_cases
 
-from pnfindiff import kernel
+from pnfindiff import kernel, diffops
 
 
 def case_exp_quad():
     k = lambda x, y: jnp.exp(-(x - y).dot(x - y))
-    return kernel.vmap_gram(k)
+    return kernel.vmap_gram(k)[0]
 
 
 def case_exp_quad_builtin():
-    return kernel.exp_quad()
+    return kernel.exp_quad()[0]
 
 
 @pytest_cases.parametrize_with_cases("exp_quad", cases=".")
