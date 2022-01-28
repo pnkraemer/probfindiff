@@ -23,7 +23,7 @@ def forward(x, *, dx, deriv=1, acc=2, k=None):
 
 
 def _differentiate_kernel(*, deriv, k):
-    L = functools.reduce(diffops.compose, [diffops.deriv_scalar()] * deriv)
+    L = functools.reduce(diffops.compose, [diffops.deriv_scalar] * deriv)
     if k is None:
         _, k = kernel.exp_quad()
     k_batch, _ = kernel.batch_gram(k)

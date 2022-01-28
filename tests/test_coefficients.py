@@ -27,7 +27,7 @@ def case_forward_with_kernel():
 
 
 def case_scattered_1d():
-    L = diffops.deriv_scalar()
+    L = diffops.deriv_scalar
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
@@ -38,7 +38,7 @@ def case_scattered_1d():
 
 
 def case_scattered_2d():
-    L = diffops.laplace()
+    L = diffops.laplace
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))

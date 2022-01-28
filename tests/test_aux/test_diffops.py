@@ -6,15 +6,15 @@ from pnfindiff.aux import diffops
 
 
 def case_div():
-    return diffops.div()
+    return diffops.div
 
 
 def case_deriv_scalar():
-    return diffops.deriv_scalar()
+    return diffops.deriv_scalar
 
 
 def case_laplace():
-    return diffops.laplace()
+    return diffops.laplace
 
 
 @pytest_cases.parametrize_with_cases("D", cases=".")
