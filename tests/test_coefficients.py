@@ -7,14 +7,14 @@ import pytest_cases
 from pnfindiff import coefficients, diffops, kernel
 
 
-def case_backward_1():
+def case_backward():
     der, acc = 1, 2
     return coefficients.backward(x=0.0, deriv=der, acc=acc, dx=1.0)
 
 
-def case_backward_2():
-    der, acc = 2, 2
-    return coefficients.backward(x=0.0, deriv=der, acc=acc, dx=1.0)
+def case_forward():
+    der, acc = 1, 2
+    return coefficients.forward(x=0.0, deriv=der, acc=acc, dx=1.0)
 
 
 def case_scattered_1d():

@@ -19,6 +19,18 @@ def backward(x, *, deriv, dx, acc=2):
     return scattered_1d(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
 
 
+def forward(x, *, deriv, dx, acc=2):
+    """Forward coefficients in 1d."""
+
+    L = functools.reduce(diffops.compose, [diffops.deriv_scalar()] * deriv)
+
+    k_batch, k = kernel.exp_quad()
+    lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
+    llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
+    xs = x + jnp.arange(deriv + acc) * dx
+    return scattered_1d(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
+
+
 def scattered_1d(*, x, xs, ks):
     """Finite difference coefficients for scattered data."""
     k, lk, llk = ks
