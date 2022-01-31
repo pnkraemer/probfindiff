@@ -31,16 +31,10 @@ def from_offset(x, *, dx, offset, deriv=1):
     """Forward coefficients in 1d."""
     xs = x + offset * dx
     _, k = kernel.exp_quad()
-    ks = _differentiate_kernel(deriv=deriv, k=k)
-    return scattered_1d(x=x, xs=xs, ks=ks)
-
-
-def _differentiate_kernel(*, deriv, k):
     L = functools.reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
-    k_batch, _ = kernel.batch_gram(k)
-    lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
-    llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
-    return k_batch, lk_batch, llk_batch
+
+    ks = kernel.differentiate(k=k, L=L)
+    return scattered_1d(x=x, xs=xs, ks=ks)
 
 
 def scattered_1d(*, x, xs, ks):

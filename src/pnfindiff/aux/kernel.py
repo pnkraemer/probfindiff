@@ -4,6 +4,13 @@ import jax
 import jax.numpy as jnp
 
 
+def differentiate(k, *, L):
+    k_batch, _ = batch_gram(k)
+    lk_batch, lk = batch_gram(L(k, argnums=0))
+    llk_batch, _ = batch_gram(L(lk, argnums=1))
+    return k_batch, lk_batch, llk_batch
+
+
 def batch_gram(k):
     r"""Vectorise a kernel function such that it returns Gram matrices.
 

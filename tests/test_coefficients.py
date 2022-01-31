@@ -27,14 +27,11 @@ def case_from_offset():
 
 
 def case_scattered_1d():
-    L = diffop.deriv_scalar
-    k_batch, k = kernel.exp_quad()
-    lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
-    llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
+    ks = kernel.differentiate(kernel.exp_quad()[1], L=diffop.deriv_scalar)
 
     x = 0.5
     xs = jnp.array([0.5, 0.3, 0.1])
-    return coefficients.scattered_1d(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
+    return coefficients.scattered_1d(x=x, xs=xs, ks=ks)
 
 
 def case_scattered_2d():
