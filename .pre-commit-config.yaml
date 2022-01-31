@@ -1,3 +1,4 @@
+# If weird stuff happens: run `pre-commit autoupdate` to update the versions
 exclude: |
   (?x)
   # Readme file(s)
