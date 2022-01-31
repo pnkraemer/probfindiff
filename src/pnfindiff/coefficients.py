@@ -8,24 +8,24 @@ from pnfindiff import collocation
 from pnfindiff.aux import diffop, kernel
 
 
-def backward(x, *, dx, deriv=1, acc=2, k=None):
+def backward(x, *, dx, deriv=1, acc=2):
     """Backward coefficients in 1d."""
     xs = x - jnp.arange(deriv + acc) * dx
+    _, k = kernel.exp_quad()
     ks = _differentiate_kernel(deriv=deriv, k=k)
     return scattered_1d(x=x, xs=xs, ks=ks)
 
 
-def forward(x, *, dx, deriv=1, acc=2, k=None):
+def forward(x, *, dx, deriv=1, acc=2):
     """Forward coefficients in 1d."""
     xs = x + jnp.arange(deriv + acc) * dx
+    _, k = kernel.exp_quad()
     ks = _differentiate_kernel(deriv=deriv, k=k)
     return scattered_1d(x=x, xs=xs, ks=ks)
 
 
 def _differentiate_kernel(*, deriv, k):
     L = functools.reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
-    if k is None:
-        _, k = kernel.exp_quad()
     k_batch, _ = kernel.batch_gram(k)
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))

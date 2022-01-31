@@ -16,16 +16,6 @@ def case_forward():
     return coefficients.forward(x=0.0, deriv=1, acc=2, dx=1.0)
 
 
-def case_backward_with_kernel():
-    _, k = kernel.exp_quad()
-    return coefficients.backward(x=0.0, deriv=1, acc=2, dx=1.0, k=k)
-
-
-def case_forward_with_kernel():
-    _, k = kernel.exp_quad()
-    return coefficients.forward(x=0.0, deriv=1, acc=2, dx=1.0, k=k)
-
-
 def case_scattered_1d():
     L = diffop.deriv_scalar
     k_batch, k = kernel.exp_quad()
