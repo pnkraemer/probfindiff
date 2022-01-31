@@ -56,11 +56,11 @@ def exp_quad():
     return batch_gram(k)
 
 
-def polynomial(*, order, bias=0.0):
+def polynomial(*, order, scale=1.0, bias=1.0):
     """Polynomial kernels."""
 
-    @partial(jax.jit, static_argnames=("b", "o"))
-    def k(x, y, b=bias, o=order):
-        return (x.dot(y) + b) ** o
+    @partial(jax.jit, static_argnames=("s", "b", "o"))
+    def k(x, y, s=scale, b=bias, o=order):
+        return (s * x.dot(y) + b) ** o
 
     return batch_gram(k)

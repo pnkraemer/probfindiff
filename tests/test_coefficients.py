@@ -1,6 +1,9 @@
 """Tests for FD coefficients."""
 
 
+import functools
+
+import jax
 import jax.numpy as jnp
 import pytest_cases
 
@@ -50,3 +53,17 @@ def test_coeff_shapes_and_cov_pos(res):
     assert a.ndim == 1
     assert b.ndim == 0
     assert b > 0.0
+
+
+def test_central_coefficients_polynomial():
+
+    x, xs = jnp.array(0.0), jnp.array([-1.0, 0.0, 1.0])
+
+    _, k = kernel.polynomial(order=3)
+
+    L = diffop.compose(diffop.deriv_scalar, diffop.deriv_scalar)
+    ks = kernel.differentiate(k=k, L=L)
+    coeffs, unc_base = coefficients.non_uniform_1d(x=x, xs=xs, ks=ks)
+
+    assert jnp.allclose(coeffs, jnp.array([1.0, -2.0, 1.0]))
+    assert jnp.allclose(unc_base, 0.0)
