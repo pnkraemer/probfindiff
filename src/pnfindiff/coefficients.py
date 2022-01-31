@@ -10,29 +10,21 @@ from pnfindiff.aux import diffop, kernel
 
 def backward(x, *, dx, deriv=1, acc=2):
     """Backward coefficients in 1d."""
-    xs = x - jnp.arange(deriv + acc) * dx
-    _, k = kernel.exp_quad()
-    ks = _differentiate_kernel(deriv=deriv, k=k)
-    return scattered_1d(x=x, xs=xs, ks=ks)
+    offset = -jnp.arange(deriv + acc, step=1)
+    return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
 def forward(x, *, dx, deriv=1, acc=2):
     """Forward coefficients in 1d."""
-    xs = x + jnp.arange(deriv + acc) * dx
-    _, k = kernel.exp_quad()
-    ks = _differentiate_kernel(deriv=deriv, k=k)
-    return scattered_1d(x=x, xs=xs, ks=ks)
+    offset = jnp.arange(deriv + acc, step=1)
+    return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
 def central(x, *, dx, deriv=1, acc=2):
     """Forward coefficients in 1d."""
     num = (deriv + acc) // 2
-    xs_left = x - jnp.arange(1, 1 + num) * dx
-    xs_right = x + jnp.arange(1, 1 + num) * dx
-    xs = jnp.concatenate((xs_left, jnp.array([x]), xs_right))
-    _, k = kernel.exp_quad()
-    ks = _differentiate_kernel(deriv=deriv, k=k)
-    return scattered_1d(x=x, xs=xs, ks=ks)
+    offset = jnp.arange(-num, num + 1, step=1)
+    return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
 def from_offset(x, *, dx, offset, deriv=1):
