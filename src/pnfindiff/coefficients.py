@@ -35,6 +35,14 @@ def central(x, *, dx, deriv=1, acc=2):
     return scattered_1d(x=x, xs=xs, ks=ks)
 
 
+def from_offset(x, *, dx, offset, deriv=1):
+    """Forward coefficients in 1d."""
+    xs = x + offset * dx
+    _, k = kernel.exp_quad()
+    ks = _differentiate_kernel(deriv=deriv, k=k)
+    return scattered_1d(x=x, xs=xs, ks=ks)
+
+
 def _differentiate_kernel(*, deriv, k):
     L = functools.reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
     k_batch, _ = kernel.batch_gram(k)
