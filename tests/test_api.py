@@ -1,4 +1,6 @@
-import jax
+"""Tests for pnfindiff's top-level API."""
+
+
 import jax.numpy as jnp
 
 import pnfindiff
@@ -10,7 +12,7 @@ def test_findiff():
 
     fd = pnfindiff.findiff(xs=x, deriv=1, num=3)
 
-    df_approx, unc_base = fd(f)
+    df_approx, _ = fd(f)
 
     assert jnp.allclose(df_approx, jnp.cos(x), atol=1e-4, rtol=1e-4)
 
@@ -22,6 +24,6 @@ def test_findiff_along_axis():
     df_dy = jnp.sin(x)[:, None] * jnp.cos(y)[None, :]
 
     fd = pnfindiff.findiff_along_axis(axis=1, xs=x, deriv=1, num=3)
-    df_approx, unc_base = fd(f)
+    df_approx, _ = fd(f)
 
     assert jnp.allclose(df_approx, df_dy, atol=1e-4, rtol=1e-4)

@@ -13,7 +13,10 @@ __all__ = ["findiff_along_axis", "findiff"]
 
 
 def findiff_along_axis(*, axis, **kwargs):
+    """Compute finite-difference-approximations along an axis.
 
+    In other words, approximate partial derivatives.
+    """
     fd = findiff(**kwargs)
 
     def fd_along_axis(fx):

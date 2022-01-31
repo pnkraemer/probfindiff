@@ -5,6 +5,7 @@ import jax.numpy as jnp
 
 
 def differentiate(k, *, L):
+    """Differentiate (and batch) a kernel function."""
     k_batch, _ = batch_gram(k)
     lk_batch, lk = batch_gram(L(k, argnums=0))
     llk_batch, _ = batch_gram(L(lk, argnums=1))
