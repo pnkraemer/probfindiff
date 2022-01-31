@@ -5,8 +5,7 @@ import functools
 import jax
 import jax.numpy as jnp
 
-from pnfindiff import collocation
-from pnfindiff.aux import diffop, kernel
+from pnfindiff.aux import collocation, diffop, kernel
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
