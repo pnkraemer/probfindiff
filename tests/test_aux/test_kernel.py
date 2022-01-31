@@ -31,6 +31,10 @@ def case_differentiate_2():
     return kernel.differentiate(k, L=diffop.deriv_scalar)[2]
 
 
+def case_polynomial_builtin():
+    return kernel.polynomial(order=3, bias=2)[0]
+
+
 @pytest_cases.parametrize_with_cases("exp_quad", cases=".")
 def test_vectorize_gram_shapes(exp_quad):
     xs = jnp.arange(8.0).reshape((4, 2))

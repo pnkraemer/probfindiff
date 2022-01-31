@@ -33,12 +33,12 @@ def findiff(*, xs, deriv=1, num=2):
     ks = kernel.differentiate(
         k=kernel.exp_quad()[1], L=reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
     )
-    coeffs_batched = jax.jit(jax.vmap(partial(coefficients.non_uniform_1d, ks=ks)))
-    coeffs_full = coeffs_batched(x=xs, xs=neighbours)
+    coeff_fun_batched = jax.jit(jax.vmap(partial(coefficients.non_uniform_1d, ks=ks)))
+    coeffs = coeff_fun_batched(x=xs, xs=neighbours)
 
     @jax.jit
     def diff(fx):
-        weights, unc_base = coeffs_full
+        weights, unc_base = coeffs
         dfx = jnp.einsum("nk,nk->n", weights, fx[indices])
         return dfx, unc_base
 

@@ -9,7 +9,6 @@ import pnfindiff
 def test_findiff():
     x = jnp.linspace(1, 1.1, 10)
     f = jnp.sin(x)
-
     fd = pnfindiff.findiff(xs=x, deriv=1, num=3)
 
     df_approx, _ = fd(f)

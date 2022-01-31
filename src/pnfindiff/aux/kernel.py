@@ -1,5 +1,7 @@
 """Kernel function functionality."""
 
+from functools import partial
+
 import jax
 import jax.numpy as jnp
 
@@ -50,5 +52,15 @@ def exp_quad():
     @jax.jit
     def k(x, y):
         return jnp.exp(-(x - y).dot(x - y) / 2.0)
+
+    return batch_gram(k)
+
+
+def polynomial(*, order, bias=0.0):
+    """Polynomial kernels."""
+
+    @partial(jax.jit, static_argnames=("b", "o"))
+    def k(x, y, b=bias, o=order):
+        return (x.dot(y) + b) ** o
 
     return batch_gram(k)
