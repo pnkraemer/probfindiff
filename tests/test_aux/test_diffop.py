@@ -19,4 +19,4 @@ def case_laplace():
 
 @pytest_cases.parametrize_with_cases("D", cases=".")
 def test_diff(D):
-    D(lambda x, y: y + x ** 2, argnums=0)
+    D(lambda x, y: y + x**2, argnums=0)
