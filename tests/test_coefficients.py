@@ -1,9 +1,5 @@
 """Tests for FD coefficients."""
 
-
-import functools
-
-import jax
 import jax.numpy as jnp
 import pytest_cases
 
