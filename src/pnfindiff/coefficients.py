@@ -24,6 +24,17 @@ def forward(x, *, dx, deriv=1, acc=2):
     return scattered_1d(x=x, xs=xs, ks=ks)
 
 
+def central(x, *, dx, deriv=1, acc=2):
+    """Forward coefficients in 1d."""
+    num = (deriv + acc) // 2
+    xs_left = x - jnp.arange(1, 1 + num) * dx
+    xs_right = x + jnp.arange(1, 1 + num) * dx
+    xs = jnp.concatenate((xs_left, jnp.array([x]), xs_right))
+    _, k = kernel.exp_quad()
+    ks = _differentiate_kernel(deriv=deriv, k=k)
+    return scattered_1d(x=x, xs=xs, ks=ks)
+
+
 def _differentiate_kernel(*, deriv, k):
     L = functools.reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
     k_batch, _ = kernel.batch_gram(k)
