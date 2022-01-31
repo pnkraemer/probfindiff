@@ -7,6 +7,9 @@ def unsymmetric(*, K, LK0, LLK):
     """Unsymmetric collocation."""
     weights = jnp.linalg.solve(K, LK0.T).T
     unc_base = LLK - weights @ LK0.T
+
+    # def calibrate(f):
+    #     return f @ jnp.linalg.solve(K, f)
     return weights, unc_base
 
 

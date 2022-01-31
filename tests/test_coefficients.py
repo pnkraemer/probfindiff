@@ -16,8 +16,8 @@ def case_forward():
     return coefficients.forward(x=0.0, deriv=1, acc=2, dx=1.0)
 
 
-def case_central():
-    return coefficients.central(x=0.0, deriv=1, acc=2, dx=1.0)
+def case_center():
+    return coefficients.center(x=0.0, deriv=1, acc=2, dx=1.0)
 
 
 def case_from_offset():
@@ -28,7 +28,6 @@ def case_from_offset():
 
 def case_scattered_1d():
     ks = kernel.differentiate(kernel.exp_quad()[1], L=diffop.deriv_scalar)
-
     x = 0.5
     xs = jnp.array([0.5, 0.3, 0.1])
     return coefficients.scattered_1d(x=x, xs=xs, ks=ks)

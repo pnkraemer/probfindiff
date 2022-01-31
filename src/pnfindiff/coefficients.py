@@ -20,7 +20,7 @@ def forward(x, *, dx, deriv=1, acc=2):
     return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
-def central(x, *, dx, deriv=1, acc=2):
+def center(x, *, dx, deriv=1, acc=2):
     """Forward coefficients in 1d."""
     num = (deriv + acc) // 2
     offset = jnp.arange(-num, num + 1, step=1)
