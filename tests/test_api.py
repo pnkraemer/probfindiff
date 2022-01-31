@@ -1,3 +1,4 @@
+import jax
 import jax.numpy as jnp
 
 import pnfindiff
@@ -8,6 +9,7 @@ def test_findiff():
     f = jnp.sin(x)
 
     fd = pnfindiff.findiff(xs=x, deriv=1, num=3)
+
     df_approx, unc_base = fd(f)
 
     assert jnp.allclose(df_approx, jnp.cos(x), atol=1e-4, rtol=1e-4)

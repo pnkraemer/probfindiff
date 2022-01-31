@@ -8,7 +8,7 @@ def differentiate(k, *, L):
     k_batch, _ = batch_gram(k)
     lk_batch, lk = batch_gram(L(k, argnums=0))
     llk_batch, _ = batch_gram(L(lk, argnums=1))
-    return k_batch, lk_batch, llk_batch
+    return jax.jit(k_batch), jax.jit(lk_batch), jax.jit(llk_batch)
 
 
 def batch_gram(k):
@@ -40,12 +40,13 @@ def batch_gram(k):
     #     llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
     #
     # which is so much more compact.
-    return jax.vmap(k_vmapped_x, in_axes=(None, 1), out_axes=1), k
+    return jax.jit(jax.vmap(k_vmapped_x, in_axes=(None, 1), out_axes=1)), jax.jit(k)
 
 
 def exp_quad():
     """Exponentiated quadratic kernel."""
 
+    @jax.jit
     def k(x, y):
         return jnp.exp(-(x - y).dot(x - y) / 2.0)
 

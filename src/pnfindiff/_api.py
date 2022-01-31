@@ -33,6 +33,7 @@ def findiff(*, xs, deriv=1, num=2):
     coeffs_batched = jax.jit(jax.vmap(partial(coefficients.scattered_1d, ks=ks)))
     coeffs_full = coeffs_batched(x=xs, xs=neighbours)
 
+    @jax.jit
     def diff(fx):
         weights, unc_base = coeffs_full
         dfx = jnp.einsum("nk,nk->n", weights, fx[indices])

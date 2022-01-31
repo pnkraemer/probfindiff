@@ -2,24 +2,28 @@
 
 import functools
 
+import jax
 import jax.numpy as jnp
 
 from pnfindiff import collocation
 from pnfindiff.aux import diffop, kernel
 
 
+@functools.partial(jax.jit, static_argnames=("deriv", "acc"))
 def backward(x, *, dx, deriv=1, acc=2):
     """Backward coefficients in 1d."""
     offset = -jnp.arange(deriv + acc, step=1)
     return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
+@functools.partial(jax.jit, static_argnames=("deriv", "acc"))
 def forward(x, *, dx, deriv=1, acc=2):
     """Forward coefficients in 1d."""
     offset = jnp.arange(deriv + acc, step=1)
     return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
+@functools.partial(jax.jit, static_argnames=("deriv", "acc"))
 def center(x, *, dx, deriv=1, acc=2):
     """Forward coefficients in 1d."""
     num = (deriv + acc) // 2
@@ -27,6 +31,7 @@ def center(x, *, dx, deriv=1, acc=2):
     return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
+@functools.partial(jax.jit, static_argnames=("deriv",))
 def from_offset(x, *, dx, offset, deriv=1):
     """Forward coefficients in 1d."""
     xs = x + offset * dx
@@ -37,11 +42,13 @@ def from_offset(x, *, dx, offset, deriv=1):
     return scattered_1d(x=x, xs=xs, ks=ks)
 
 
+@functools.partial(jax.jit, static_argnames=("ks",))
 def scattered_1d(*, x, xs, ks):
     """Finite difference coefficients for scattered data."""
     return scattered_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
 
 
+@functools.partial(jax.jit, static_argnames=("ks",))
 def scattered_nd(*, x, xs, ks):
     """Finite difference coefficients for scattered data in multiple dimensions."""
 
