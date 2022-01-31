@@ -38,18 +38,18 @@ def from_offset(x, *, dx, offset, deriv=1):
     L = functools.reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
 
     ks = kernel.differentiate(k=k, L=L)
-    return scattered_1d(x=x, xs=xs, ks=ks)
+    return non_uniform_1d(x=x, xs=xs, ks=ks)
 
 
 @functools.partial(jax.jit, static_argnames=("ks",))
-def scattered_1d(*, x, xs, ks):
-    """Finite difference coefficients for scattered data."""
-    return scattered_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
+def non_uniform_1d(*, x, xs, ks):
+    """Finite difference coefficients for non-uniform data."""
+    return non_uniform_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
 
 
 @functools.partial(jax.jit, static_argnames=("ks",))
-def scattered_nd(*, x, xs, ks):
-    """Finite difference coefficients for scattered data in multiple dimensions."""
+def non_uniform_nd(*, x, xs, ks):
+    """Finite difference coefficients for non-uniform data in multiple dimensions."""
 
     k, lk, llk = ks
     n = xs.shape[0]

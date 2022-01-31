@@ -26,14 +26,14 @@ def case_from_offset():
     )
 
 
-def case_scattered_1d():
+def case_non_uniform_1d():
     ks = kernel.differentiate(kernel.exp_quad()[1], L=diffop.deriv_scalar)
     x = 0.5
     xs = jnp.array([0.5, 0.3, 0.1])
-    return coefficients.scattered_1d(x=x, xs=xs, ks=ks)
+    return coefficients.non_uniform_1d(x=x, xs=xs, ks=ks)
 
 
-def case_scattered_2d():
+def case_non_uniform_2d():
     L = diffop.laplace
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
@@ -41,7 +41,7 @@ def case_scattered_2d():
 
     x = 0.5 * jnp.ones((1,))
     xs = jnp.array([0.5, 0.3, 0.1, 0.2, 0.4]).reshape((-1, 1))
-    return coefficients.scattered_nd(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
+    return coefficients.non_uniform_nd(x=x, xs=xs, ks=(k_batch, lk_batch, llk_batch))
 
 
 @pytest_cases.parametrize_with_cases("res", cases=".")

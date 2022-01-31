@@ -30,7 +30,7 @@ def findiff(*, xs, deriv=1, num=2):
     ks = kernel.differentiate(
         k=kernel.exp_quad()[1], L=reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
     )
-    coeffs_batched = jax.jit(jax.vmap(partial(coefficients.scattered_1d, ks=ks)))
+    coeffs_batched = jax.jit(jax.vmap(partial(coefficients.non_uniform_1d, ks=ks)))
     coeffs_full = coeffs_batched(x=xs, xs=neighbours)
 
     @jax.jit
