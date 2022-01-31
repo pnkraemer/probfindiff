@@ -2,43 +2,54 @@
 
 import functools
 
+import jax
 import jax.numpy as jnp
 
-from pnfindiff import collocation
-from pnfindiff.aux import diffop, kernel
+from pnfindiff.aux import collocation, diffop, kernel
 
 
-def backward(x, *, dx, deriv=1, acc=2, k=None):
+@functools.partial(jax.jit, static_argnames=("deriv", "acc"))
+def backward(x, *, dx, deriv=1, acc=2):
     """Backward coefficients in 1d."""
-    xs = x - jnp.arange(deriv + acc) * dx
-    ks = _differentiate_kernel(deriv=deriv, k=k)
-    return scattered_1d(x=x, xs=xs, ks=ks)
+    offset = -jnp.arange(deriv + acc, step=1)
+    return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
-def forward(x, *, dx, deriv=1, acc=2, k=None):
+@functools.partial(jax.jit, static_argnames=("deriv", "acc"))
+def forward(x, *, dx, deriv=1, acc=2):
     """Forward coefficients in 1d."""
-    xs = x + jnp.arange(deriv + acc) * dx
-    ks = _differentiate_kernel(deriv=deriv, k=k)
-    return scattered_1d(x=x, xs=xs, ks=ks)
+    offset = jnp.arange(deriv + acc, step=1)
+    return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
-def _differentiate_kernel(*, deriv, k):
+@functools.partial(jax.jit, static_argnames=("deriv", "acc"))
+def center(x, *, dx, deriv=1, acc=2):
+    """Forward coefficients in 1d."""
+    num = (deriv + acc) // 2
+    offset = jnp.arange(-num, num + 1, step=1)
+    return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
+
+
+@functools.partial(jax.jit, static_argnames=("deriv",))
+def from_offset(x, *, dx, offset, deriv=1):
+    """Forward coefficients in 1d."""
+    xs = x + offset * dx
+    _, k = kernel.exp_quad()
     L = functools.reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
-    if k is None:
-        _, k = kernel.exp_quad()
-    k_batch, _ = kernel.batch_gram(k)
-    lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
-    llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
-    return k_batch, lk_batch, llk_batch
+
+    ks = kernel.differentiate(k=k, L=L)
+    return non_uniform_1d(x=x, xs=xs, ks=ks)
 
 
-def scattered_1d(*, x, xs, ks):
-    """Finite difference coefficients for scattered data."""
-    return scattered_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
+@functools.partial(jax.jit, static_argnames=("ks",))
+def non_uniform_1d(*, x, xs, ks):
+    """Finite difference coefficients for non-uniform data."""
+    return non_uniform_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
 
 
-def scattered_nd(*, x, xs, ks):
-    """Finite difference coefficients for scattered data in multiple dimensions."""
+@functools.partial(jax.jit, static_argnames=("ks",))
+def non_uniform_nd(*, x, xs, ks):
+    """Finite difference coefficients for non-uniform data in multiple dimensions."""
 
     k, lk, llk = ks
     n = xs.shape[0]

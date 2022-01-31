@@ -8,14 +8,14 @@ def deriv_scalar(fun, /, **kwargs):
     """Derivative of a scalar function."""
 
     grad = jax.grad(fun, **kwargs)
-    return lambda *args: grad(*args)[0]
+    return jax.jit(lambda *args: grad(*args)[0])
 
 
 def div(fun, /, **kwargs):
     """Divergence of a function as the trace of the Jacobian."""
 
     jac = jax.jacrev(fun, **kwargs)
-    return lambda *args: jnp.trace(jac(*args))
+    return jax.jit(lambda *args: jnp.trace(jac(*args)))
 
 
 def laplace(fun, /, **kwargs):

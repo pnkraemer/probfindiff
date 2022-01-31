@@ -1,8 +1,10 @@
 """Global collocation with Gaussian processes."""
 
+import jax
 import jax.numpy as jnp
 
 
+@jax.jit
 def unsymmetric(*, K, LK0, LLK):
     """Unsymmetric collocation."""
     weights = jnp.linalg.solve(K, LK0.T).T
@@ -10,6 +12,7 @@ def unsymmetric(*, K, LK0, LLK):
     return weights, unc_base
 
 
+@jax.jit
 def symmetric(*, K, LK1, LLK):
     """Unsymmetric collocation."""
     weights = jnp.linalg.solve(LLK, LK1.T).T

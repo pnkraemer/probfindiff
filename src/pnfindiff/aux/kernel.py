@@ -1,7 +1,17 @@
 """Kernel function functionality."""
 
+from functools import partial
+
 import jax
 import jax.numpy as jnp
+
+
+def differentiate(k, *, L):
+    """Differentiate (and batch) a kernel function."""
+    k_batch, _ = batch_gram(k)
+    lk_batch, lk = batch_gram(L(k, argnums=0))
+    llk_batch, _ = batch_gram(L(lk, argnums=1))
+    return jax.jit(k_batch), jax.jit(lk_batch), jax.jit(llk_batch)
 
 
 def batch_gram(k):
@@ -33,13 +43,24 @@ def batch_gram(k):
     #     llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
     #
     # which is so much more compact.
-    return jax.vmap(k_vmapped_x, in_axes=(None, 1), out_axes=1), k
+    return jax.jit(jax.vmap(k_vmapped_x, in_axes=(None, 1), out_axes=1)), jax.jit(k)
 
 
 def exp_quad():
     """Exponentiated quadratic kernel."""
 
+    @jax.jit
     def k(x, y):
         return jnp.exp(-(x - y).dot(x - y) / 2.0)
+
+    return batch_gram(k)
+
+
+def polynomial(*, order, scale=1.0, bias=1.0):
+    """Polynomial kernels."""
+
+    @partial(jax.jit, static_argnames=("s", "b", "o"))
+    def k(x, y, s=scale, b=bias, o=order):
+        return (s * x.dot(y) + b) ** o
 
     return batch_gram(k)
