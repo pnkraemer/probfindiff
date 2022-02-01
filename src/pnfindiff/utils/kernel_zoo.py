@@ -6,8 +6,6 @@ from functools import partial
 import jax
 import jax.numpy as jnp
 
-from pnfindiff.utils import kernel
-
 
 @jax.jit
 def exponentiated_quadratic(x, y, input_scale=1.0, output_scale=1.0):
