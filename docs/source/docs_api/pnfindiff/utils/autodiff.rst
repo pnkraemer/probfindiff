@@ -1,4 +1,4 @@
-pnfindiff.utils.autodiff module
+pnfindiff.utils.autodiff
 ===============================
 
 .. automodule:: pnfindiff.utils.autodiff

@@ -1,4 +1,4 @@
-pnfindiff.coefficients\_1d module
+pnfindiff.coefficients\_1d
 =================================
 
 .. automodule:: pnfindiff.coefficients_1d
