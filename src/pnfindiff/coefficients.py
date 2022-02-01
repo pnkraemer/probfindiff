@@ -1,5 +1,6 @@
 """Finite difference coefficients."""
 
+from collections import namedtuple
 from functools import partial, reduce
 from typing import Callable, Tuple
 
@@ -12,57 +13,13 @@ from pnfindiff.typing import ArrayLike
 
 from .utils import autodiff, kernel, kernel_zoo
 
-
-@jax.jit
-def apply(
-    f: ArrayLike, *, coeffs: Tuple[ArrayLike, ArrayLike], indices: ArrayLike
-) -> ArrayLike:
-    """Apply a finite difference scheme to a vector of function evaluations.
-
-    Parameters
-    ----------
-    f
-        Array of function evaluated to be differentiated numerically. Shape ``(n,)``.
-    coeffs
-        PN finite difference coefficients. Shapes `` (n,k), (n,)``.
-    indices
-        Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
-
-
-    Returns
-    -------
-    :
-        Finite difference approximation and the corresponding base-uncertainty. Shapes `` (n,), (n,)``.
-    """
-    weights, unc_base = coeffs
-    dfx = jnp.einsum("nk,nk->n", weights, f[indices])
-    return dfx, unc_base
-
-
-def apply_along_axis(
-    f: ArrayLike, *, axis: int, coeffs: Tuple[ArrayLike, ArrayLike], indices: ArrayLike
-) -> ArrayLike:
-    """Apply a finite difference scheme along a specified axis.
-
-    Parameters
-    ----------
-    f
-        Array of function evaluated to be differentiated numerically. Shape ``(..., n, ...)``.
-    axis
-        Axis along which the scheme should be applied.
-    coeffs
-        PN finite difference coefficients. Shapes `` (n,k), (n,)``.
-    indices
-        Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
-
-
-    Returns
-    -------
-    :
-        Finite difference approximation and the corresponding base-uncertainty. Shapes `` (..., n, ...), (n,)``.
-    """
-    fd = partial(apply, coeffs=coeffs, indices=indices)
-    return jnp.apply_along_axis(fd, axis=axis, arr=f)
+#
+# class FiniteDifferenceMethod(namedtuple("_", "weights uncertainty indices")):
+#     """Finite difference method coefficients."""
+#     pass
+#
+#
+#
 
 
 def derivative(
@@ -119,6 +76,7 @@ def derivative_higher(
         jax.vmap(partial(collocation.non_uniform_nd, ks=ks))
     )  # type: Callable[..., Tuple[ArrayLike, ArrayLike]]
     coeffs = coeff_fun_batched(x=xs[..., None], xs=neighbours[..., None])
+    # return FiniteDifferenceMethod(weights=coeffs[0], uncertainty=coeffs[1], indices=indices)
     return coeffs, indices
 
 
