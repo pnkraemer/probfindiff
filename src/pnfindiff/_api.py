@@ -5,8 +5,6 @@ from typing import Any, Callable
 from pnfindiff import coefficients
 from pnfindiff.typing import ArrayLike
 
-__all__ = ["derivative", "derivative_higher"]
-
 
 def derivative(f: Callable[[Any], Any], **kwargs: Any) -> ArrayLike:
     """Compute the derivative of a function based on its values."""
