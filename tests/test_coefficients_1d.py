@@ -38,7 +38,7 @@ def test_central_coefficients_polynomial():
     x, xs = jnp.array(0.0), jnp.array([-1.0, 0.0, 1.0])
 
     k = lambda x, y: kernel_zoo.polynomial(x, y, order=3)
-    L = autodiff.compose(autodiff.deriv_scalar, autodiff.deriv_scalar)
+    L = autodiff.compose(autodiff.derivative, autodiff.derivative)
     ks = kernel.differentiate(k=k, L=L)
     coeffs, unc_base = collocation.non_uniform_nd(
         x=jnp.array([x]), xs=xs[:, None], ks=ks

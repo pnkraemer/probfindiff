@@ -8,7 +8,7 @@ import jax.numpy as jnp
 from pnfindiff.typing import DifferentialOperatorLike
 
 
-def deriv_scalar(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:
+def derivative(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:
     """Derivative of a scalar function.
 
     Parameters

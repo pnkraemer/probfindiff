@@ -9,8 +9,8 @@ def case_div():
     return autodiff.div
 
 
-def case_deriv_scalar():
-    return autodiff.deriv_scalar
+def case_derivative():
+    return autodiff.derivative
 
 
 def case_laplace():

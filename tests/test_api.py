@@ -6,7 +6,7 @@ import pnfindiff
 from pnfindiff.utils import autodiff
 
 
-@pytest.mark.parametrize("f,df_true,L", ((jnp.sin, jnp.cos, autodiff.deriv_scalar),))
+@pytest.mark.parametrize("f,df_true,L", ((jnp.sin, jnp.cos, autodiff.derivative),))
 def test_derivative(f, df_true, L):
     xs = jnp.linspace(0.0, 1.0, num=12)
 

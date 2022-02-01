@@ -106,7 +106,7 @@ def from_offset(x: ArrayLike, *, dx: float, offset: ArrayLike, deriv: int = 1) -
     """
     xs = x + offset * dx
     k = kernel_zoo.exponentiated_quadratic
-    L = functools.reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv)
+    L = functools.reduce(autodiff.compose, [autodiff.derivative] * deriv)
 
     ks = kernel.differentiate(k=k, L=L)
     return collocation.non_uniform_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)

@@ -113,7 +113,7 @@ def derivative_higher(
 
     ks = kernel.differentiate(
         k=kernel_zoo.exponentiated_quadratic,
-        L=reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv),
+        L=reduce(autodiff.compose, [autodiff.derivative] * deriv),
     )
     coeff_fun_batched = jax.jit(
         jax.vmap(partial(collocation.non_uniform_nd, ks=ks))
