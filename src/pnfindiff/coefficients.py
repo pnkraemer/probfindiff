@@ -13,21 +13,15 @@ from .utils import autodiff, kernel, kernel_zoo
 __all__ = ["findiff_along_axis", "findiff"]
 
 
-def findiff_along_axis(*, axis, **kwargs):
-    """Compute finite-difference-approximations along an axis.
-
-    In other words, approximate partial derivatives.
-    """
-    fd = findiff(**kwargs)
-
-    def fd_along_axis(fx):
-        return jnp.apply_along_axis(fd, axis=axis, arr=fx)
-
-    return fd_along_axis
+def apply(f, *, fd):
+    return fd(f)
 
 
-def findiff(*, xs, deriv=1, num=2):
-    """Finite differences."""
+def apply_along_axis(f, *, axis, fd):
+    return jnp.apply_along_axis(fd, axis=axis, arr=f)
+
+
+def derivative_higher(*, xs, deriv=1, num=2):
 
     neighbours, indices = _neighbours(num=num, xs=xs)
 
