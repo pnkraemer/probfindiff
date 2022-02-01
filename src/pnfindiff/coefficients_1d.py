@@ -1,4 +1,4 @@
-"""Finite difference coefficients. (In 1d.)"""
+"""One-dimensional finite difference coefficients"""
 
 import functools
 
