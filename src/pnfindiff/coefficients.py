@@ -13,12 +13,20 @@ from .utils import autodiff, kernel, kernel_zoo
 __all__ = ["findiff_along_axis", "findiff"]
 
 
-def apply(f, *, fd):
-    return fd(f)
+@jax.jit
+def apply(f, *, coeffs, indices):
+    weights, unc_base = coeffs
+    dfx = jnp.einsum("nk,nk->n", weights, f[indices])
+    return dfx, unc_base
 
 
-def apply_along_axis(f, *, axis, fd):
+def apply_along_axis(f, *, axis, coeffs, indices):
+    fd = partial(apply, coeffs=coeffs, indices=indices)
     return jnp.apply_along_axis(fd, axis=axis, arr=f)
+
+
+def derivative(*, xs, num=2):
+    return derivative_higher(xs=xs, deriv=1, num=num)
 
 
 def derivative_higher(*, xs, deriv=1, num=2):
@@ -33,14 +41,7 @@ def derivative_higher(*, xs, deriv=1, num=2):
         jax.vmap(partial(coefficients_1d.non_uniform_1d, ks=ks))
     )
     coeffs = coeff_fun_batched(x=xs, xs=neighbours)
-
-    @jax.jit
-    def diff(fx):
-        weights, unc_base = coeffs
-        dfx = jnp.einsum("nk,nk->n", weights, fx[indices])
-        return dfx, unc_base
-
-    return diff
+    return coeffs, indices
 
 
 def _neighbours(*, num, xs):
