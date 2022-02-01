@@ -1,6 +1,7 @@
 """One-dimensional finite difference coefficients"""
 
 import functools
+from typing import Any, Tuple
 
 import jax
 import jax.numpy as jnp
@@ -10,8 +11,25 @@ from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def backward(x, *, dx, deriv: int = 1, acc: int = 2):
-    """Backward coefficients in 1d."""
+def backward(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> Tuple[Any, Any]:
+    """Backward coefficients in 1d.
+
+    Parameters
+    ----------
+    x
+        Point at which to compute the backward finite difference approximation.
+    dx
+        Step-size.
+    deriv
+        Order of the derivative.
+    acc
+        Desired accuracy.
+
+    Returns
+    -------
+    :
+        Finite difference coefficients and base uncertainty.
+    """
     offset = -jnp.arange(deriv + acc, step=1)
     return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 

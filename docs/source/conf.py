@@ -19,10 +19,11 @@ author = "Nicholas Krämer"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
     "sphinx.ext.todo",
-    "sphinx.ext.napoleon",
+    "sphinx_autodoc_typehints",
     "nbsphinx",
     "m2r2",
 ]
