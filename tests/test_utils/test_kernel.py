@@ -13,7 +13,7 @@ def case_exp_quad():
 
 
 def case_exp_quad_builtin():
-    return kernel.batch_gram(kernel_zoo.exp_quad())[0]
+    return kernel.batch_gram(kernel_zoo.exp_quad)[0]
 
 
 def case_differentiate_0():
@@ -32,11 +32,13 @@ def case_differentiate_2():
 
 
 def case_polynomial_builtin():
-    return kernel.batch_gram(kernel_zoo.polynomial(order=3, bias=2))[0]
+    return kernel.batch_gram(lambda x, y: kernel_zoo.polynomial(x, y, order=3, bias=2))[
+        0
+    ]
 
 
-@pytest_cases.parametrize_with_cases("exp_quad", cases=".")
-def test_vectorize_gram_shapes(exp_quad):
+@pytest_cases.parametrize_with_cases("k", cases=".")
+def test_vectorize_gram_shapes(k):
     xs = jnp.arange(8.0).reshape((4, 2))
     ys = jnp.arange(12.0).reshape((6, 2))
-    assert exp_quad(xs, ys.T).shape == (4, 6)
+    assert k(xs, ys.T).shape == (4, 6)
