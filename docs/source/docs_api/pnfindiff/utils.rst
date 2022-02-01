@@ -12,6 +12,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   pnfindiff.utils.autodiff
-   pnfindiff.utils.kernel
-   pnfindiff.utils.kernel_zoo
+   utils/autodiff
+   utils/kernel
+   utils/kernel_zoo
