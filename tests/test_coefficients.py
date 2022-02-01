@@ -8,8 +8,8 @@ import pytest_cases
 from pnfindiff import coefficients
 
 
-@pytest.fixture
-def xs():
+@pytest.fixture(name="xs")
+def fixture_xs():
     return jnp.linspace(1, 1.1, 10)
 
 

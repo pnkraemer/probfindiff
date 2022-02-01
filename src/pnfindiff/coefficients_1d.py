@@ -39,23 +39,10 @@ def from_offset(x, *, dx, offset, deriv=1):
     L = functools.reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv)
 
     ks = kernel.differentiate(k=k, L=L)
-    return non_uniform_1d(x=x, xs=xs, ks=ks)
+    return collocation.non_uniform_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
 
 
 @functools.partial(jax.jit, static_argnames=("ks",))
 def non_uniform_1d(*, x, xs, ks):
     """Finite difference coefficients for non-uniform data."""
-    return non_uniform_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
-
-
-@functools.partial(jax.jit, static_argnames=("ks",))
-def non_uniform_nd(*, x, xs, ks):
-    """Finite difference coefficients for non-uniform data in multiple dimensions."""
-
-    k, lk, llk = ks
-    n = xs.shape[0]
-
-    K = k(xs, xs.T).reshape((n, n))
-    LK = lk(x[None, :], xs.T).reshape((n,))
-    LLK = llk(x[None, :], x[None, :].T).reshape(())
-    return collocation.unsymmetric(K=K, LK0=LK, LLK=LLK)
+    return collocation.non_uniform_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
