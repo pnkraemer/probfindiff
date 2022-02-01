@@ -10,8 +10,6 @@ from pnfindiff import coefficients_1d
 
 from .utils import autodiff, kernel, kernel_zoo
 
-__all__ = ["findiff_along_axis", "findiff"]
-
 
 @jax.jit
 def apply(f, *, coeffs, indices):
