@@ -3,7 +3,6 @@ import jax.numpy as jnp
 import pytest
 
 import pnfindiff
-from pnfindiff.utils import autodiff
 
 
 @pytest.mark.parametrize("f,df_true", ((jnp.sin, jnp.cos),))
