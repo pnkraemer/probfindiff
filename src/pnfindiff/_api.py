@@ -6,19 +6,19 @@ from typing import Any, Callable, Tuple
 import jax
 import jax.numpy as jnp
 
-from pnfindiff import coefficients
+from pnfindiff import schemes
 from pnfindiff.typing import ArrayLike
 
 
 def derivative(f: Callable[[Any], Any], **kwargs: Any) -> ArrayLike:
     """Compute the derivative of a function based on its values."""
-    coeffs, indices = coefficients.derivative(**kwargs)
+    coeffs, indices = schemes.derivative(**kwargs)
     return differentiate(f, coeffs=coeffs, indices=indices)
 
 
 def derivative_higher(f: Callable[[Any], Any], **kwargs: Any) -> ArrayLike:
     """Compute the higher derivative of a function based on its values."""
-    coeffs, indices = coefficients.derivative_higher(**kwargs)
+    coeffs, indices = schemes.derivative_higher(**kwargs)
     return differentiate(f, coeffs=coeffs, indices=indices)
 
 
@@ -33,7 +33,7 @@ def differentiate(
     f
         Array of function evaluated to be differentiated numerically. Shape ``(n,)``.
     coeffs
-        PN finite difference coefficients. Shapes `` (n,k), (n,)``.
+        PN finite difference schemes. Shapes `` (n,k), (n,)``.
     indices
         Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
 
@@ -60,7 +60,7 @@ def differentiate_along_axis(
     axis
         Axis along which the scheme should be applied.
     coeffs
-        PN finite difference coefficients. Shapes `` (n,k), (n,)``.
+        PN finite difference schemes. Shapes `` (n,k), (n,)``.
     indices
         Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
 

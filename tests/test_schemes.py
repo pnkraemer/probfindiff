@@ -6,7 +6,7 @@ import pytest
 import pytest_cases
 
 import pnfindiff
-from pnfindiff import coefficients
+from pnfindiff import schemes
 
 
 @pytest.fixture(name="xs")
@@ -15,11 +15,11 @@ def fixture_xs():
 
 
 def case_derivative_higher(xs):
-    return coefficients.derivative_higher(xs=xs, deriv=1, num=3)
+    return schemes.derivative_higher(xs=xs, deriv=1, num=3)
 
 
 def case_derivative(xs):
-    return coefficients.derivative(xs=xs, num=3)
+    return schemes.derivative(xs=xs, num=3)
 
 
 @pytest_cases.parametrize_with_cases("fd", cases=".")
