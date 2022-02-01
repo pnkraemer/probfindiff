@@ -29,7 +29,7 @@ def batch_gram(k):
     # because often, e.g., derivatives of kernels are defined inline only.
     # For example, the following code
     #
-    #     k = kernel.exp_quad()[1]
+    #     k = kernel_zoo.exp_quad()[1]
     #     lk = L(k, argnums=0)
     #     llk = L(lk, argnums=1)
     #     k = kernel.batch_gram(k)
@@ -38,29 +38,9 @@ def batch_gram(k):
     #
     # becomes
     #
-    #     k_batch, k = kernel.exp_quad()
+    #     k_batch, k = kernel_zoo.exp_quad()
     #     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     #     llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
     #
     # which is so much more compact.
     return jax.jit(jax.vmap(k_vmapped_x, in_axes=(None, 1), out_axes=1)), jax.jit(k)
-
-
-def exp_quad():
-    """Exponentiated quadratic kernel."""
-
-    @jax.jit
-    def k(x, y):
-        return jnp.exp(-(x - y).dot(x - y) / 2.0)
-
-    return batch_gram(k)
-
-
-def polynomial(*, order, scale=1.0, bias=1.0):
-    """Polynomial kernels."""
-
-    @partial(jax.jit, static_argnames=("s", "b", "o"))
-    def k(x, y, s=scale, b=bias, o=order):
-        return (s * x.dot(y) + b) ** o
-
-    return batch_gram(k)

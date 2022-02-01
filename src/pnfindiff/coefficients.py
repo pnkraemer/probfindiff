@@ -5,7 +5,7 @@ import functools
 import jax
 import jax.numpy as jnp
 
-from pnfindiff.utils import autodiff, collocation, kernel
+from pnfindiff.utils import autodiff, collocation, kernel, kernel_zoo
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
@@ -34,7 +34,7 @@ def center(x, *, dx, deriv=1, acc=2):
 def from_offset(x, *, dx, offset, deriv=1):
     """Forward coefficients in 1d."""
     xs = x + offset * dx
-    _, k = kernel.exp_quad()
+    _, k = kernel_zoo.exp_quad()
     L = functools.reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv)
 
     ks = kernel.differentiate(k=k, L=L)
