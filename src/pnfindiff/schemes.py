@@ -1,4 +1,4 @@
-"""Finite difference coefficients."""
+"""Fancy finite difference coefficients."""
 
 from functools import partial, reduce
 from typing import Callable, Tuple

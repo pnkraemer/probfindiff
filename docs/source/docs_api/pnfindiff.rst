@@ -13,7 +13,6 @@ Submodules
    :maxdepth: 4
 
    pnfindiff/schemes
-   pnfindiff/schemes_1d
    pnfindiff/collocation
 
 Subpackages
