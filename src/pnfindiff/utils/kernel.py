@@ -26,7 +26,7 @@ def batch_gram(k):
     # because often, e.g., derivatives of kernels are defined inline only.
     # For example, the following code
     #
-    #     k = kernel_zoo.exp_quad()[1]
+    #     k = kernel_zoo.exponentiated_quadratic[1]
     #     lk = L(k, argnums=0)
     #     llk = L(lk, argnums=1)
     #     k = kernel.batch_gram(k)
@@ -35,7 +35,7 @@ def batch_gram(k):
     #
     # becomes
     #
-    #     k_batch, k = kernel_zoo.exp_quad()
+    #     k_batch, k = kernel_zoo.exponentiated_quadratic
     #     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     #     llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
     #
