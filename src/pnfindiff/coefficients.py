@@ -22,17 +22,17 @@ def apply(
     Parameters
     ----------
     f
-        Array of function evaluated to be differentiated numerically. ``Shape (n,)``.
+        Array of function evaluated to be differentiated numerically. Shape ``(n,)``.
     coeffs
-        PN finite difference coefficients. ``Shapes (n,k), (n,)``.
+        PN finite difference coefficients. Shapes `` (n,k), (n,)``.
     indices
-        Indices of the neighbours that shall be used for each derivative. ``Shape (n,k)``.
+        Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
 
 
     Returns
     -------
     :
-        Finite difference approximation and the corresponding base-uncertainty. ``Shapes (n,), (n,)``.
+        Finite difference approximation and the corresponding base-uncertainty. Shapes `` (n,), (n,)``.
     """
     weights, unc_base = coeffs
     dfx = jnp.einsum("nk,nk->n", weights, f[indices])
@@ -47,17 +47,17 @@ def apply_along_axis(
     Parameters
     ----------
     f
-        Array of function evaluated to be differentiated numerically. ``Shape (..., n, ...)``.
+        Array of function evaluated to be differentiated numerically. Shape ``(..., n, ...)``.
     coeffs
-        PN finite difference coefficients. ``Shapes (n,k), (n,)``.
+        PN finite difference coefficients. Shapes `` (n,k), (n,)``.
     indices
-        Indices of the neighbours that shall be used for each derivative. ``Shape (n,k)``.
+        Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
 
 
     Returns
     -------
     :
-        Finite difference approximation and the corresponding base-uncertainty. ``Shapes (..., n, ...), (n,)``.
+        Finite difference approximation and the corresponding base-uncertainty. Shapes `` (..., n, ...), (n,)``.
     """
     fd = partial(apply, coeffs=coeffs, indices=indices)
     return jnp.apply_along_axis(fd, axis=axis, arr=f)
@@ -72,7 +72,7 @@ def derivative(
     ----------
     xs
         List of grid-points on which the to-be-seen function is evaluated. This is not the list of neighbours to be used.
-        ``Shape (n,k)``.
+        Shape ``(n,k)``.
     num
         Number of neighbours to be used for numerical differentiation for each point.
 
@@ -95,7 +95,7 @@ def derivative_higher(
     ----------
     xs
         List of grid-points on which the to-be-seen function is evaluated. This is not the list of neighbours to be used.
-        ``Shape (n,k)``.
+        Shape ``(n,k)``.
     num
         Number of neighbours to be used for numerical differentiation for each point.
 
