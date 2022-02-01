@@ -7,11 +7,14 @@ import jax
 import jax.numpy as jnp
 
 from pnfindiff import collocation
+from pnfindiff.typing import ArrayLike, KernelFunctionLike
 from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def backward(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> Tuple[str, str]:
+def backward(
+    x: ArrayLike, *, dx: float, deriv: int = 1, acc: int = 2
+) -> Tuple[ArrayLike, ArrayLike]:
     """Backward coefficients in 1d.
 
     Parameters
@@ -35,14 +38,18 @@ def backward(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> Tuple[str, s
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def forward(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> str:
+def forward(
+    x: ArrayLike, *, dx: float, deriv: int = 1, acc: int = 2
+) -> Tuple[ArrayLike, ArrayLike]:
     """Forward coefficients in 1d."""
     offset = jnp.arange(deriv + acc, step=1)
     return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def center(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> Tuple[Any, Any]:
+def center(
+    x: ArrayLike, *, dx: float, deriv: int = 1, acc: int = 2
+) -> Tuple[ArrayLike, ArrayLike]:
     """Forward coefficients in 1d."""
     num = (deriv + acc) // 2
     offset = jnp.arange(-num, num + 1, step=1)
@@ -50,7 +57,9 @@ def center(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> Tuple[Any, Any
 
 
 @functools.partial(jax.jit, static_argnames=("deriv",))
-def from_offset(x, *, dx, offset, deriv=1) -> str:
+def from_offset(
+    x: ArrayLike, *, dx: float, offset: ArrayLike, deriv: int = 1
+) -> Tuple[ArrayLike, ArrayLike]:
     """Forward coefficients in 1d."""
     xs = x + offset * dx
     k = kernel_zoo.exponentiated_quadratic
@@ -61,6 +70,11 @@ def from_offset(x, *, dx, offset, deriv=1) -> str:
 
 
 @functools.partial(jax.jit, static_argnames=("ks",))
-def non_uniform_1d(*, x, xs, ks):
+def non_uniform_1d(
+    *,
+    x: ArrayLike,
+    xs: ArrayLike,
+    ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike]
+) -> Tuple[ArrayLike, ArrayLike]:
     """Finite difference coefficients for non-uniform data."""
     return collocation.non_uniform_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)

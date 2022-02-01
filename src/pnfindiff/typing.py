@@ -7,7 +7,7 @@ KernelFunctionLike = Callable[[Any, Any], Any]
 ArrayLike = Any
 """Array type. JAX's arrays cannot be assigned a strict type, so we use 'Any'."""
 
-DifferentialOperatorLike = Callable[..., Callable]
+DifferentialOperatorLike = Callable[..., Callable[..., Any]]
 """Differential operators transform functions.
 
 The ellipsis is necessary because of keyword arguments:
