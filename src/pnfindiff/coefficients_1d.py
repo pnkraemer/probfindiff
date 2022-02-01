@@ -1,13 +1,13 @@
 """One-dimensional finite difference coefficients"""
 
 import functools
-from typing import Any, Tuple
+from typing import Any
 
 import jax
 import jax.numpy as jnp
 
 from pnfindiff import collocation
-from pnfindiff.typing import ArrayLike, KernelFunctionLike
+from pnfindiff.typing import ArrayLike
 from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 

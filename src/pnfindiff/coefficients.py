@@ -48,6 +48,8 @@ def apply_along_axis(
     ----------
     f
         Array of function evaluated to be differentiated numerically. Shape ``(..., n, ...)``.
+    axis
+        Axis along which the scheme should be applied.
     coeffs
         PN finite difference coefficients. Shapes `` (n,k), (n,)``.
     indices
@@ -96,6 +98,8 @@ def derivative_higher(
     xs
         List of grid-points on which the to-be-seen function is evaluated. This is not the list of neighbours to be used.
         Shape ``(n,k)``.
+    deriv
+        Order of the desired derivative.
     num
         Number of neighbours to be used for numerical differentiation for each point.
 
