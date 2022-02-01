@@ -10,7 +10,7 @@ from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def backward(x, *, dx, deriv=1, acc=2):
+def backward(x, *, dx, deriv: int = 1, acc: int = 2):
     """Backward coefficients in 1d."""
     offset = -jnp.arange(deriv + acc, step=1)
     return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
