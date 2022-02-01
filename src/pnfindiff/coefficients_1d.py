@@ -11,7 +11,7 @@ from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def backward(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> Tuple[Any, Any]:
+def backward(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> Tuple[str, str]:
     """Backward coefficients in 1d.
 
     Parameters
@@ -35,14 +35,14 @@ def backward(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> Tuple[Any, A
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def forward(x, *, dx, deriv=1, acc=2):
+def forward(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> str:
     """Forward coefficients in 1d."""
     offset = jnp.arange(deriv + acc, step=1)
     return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def center(x, *, dx, deriv=1, acc=2):
+def center(x: Any, *, dx: float, deriv: int = 1, acc: int = 2) -> Tuple[Any, Any]:
     """Forward coefficients in 1d."""
     num = (deriv + acc) // 2
     offset = jnp.arange(-num, num + 1, step=1)
@@ -50,7 +50,7 @@ def center(x, *, dx, deriv=1, acc=2):
 
 
 @functools.partial(jax.jit, static_argnames=("deriv",))
-def from_offset(x, *, dx, offset, deriv=1):
+def from_offset(x, *, dx, offset, deriv=1) -> str:
     """Forward coefficients in 1d."""
     xs = x + offset * dx
     k = kernel_zoo.exponentiated_quadratic

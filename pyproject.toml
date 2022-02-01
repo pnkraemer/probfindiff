@@ -80,3 +80,8 @@ filterwarnings = [
     # Ignore similar to https://github.com/google/jax/blob/main/pytest.ini
     "ignore:the imp module is deprecated in favour of importlib.*:DeprecationWarning:flatbuffers.*"
 ]
+
+
+[tool.mypy]
+show_error_codes = true
+ignore_missing_imports = true
