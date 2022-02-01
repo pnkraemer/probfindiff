@@ -7,13 +7,13 @@ import pytest_cases
 from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
-def case_exp_quad():
+def case_exponentiated_quadratic():
     k = lambda x, y: jnp.exp(-(x - y).dot(x - y))
     return kernel.batch_gram(k)[0]
 
 
-def case_exp_quad_builtin():
-    return kernel.batch_gram(kernel_zoo.exp_quad)[0]
+def case_exponentiated_quadratic_builtin():
+    return kernel.batch_gram(kernel_zoo.exponentiated_quadratic)[0]
 
 
 def case_differentiate_0():

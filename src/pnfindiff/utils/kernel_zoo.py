@@ -10,9 +10,9 @@ from pnfindiff.utils import kernel
 
 
 @jax.jit
-def exp_quad(x, y):
+def exponentiated_quadratic(x, y, input_scale=1.0, output_scale=1.0):
     """Exponentiated quadratic kernel."""
-    return jnp.exp(-(x - y).dot(x - y) / 2.0)
+    return output_scale * jnp.exp(-input_scale * (x - y).dot(x - y) / 2.0)
 
 
 @partial(jax.jit, static_argnames=("scale", "order", "bias"))

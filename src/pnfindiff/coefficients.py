@@ -32,7 +32,7 @@ def derivative_higher(*, xs, deriv=1, num=2):
     neighbours, indices = _neighbours(num=num, xs=xs)
 
     ks = kernel.differentiate(
-        k=kernel_zoo.exp_quad,
+        k=kernel_zoo.exponentiated_quadratic,
         L=reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv),
     )
     coeff_fun_batched = jax.jit(

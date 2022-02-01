@@ -35,7 +35,7 @@ def center(x, *, dx, deriv=1, acc=2):
 def from_offset(x, *, dx, offset, deriv=1):
     """Forward coefficients in 1d."""
     xs = x + offset * dx
-    k = kernel_zoo.exp_quad
+    k = kernel_zoo.exponentiated_quadratic
     L = functools.reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv)
 
     ks = kernel.differentiate(k=k, L=L)
