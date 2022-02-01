@@ -1,7 +1,7 @@
 """Top-level API."""
 
 from functools import partial
-from typing import Any, Callable, Tuple
+from typing import Any, Callable
 
 import jax
 import jax.numpy as jnp
@@ -21,17 +21,15 @@ def derivative_higher(f: Callable[[Any], Any], **kwargs: Any) -> ArrayLike:
 
 
 @jax.jit
-def differentiate(f: ArrayLike, *, scheme) -> ArrayLike:
+def differentiate(f: ArrayLike, *, scheme: schemes.FiniteDifferenceScheme) -> ArrayLike:
     """Apply a finite difference scheme to a vector of function evaluations.
 
     Parameters
     ----------
     f
         Array of function evaluated to be differentiated numerically. Shape ``(n,)``.
-    coeffs
-        PN finite difference schemes. Shapes `` (n,k), (n,)``.
-    indices
-        Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
+    scheme
+        PN finite difference schemes.
 
 
     Returns
@@ -44,7 +42,9 @@ def differentiate(f: ArrayLike, *, scheme) -> ArrayLike:
     return dfx, unc_base
 
 
-def differentiate_along_axis(f: ArrayLike, *, axis: int, scheme) -> ArrayLike:
+def differentiate_along_axis(
+    f: ArrayLike, *, axis: int, scheme: schemes.FiniteDifferenceScheme
+) -> ArrayLike:
     """Apply a finite difference scheme along a specified axis.
 
     Parameters
@@ -53,10 +53,8 @@ def differentiate_along_axis(f: ArrayLike, *, axis: int, scheme) -> ArrayLike:
         Array of function evaluated to be differentiated numerically. Shape ``(..., n, ...)``.
     axis
         Axis along which the scheme should be applied.
-    coeffs
-        PN finite difference schemes. Shapes `` (n,k), (n,)``.
-    indices
-        Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
+    scheme
+        PN finite difference schemes.
 
 
     Returns

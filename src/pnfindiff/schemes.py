@@ -5,7 +5,6 @@ from functools import partial, reduce
 from typing import Callable, Tuple
 
 import jax
-import jax.numpy as jnp
 import scipy.spatial
 
 from pnfindiff import collocation
@@ -14,15 +13,11 @@ from pnfindiff.typing import ArrayLike
 from .utils import autodiff, kernel, kernel_zoo
 
 
-class FiniteDifferenceScheme(namedtuple("_", "weights uncertainty indices")):
+class FiniteDifferenceScheme(namedtuple("_", "weights cov_marginal indices")):
     """Finite difference schemes."""
 
-    pass
 
-
-def derivative(
-    *, xs: ArrayLike, num: int = 2
-) -> Tuple[Tuple[ArrayLike, ArrayLike], ArrayLike]:
+def derivative(*, xs: ArrayLike, num: int = 2) -> FiniteDifferenceScheme:
     """Discretised first-order derivative.
 
     Parameters
@@ -45,7 +40,7 @@ def derivative(
 
 def derivative_higher(
     *, xs: ArrayLike, deriv: int = 1, num: int = 2
-) -> Tuple[Tuple[ArrayLike, ArrayLike], ArrayLike]:
+) -> FiniteDifferenceScheme:
     """Discretised higher-order derivative.
 
     Parameters
@@ -74,7 +69,6 @@ def derivative_higher(
         jax.vmap(partial(collocation.non_uniform_nd, ks=ks))
     )  # type: Callable[..., Tuple[ArrayLike, ArrayLike]]
     coeffs = coeff_fun_batched(x=xs[..., None], xs=neighbours[..., None])
-    # return FiniteDifferenceMethod(weights=coeffs[0], uncertainty=coeffs[1], indices=indices)
     return FiniteDifferenceScheme(*coeffs, indices)
 
 
