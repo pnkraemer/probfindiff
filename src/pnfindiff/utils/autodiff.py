@@ -8,7 +8,7 @@ import jax.numpy as jnp
 from pnfindiff.typing import DifferentialOperatorLike
 
 
-def deriv_scalar(fun: Callable[[Any], Any], /, **kwargs: Any) -> Callable[[Any], Any]:
+def deriv_scalar(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:
     """Derivative of a scalar function.
 
     Parameters
@@ -28,7 +28,7 @@ def deriv_scalar(fun: Callable[[Any], Any], /, **kwargs: Any) -> Callable[[Any],
     return jax.jit(lambda *args: grad(*args)[0])
 
 
-def div(fun: Callable[[Any], Any], /, **kwargs: Any) -> Callable[[Any], Any]:
+def div(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:
     """Divergence of a function as the trace of the Jacobian.
 
     Parameters
@@ -48,7 +48,7 @@ def div(fun: Callable[[Any], Any], /, **kwargs: Any) -> Callable[[Any], Any]:
     return jax.jit(lambda *args: jnp.trace(jac(*args)))
 
 
-def laplace(fun: Callable[[Any], Any], /, **kwargs: Any) -> Callable[[Any], Any]:
+def laplace(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:
     """Laplace operator.
 
     Parameters
