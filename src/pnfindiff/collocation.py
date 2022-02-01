@@ -1,4 +1,4 @@
-"""Global collocation with Gaussian processes."""
+"""Finite differences and collocation with Gaussian processes."""
 
 import functools
 

@@ -1,4 +1,4 @@
-"""Top-level API."""
+"""Finite difference coefficients."""
 
 from functools import partial, reduce
 
