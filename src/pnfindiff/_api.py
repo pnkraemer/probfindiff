@@ -12,40 +12,20 @@ from pnfindiff import collocation
 from pnfindiff.typing import ArrayLike
 from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
+FiniteDifferenceScheme = namedtuple(
+    "FiniteDifferenceScheme",
+    (
+        "weights",
+        "covs_marginal",
+        "offset_indices",
+        "order_method",
+        "order_derivative",
+    ),
+)
+"""Finite difference schemes.
 
-class FiniteDifferenceScheme(
-    namedtuple(
-        "_",
-        (
-            "weights",
-            "covs_marginal",
-            "offset_indices",
-            "order_method",
-            "order_derivative",
-        ),
-    )
-):
-    """Finite difference schemes.
-
-    A finite difference scheme consists of a weight-vector, marginal covariances, and offset indices.
-    """
-
-
-#
-# def derivative(fx: Callable[[Any], Any], **kwargs: Any) -> ArrayLike:
-#     """Compute the derivative of a function based on its values.
-#
-#     Alias for ``differentiate(fx, scheme=schemes.derivative(**kwargs))``.
-#     """
-#     return differentiate(fx, scheme=schemes.derivative(**kwargs))
-#
-#
-# def derivative_higher(fx: Callable[[Any], Any], **kwargs: Any) -> ArrayLike:
-#     """Compute the higher derivative of a function based on its values.
-#
-#     Alias for ``differentiate(fx, scheme=schemes.derivative_higher(**kwargs))``.
-#     """
-#     return differentiate(fx, scheme=schemes.derivative_higher(**kwargs))
+A finite difference scheme consists of a weight-vector, marginal covariances, and offset indices.
+"""
 
 
 @jax.jit
