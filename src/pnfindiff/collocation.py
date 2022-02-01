@@ -1,21 +1,20 @@
 """Finite differences and collocation with Gaussian processes."""
 
 import functools
-from typing import Any, Callable, Tuple
+from typing import Any, Tuple
 
 import jax
 import jax.numpy as jnp
 
-KernelFunctionType = Callable[[Any, Any], Any]
-"""Kernel function type."""
+from pnfindiff.typing import ArrayLike, KernelFunctionLike
 
 
 @functools.partial(jax.jit, static_argnames=("ks",))
 def non_uniform_nd(
     *,
-    x: Any,
-    xs: Any,
-    ks: Tuple[KernelFunctionType, KernelFunctionType, KernelFunctionType]
+    x: ArrayLike,
+    xs: ArrayLike,
+    ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike]
 ) -> Tuple[Any, Any]:
     """Finite difference coefficients for non-uniform data in multiple dimensions."""
 
@@ -24,10 +23,10 @@ def non_uniform_nd(
 
 
 def prepare_gram(
-    ks: Tuple[KernelFunctionType, KernelFunctionType, KernelFunctionType],
-    x: Any,
-    xs: Any,
-) -> Tuple[Any, Any, Any]:
+    ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike],
+    x: ArrayLike,
+    xs: ArrayLike,
+) -> Tuple[ArrayLike, ArrayLike, ArrayLike]:
     """Prepare the Gram matrices that are used for collocation approaches."""
     k, lk, llk = ks
     n = xs.shape[0]
@@ -38,7 +37,9 @@ def prepare_gram(
 
 
 @jax.jit
-def unsymmetric(*, K: Any, LK0: Any, LLK: Any) -> Tuple[Any, Any]:
+def unsymmetric(
+    *, K: ArrayLike, LK0: ArrayLike, LLK: ArrayLike
+) -> Tuple[ArrayLike, ArrayLike]:
     """Unsymmetric collocation.
 
     Parameters
@@ -56,7 +57,9 @@ def unsymmetric(*, K: Any, LK0: Any, LLK: Any) -> Tuple[Any, Any]:
 
 
 @jax.jit
-def symmetric(*, K: Any, LK1: Any, LLK: Any) -> Tuple[Any, Any]:
+def symmetric(
+    *, K: ArrayLike, LK1: ArrayLike, LLK: ArrayLike
+) -> Tuple[ArrayLike, ArrayLike]:
     """Symmetric collocation.
 
     Parameters
