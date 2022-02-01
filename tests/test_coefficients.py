@@ -4,7 +4,7 @@ import jax.numpy as jnp
 import pytest_cases
 
 from pnfindiff import coefficients
-from pnfindiff.aux import diffop, kernel
+from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
 def case_backward():
@@ -26,15 +26,15 @@ def case_from_offset():
 
 
 def case_non_uniform_1d():
-    ks = kernel.differentiate(kernel.exp_quad()[1], L=diffop.deriv_scalar)
+    ks = kernel.differentiate(kernel_zoo.exp_quad()[1], L=autodiff.deriv_scalar)
     x = 0.5
     xs = jnp.array([0.5, 0.3, 0.1])
     return coefficients.non_uniform_1d(x=x, xs=xs, ks=ks)
 
 
 def case_non_uniform_2d():
-    L = diffop.laplace
-    k_batch, k = kernel.exp_quad()
+    L = autodiff.laplace
+    k_batch, k = kernel_zoo.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))
 
@@ -55,9 +55,9 @@ def test_central_coefficients_polynomial():
 
     x, xs = jnp.array(0.0), jnp.array([-1.0, 0.0, 1.0])
 
-    _, k = kernel.polynomial(order=3)
+    _, k = kernel_zoo.polynomial(order=3)
 
-    L = diffop.compose(diffop.deriv_scalar, diffop.deriv_scalar)
+    L = autodiff.compose(autodiff.deriv_scalar, autodiff.deriv_scalar)
     ks = kernel.differentiate(k=k, L=L)
     coeffs, unc_base = coefficients.non_uniform_1d(x=x, xs=xs, ks=ks)
 
