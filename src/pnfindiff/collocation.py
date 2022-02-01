@@ -15,6 +15,7 @@ def non_uniform_nd(*, x, xs, ks):
 
 
 def prepare_gram(ks, x, xs):
+    """Prepare the Gram matrices that are used for collocation approaches."""
     k, lk, llk = ks
     n = xs.shape[0]
     K = k(xs, xs.T).reshape((n, n))

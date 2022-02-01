@@ -1,6 +1,8 @@
 """Test for kernel functionality."""
 
 
+import functools
+
 import jax.numpy as jnp
 import pytest_cases
 
@@ -32,9 +34,8 @@ def case_differentiate_2():
 
 
 def case_polynomial_builtin():
-    return kernel.batch_gram(lambda x, y: kernel_zoo.polynomial(x, y, order=3, bias=2))[
-        0
-    ]
+    k = functools.partial(kernel_zoo.polynomial, order=3, bias=2)
+    return kernel.batch_gram(k)[0]
 
 
 @pytest_cases.parametrize_with_cases("k", cases=".")

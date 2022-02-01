@@ -13,22 +13,25 @@ from .utils import autodiff, kernel, kernel_zoo
 
 @jax.jit
 def apply(f, *, coeffs, indices):
+    """Apply a finite difference scheme to a vector of function evaluations."""
     weights, unc_base = coeffs
     dfx = jnp.einsum("nk,nk->n", weights, f[indices])
     return dfx, unc_base
 
 
 def apply_along_axis(f, *, axis, coeffs, indices):
+    """Apply a finite difference scheme along a specified axis."""
     fd = partial(apply, coeffs=coeffs, indices=indices)
     return jnp.apply_along_axis(fd, axis=axis, arr=f)
 
 
 def derivative(*, xs, num=2):
+    """Discretised first-order derivative."""
     return derivative_higher(xs=xs, deriv=1, num=num)
 
 
 def derivative_higher(*, xs, deriv=1, num=2):
-
+    """Discretised higher-order derivative."""
     neighbours, indices = _neighbours(num=num, xs=xs)
 
     ks = kernel.differentiate(
