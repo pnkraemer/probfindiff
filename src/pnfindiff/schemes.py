@@ -1,23 +1,19 @@
 """Finite difference coefficients."""
 
-from collections import namedtuple
 from functools import partial, reduce
 from typing import Callable, Tuple
 
 import jax
 import scipy.spatial
 
+import pnfindiff
 from pnfindiff import collocation
 from pnfindiff.typing import ArrayLike
 
 from .utils import autodiff, kernel, kernel_zoo
 
 
-class FiniteDifferenceScheme(namedtuple("_", "weights cov_marginal indices")):
-    """Finite difference schemes."""
-
-
-def derivative(*, xs: ArrayLike, num: int = 2) -> FiniteDifferenceScheme:
+def derivative(*, xs: ArrayLike, num: int = 2) -> pnfindiff.FiniteDifferenceScheme:
     """Discretised first-order derivative.
 
     Parameters
@@ -40,7 +36,7 @@ def derivative(*, xs: ArrayLike, num: int = 2) -> FiniteDifferenceScheme:
 
 def derivative_higher(
     *, xs: ArrayLike, deriv: int = 1, num: int = 2
-) -> FiniteDifferenceScheme:
+) -> pnfindiff.FiniteDifferenceScheme:
     """Discretised higher-order derivative.
 
     Parameters
@@ -69,7 +65,9 @@ def derivative_higher(
         jax.vmap(partial(collocation.non_uniform_nd, ks=ks))
     )  # type: Callable[..., Tuple[ArrayLike, ArrayLike]]
     coeffs = coeff_fun_batched(x=xs[..., None], xs=neighbours[..., None])
-    return FiniteDifferenceScheme(*coeffs, indices)
+    return pnfindiff.FiniteDifferenceScheme(
+        *coeffs, indices, order_method=xs.shape[0] - deriv, order_derivative=deriv
+    )
 
 
 def _neighbours(*, num: int, xs: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
