@@ -6,7 +6,8 @@
 PNFinDiff reference documentation
 =================================
 
-Elevator pitch here.
+Probabilistic numerical finite differences.
+Like traditional finite difference formulas, but with modelling flexibility and uncertainty quantification.
 
 .. toctree::
    :maxdepth: 1
