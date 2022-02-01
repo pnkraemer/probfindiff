@@ -13,13 +13,11 @@ from pnfindiff.typing import ArrayLike
 
 from .utils import autodiff, kernel, kernel_zoo
 
-#
-# class FiniteDifferenceMethod(namedtuple("_", "weights uncertainty indices")):
-#     """Finite difference method coefficients."""
-#     pass
-#
-#
-#
+
+class FiniteDifferenceScheme(namedtuple("_", "weights uncertainty indices")):
+    """Finite difference schemes."""
+
+    pass
 
 
 def derivative(
@@ -77,7 +75,7 @@ def derivative_higher(
     )  # type: Callable[..., Tuple[ArrayLike, ArrayLike]]
     coeffs = coeff_fun_batched(x=xs[..., None], xs=neighbours[..., None])
     # return FiniteDifferenceMethod(weights=coeffs[0], uncertainty=coeffs[1], indices=indices)
-    return coeffs, indices
+    return FiniteDifferenceScheme(*coeffs, indices)
 
 
 def _neighbours(*, num: int, xs: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:

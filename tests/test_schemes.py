@@ -24,9 +24,8 @@ def case_derivative(xs):
 
 @pytest_cases.parametrize_with_cases("fd", cases=".")
 def test_differentiate(fd, xs):
-    coeffs, indices = fd
     f = jnp.sin(xs)
-    df_approx, _ = pnfindiff.differentiate(f, coeffs=coeffs, indices=indices)
+    df_approx, _ = pnfindiff.differentiate(f, scheme=fd)
 
     assert jnp.allclose(df_approx, jnp.cos(xs), atol=1e-4, rtol=1e-4)
 
@@ -37,9 +36,6 @@ def test_differentiate_along_axis(fd, xs):
     f = jnp.sin(xs)[:, None] * jnp.sin(ys)[None, :]
     df_dy = jnp.sin(xs)[:, None] * jnp.cos(ys)[None, :]
 
-    coeffs, indices = fd
-    df_approx, _ = pnfindiff.differentiate_along_axis(
-        f, axis=1, coeffs=coeffs, indices=indices
-    )
+    df_approx, _ = pnfindiff.differentiate_along_axis(f, axis=1, scheme=fd)
 
     assert jnp.allclose(df_approx, df_dy, atol=1e-4, rtol=1e-4)
