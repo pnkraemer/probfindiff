@@ -1,5 +1,5 @@
-pnfindiff package
-=================
+API: pnfindiff package
+======================
 
 .. automodule:: pnfindiff
    :members:

@@ -1,4 +1,4 @@
-pnfindiff.collocation module
+pnfindiff.collocation
 ============================
 
 .. automodule:: pnfindiff.collocation

@@ -1,4 +1,4 @@
-pnfindiff.utils.kernel module
+pnfindiff.utils.kernel
 =============================
 
 .. automodule:: pnfindiff.utils.kernel

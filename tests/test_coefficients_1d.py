@@ -3,7 +3,7 @@
 import jax.numpy as jnp
 import pytest_cases
 
-from pnfindiff import coefficients_1d
+from pnfindiff import coefficients_1d, collocation
 from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
@@ -40,7 +40,9 @@ def test_central_coefficients_polynomial():
     k = lambda x, y: kernel_zoo.polynomial(x, y, order=3)
     L = autodiff.compose(autodiff.deriv_scalar, autodiff.deriv_scalar)
     ks = kernel.differentiate(k=k, L=L)
-    coeffs, unc_base = coefficients_1d.non_uniform_1d(x=x, xs=xs, ks=ks)
+    coeffs, unc_base = collocation.non_uniform_nd(
+        x=jnp.array([x]), xs=xs[:, None], ks=ks
+    )
 
     assert jnp.allclose(coeffs, jnp.array([1.0, -2.0, 1.0]))
     assert jnp.allclose(unc_base, 0.0)

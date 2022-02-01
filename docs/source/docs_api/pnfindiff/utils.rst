@@ -1,4 +1,4 @@
-pnfindiff.utils package
+pnfindiff.utils
 =======================
 
 .. automodule:: pnfindiff.utils

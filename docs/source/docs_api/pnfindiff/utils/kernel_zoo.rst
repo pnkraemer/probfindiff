@@ -1,4 +1,4 @@
-pnfindiff.utils.kernel\_zoo module
+pnfindiff.utils.kernel\_zoo
 ==================================
 
 .. automodule:: pnfindiff.utils.kernel_zoo
