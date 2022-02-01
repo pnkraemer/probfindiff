@@ -4,7 +4,7 @@
 import jax.numpy as jnp
 import pytest_cases
 
-from pnfindiff.utils import diffop, kernel
+from pnfindiff.utils import autodiff, kernel
 
 
 def case_exp_quad():
@@ -18,17 +18,17 @@ def case_exp_quad_builtin():
 
 def case_differentiate_0():
     k = lambda x, y: (x - y).dot(x - y)
-    return kernel.differentiate(k, L=diffop.deriv_scalar)[0]
+    return kernel.differentiate(k, L=autodiff.deriv_scalar)[0]
 
 
 def case_differentiate_1():
     k = lambda x, y: (x - y).dot(x - y)
-    return kernel.differentiate(k, L=diffop.deriv_scalar)[1]
+    return kernel.differentiate(k, L=autodiff.deriv_scalar)[1]
 
 
 def case_differentiate_2():
     k = lambda x, y: (x - y).dot(x - y)
-    return kernel.differentiate(k, L=diffop.deriv_scalar)[2]
+    return kernel.differentiate(k, L=autodiff.deriv_scalar)[2]
 
 
 def case_polynomial_builtin():

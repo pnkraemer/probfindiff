@@ -7,7 +7,7 @@ import jax.numpy as jnp
 import scipy.spatial
 
 from . import coefficients
-from .utils import diffop, kernel
+from .utils import autodiff, kernel
 
 __all__ = ["findiff_along_axis", "findiff"]
 
@@ -31,7 +31,8 @@ def findiff(*, xs, deriv=1, num=2):
     neighbours, indices = _neighbours(num=num, xs=xs)
 
     ks = kernel.differentiate(
-        k=kernel.exp_quad()[1], L=reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
+        k=kernel.exp_quad()[1],
+        L=reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv),
     )
     coeff_fun_batched = jax.jit(jax.vmap(partial(coefficients.non_uniform_1d, ks=ks)))
     coeffs = coeff_fun_batched(x=xs, xs=neighbours)

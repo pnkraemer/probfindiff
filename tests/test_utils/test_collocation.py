@@ -3,12 +3,12 @@
 import jax.numpy as jnp
 import pytest
 
-from pnfindiff.utils import collocation, diffop, kernel
+from pnfindiff.utils import autodiff, collocation, kernel
 
 
 @pytest.fixture(name="ks")
 def fixture_ks():
-    L = diffop.deriv_scalar
+    L = autodiff.deriv_scalar
     k_batch, k = kernel.exp_quad()
     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
     llk_batch, _ = kernel.batch_gram(L(lk, argnums=1))

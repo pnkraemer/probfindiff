@@ -5,7 +5,7 @@ import functools
 import jax
 import jax.numpy as jnp
 
-from pnfindiff.utils import collocation, diffop, kernel
+from pnfindiff.utils import autodiff, collocation, kernel
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
@@ -35,7 +35,7 @@ def from_offset(x, *, dx, offset, deriv=1):
     """Forward coefficients in 1d."""
     xs = x + offset * dx
     _, k = kernel.exp_quad()
-    L = functools.reduce(diffop.compose, [diffop.deriv_scalar] * deriv)
+    L = functools.reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv)
 
     ks = kernel.differentiate(k=k, L=L)
     return non_uniform_1d(x=x, xs=xs, ks=ks)

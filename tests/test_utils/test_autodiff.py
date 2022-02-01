@@ -2,19 +2,19 @@
 
 import pytest_cases
 
-from pnfindiff.utils import diffop
+from pnfindiff.utils import autodiff
 
 
 def case_div():
-    return diffop.div
+    return autodiff.div
 
 
 def case_deriv_scalar():
-    return diffop.deriv_scalar
+    return autodiff.deriv_scalar
 
 
 def case_laplace():
-    return diffop.laplace
+    return autodiff.laplace
 
 
 @pytest_cases.parametrize_with_cases("D", cases=".")
