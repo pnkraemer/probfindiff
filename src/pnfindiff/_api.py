@@ -7,7 +7,7 @@ import jax.numpy as jnp
 import scipy.spatial
 
 from . import coefficients
-from .aux import diffop, kernel
+from .utils import diffop, kernel
 
 __all__ = ["findiff_along_axis", "findiff"]
 
