@@ -93,6 +93,7 @@ jobs:
     - name: Build documentation with sphinx through tox
       run: |
         pip install --upgrade tox
+        sudo apt-get install pandoc
         tox -e docs
   tests:
     runs-on: ubuntu-latest
