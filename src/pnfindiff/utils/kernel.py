@@ -1,9 +1,6 @@
 """Kernel function functionality."""
 
-from functools import partial
-
 import jax
-import jax.numpy as jnp
 
 
 def differentiate(k, *, L):
