@@ -1,7 +1,7 @@
 """Finite difference coefficients."""
 
 from functools import partial, reduce
-from typing import Tuple
+from typing import Callable, Tuple
 
 import jax
 import jax.numpy as jnp
@@ -50,7 +50,7 @@ def derivative_higher(
     )
     coeff_fun_batched = jax.jit(
         jax.vmap(partial(coefficients_1d.non_uniform_1d, ks=ks))
-    )
+    )  # type: Callable[..., Tuple[ArrayLike, ArrayLike]]
     coeffs = coeff_fun_batched(x=xs, xs=neighbours)
     return coeffs, indices
 

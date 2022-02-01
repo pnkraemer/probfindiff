@@ -12,9 +12,7 @@ from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def backward(
-    x: ArrayLike, *, dx: float, deriv: int = 1, acc: int = 2
-) -> Tuple[ArrayLike, ArrayLike]:
+def backward(x: ArrayLike, *, dx: float, deriv: int = 1, acc: int = 2) -> Any:
     """Backward coefficients in 1d.
 
     Parameters
@@ -38,18 +36,14 @@ def backward(
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def forward(
-    x: ArrayLike, *, dx: float, deriv: int = 1, acc: int = 2
-) -> Tuple[ArrayLike, ArrayLike]:
+def forward(x: ArrayLike, *, dx: float, deriv: int = 1, acc: int = 2) -> Any:
     """Forward coefficients in 1d."""
     offset = jnp.arange(deriv + acc, step=1)
     return from_offset(x=x, dx=dx, offset=offset, deriv=deriv)
 
 
 @functools.partial(jax.jit, static_argnames=("deriv", "acc"))
-def center(
-    x: ArrayLike, *, dx: float, deriv: int = 1, acc: int = 2
-) -> Tuple[ArrayLike, ArrayLike]:
+def center(x: ArrayLike, *, dx: float, deriv: int = 1, acc: int = 2) -> Any:
     """Forward coefficients in 1d."""
     num = (deriv + acc) // 2
     offset = jnp.arange(-num, num + 1, step=1)
@@ -57,9 +51,7 @@ def center(
 
 
 @functools.partial(jax.jit, static_argnames=("deriv",))
-def from_offset(
-    x: ArrayLike, *, dx: float, offset: ArrayLike, deriv: int = 1
-) -> Tuple[ArrayLike, ArrayLike]:
+def from_offset(x: ArrayLike, *, dx: float, offset: ArrayLike, deriv: int = 1) -> Any:
     """Forward coefficients in 1d."""
     xs = x + offset * dx
     k = kernel_zoo.exponentiated_quadratic
@@ -75,6 +67,6 @@ def non_uniform_1d(
     x: ArrayLike,
     xs: ArrayLike,
     ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike]
-) -> Tuple[ArrayLike, ArrayLike]:
+) -> Any:
     """Finite difference coefficients for non-uniform data."""
     return collocation.non_uniform_nd(x=jnp.array([x]), xs=xs[:, None], ks=ks)
