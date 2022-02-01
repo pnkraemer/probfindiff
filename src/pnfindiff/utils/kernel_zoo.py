@@ -16,7 +16,7 @@ def exp_quad():
     def k(x, y):
         return jnp.exp(-(x - y).dot(x - y) / 2.0)
 
-    return kernel.batch_gram(k)
+    return k
 
 
 def polynomial(*, order, scale=1.0, bias=1.0):
@@ -26,4 +26,4 @@ def polynomial(*, order, scale=1.0, bias=1.0):
     def k(x, y, s=scale, b=bias, o=order):
         return (s * x.dot(y) + b) ** o
 
-    return kernel.batch_gram(k)
+    return k

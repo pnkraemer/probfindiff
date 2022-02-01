@@ -13,7 +13,7 @@ def case_exp_quad():
 
 
 def case_exp_quad_builtin():
-    return kernel_zoo.exp_quad()[0]
+    return kernel.batch_gram(kernel_zoo.exp_quad())[0]
 
 
 def case_differentiate_0():
@@ -32,7 +32,7 @@ def case_differentiate_2():
 
 
 def case_polynomial_builtin():
-    return kernel_zoo.polynomial(order=3, bias=2)[0]
+    return kernel.batch_gram(kernel_zoo.polynomial(order=3, bias=2))[0]
 
 
 @pytest_cases.parametrize_with_cases("exp_quad", cases=".")
