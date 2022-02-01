@@ -1,9 +1,15 @@
 """Kernel function functionality."""
 
+from typing import Tuple
+
 import jax
 
+from pnfindiff.typing import DifferentialOperatorLike, KernelFunctionLike
 
-def differentiate(k, *, L):
+
+def differentiate(
+    k: KernelFunctionLike, *, L: DifferentialOperatorLike
+) -> Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike]:
     """Differentiate (and batch) a kernel function."""
     k_batch, _ = batch_gram(k)
     lk_batch, lk = batch_gram(L(k, argnums=0))
@@ -11,7 +17,7 @@ def differentiate(k, *, L):
     return jax.jit(k_batch), jax.jit(lk_batch), jax.jit(llk_batch)
 
 
-def batch_gram(k):
+def batch_gram(k: KernelFunctionLike) -> Tuple[KernelFunctionLike, KernelFunctionLike]:
     r"""Vectorise a kernel function such that it returns Gram matrices.
 
     A function :math:`k: R^d \times R^d \rightarrow R` becomes

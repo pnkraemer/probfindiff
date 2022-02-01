@@ -6,3 +6,10 @@ KernelFunctionLike = Callable[[Any, Any], Any]
 
 ArrayLike = Any
 """Array type. JAX's arrays cannot be assigned a strict type, so we use 'Any'."""
+
+DifferentialOperatorLike = Callable[..., Callable]
+"""Differential operators transform functions.
+
+The ellipsis is necessary because of keyword arguments:
+    https://github.com/python/mypy/issues/1655
+"""
