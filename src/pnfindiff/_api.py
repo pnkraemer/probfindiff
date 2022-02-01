@@ -6,7 +6,8 @@ import jax
 import jax.numpy as jnp
 import scipy.spatial
 
-from . import coefficients
+from pnfindiff import coefficients_1d
+
 from .utils import autodiff, kernel, kernel_zoo
 
 __all__ = ["findiff_along_axis", "findiff"]
@@ -34,7 +35,9 @@ def findiff(*, xs, deriv=1, num=2):
         k=kernel_zoo.exp_quad()[1],
         L=reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv),
     )
-    coeff_fun_batched = jax.jit(jax.vmap(partial(coefficients.non_uniform_1d, ks=ks)))
+    coeff_fun_batched = jax.jit(
+        jax.vmap(partial(coefficients_1d.non_uniform_1d, ks=ks))
+    )
     coeffs = coeff_fun_batched(x=xs, xs=neighbours)
 
     @jax.jit
