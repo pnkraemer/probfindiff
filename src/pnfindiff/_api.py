@@ -3,14 +3,16 @@
 import functools
 from collections import namedtuple
 from functools import partial
-from typing import Any, Callable
+from typing import Any, Optional
 
 import jax
 import jax.numpy as jnp
 
 from pnfindiff import collocation
-from pnfindiff.typing import ArrayLike
-from pnfindiff.utils import autodiff, kernel, kernel_zoo
+from pnfindiff.typing import ArrayLike, KernelFunctionLike
+from pnfindiff.utils import autodiff
+from pnfindiff.utils import kernel as kernel_module
+from pnfindiff.utils import kernel_zoo
 
 FiniteDifferenceScheme = namedtuple(
     "FiniteDifferenceScheme",
@@ -73,8 +75,16 @@ def differentiate_along_axis(
     return jnp.apply_along_axis(fd, axis=axis, arr=fx)
 
 
-@functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
-def backward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> Any:
+@functools.partial(
+    jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
+)
+def backward(
+    *,
+    dx: float,
+    order_derivative: int = 1,
+    order_method: int = 2,
+    kernel: Optional[KernelFunctionLike] = None
+) -> Any:
     """Backward coefficients in 1d.
 
     Parameters
@@ -85,6 +95,8 @@ def backward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> 
         Order of the derivative.
     order_method
         Desired accuracy.
+    kernel
+        Kernel function. Defines the function-model.
 
     Returns
     -------
@@ -93,12 +105,20 @@ def backward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> 
     """
     offset = -jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
-    scheme = from_grid(xs=grid, order_derivative=order_derivative)
+    scheme = from_grid(xs=grid, order_derivative=order_derivative, kernel=kernel)
     return scheme, grid
 
 
-@functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
-def forward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> Any:
+@functools.partial(
+    jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
+)
+def forward(
+    *,
+    dx: float,
+    order_derivative: int = 1,
+    order_method: int = 2,
+    kernel: Optional[KernelFunctionLike] = None
+) -> Any:
     """Forward coefficients in 1d.
 
     Parameters
@@ -109,6 +129,8 @@ def forward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
         Order of the derivative.
     order_method
         Desired accuracy.
+    kernel
+        Kernel function. Defines the function-model.
 
     Returns
     -------
@@ -117,12 +139,20 @@ def forward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
     """
     offset = jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
-    scheme = from_grid(xs=grid, order_derivative=order_derivative)
+    scheme = from_grid(xs=grid, order_derivative=order_derivative, kernel=kernel)
     return scheme, grid
 
 
-@functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
-def central(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> Any:
+@functools.partial(
+    jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
+)
+def central(
+    *,
+    dx: float,
+    order_derivative: int = 1,
+    order_method: int = 2,
+    kernel: Optional[KernelFunctionLike] = None
+) -> Any:
     """Central coefficients in 1d.
 
     Parameters
@@ -133,6 +163,8 @@ def central(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
         Order of the derivative.
     order_method
         Desired accuracy.
+    kernel
+        Kernel function. Defines the function-model.
 
     Returns
     -------
@@ -143,12 +175,17 @@ def central(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
     num_side = num_central // 2
     offset = jnp.arange(-num_side, num_side + 1, step=1)
     grid = offset * dx
-    scheme = from_grid(xs=grid, order_derivative=order_derivative)
+    scheme = from_grid(xs=grid, order_derivative=order_derivative, kernel=kernel)
     return scheme, grid
 
 
-@functools.partial(jax.jit, static_argnames=("order_derivative",))
-def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
+@functools.partial(jax.jit, static_argnames=("order_derivative", "kernel"))
+def from_grid(
+    *,
+    xs: ArrayLike,
+    order_derivative: int = 1,
+    kernel: Optional[KernelFunctionLike] = None
+) -> Any:
     """Finite difference coefficients based on an array of offset indices.
 
     Parameters
@@ -157,18 +194,19 @@ def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
         Order of the derivative.
     xs
         Grid. Shape ``(n,)``.
+    kernel
+        Kernel function. Defines the function-model.
 
     Returns
     -------
     :
         Finite difference coefficients and base uncertainty.
     """
-    k = functools.partial(
-        kernel_zoo.polynomial, p=jnp.ones((xs.shape[0],))
-    )  # type: Callable[[ArrayLike, ArrayLike], ArrayLike]
+    if kernel is None:
+        kernel = _default_kernel(min_order=xs.shape[0])
     L = functools.reduce(autodiff.compose, [autodiff.derivative] * order_derivative)
+    ks = kernel_module.differentiate(k=kernel, L=L)
 
-    ks = kernel.differentiate(k=k, L=L)
     x = jnp.zeros_like(xs[0])
     weights, cov_marginal = collocation.non_uniform_nd(
         x=x[..., None], xs=xs[..., None], ks=ks
@@ -179,3 +217,7 @@ def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
         order_derivative=order_derivative,
     )
     return scheme
+
+
+def _default_kernel(*, min_order: int) -> KernelFunctionLike:
+    return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))

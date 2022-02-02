@@ -15,6 +15,7 @@ Like traditional finite difference formulas, but with modelling flexibility and 
 
    notebooks/getting_started/quickstart
    notebooks/getting_started/custom_grid
+   notebooks/getting_started/kernel_models
 
 
 .. toctree::
