@@ -75,6 +75,10 @@ def differentiate_along_axis(
     return jnp.apply_along_axis(fd, axis=axis, arr=fx)
 
 
+_DEFAULT_NOISE_VARIANCE = 1e-14
+"""We might change the defaults again soon, so we encapsulate it into a variable..."""
+
+
 @functools.partial(
     jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
 )
@@ -83,7 +87,8 @@ def backward(
     dx: float,
     order_derivative: int = 1,
     order_method: int = 2,
-    kernel: Optional[KernelFunctionLike] = None
+    kernel: Optional[KernelFunctionLike] = None,
+    noise_variance: float = _DEFAULT_NOISE_VARIANCE,
 ) -> Any:
     """Backward coefficients in 1d.
 
@@ -97,6 +102,8 @@ def backward(
         Desired accuracy.
     kernel
         Kernel function. Defines the function-model.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
@@ -105,7 +112,12 @@ def backward(
     """
     offset = -jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
-    scheme = from_grid(xs=grid, order_derivative=order_derivative, kernel=kernel)
+    scheme = from_grid(
+        xs=grid,
+        order_derivative=order_derivative,
+        kernel=kernel,
+        noise_variance=noise_variance,
+    )
     return scheme, grid
 
 
@@ -117,7 +129,8 @@ def forward(
     dx: float,
     order_derivative: int = 1,
     order_method: int = 2,
-    kernel: Optional[KernelFunctionLike] = None
+    kernel: Optional[KernelFunctionLike] = None,
+    noise_variance: float = _DEFAULT_NOISE_VARIANCE,
 ) -> Any:
     """Forward coefficients in 1d.
 
@@ -131,6 +144,8 @@ def forward(
         Desired accuracy.
     kernel
         Kernel function. Defines the function-model.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
@@ -139,7 +154,12 @@ def forward(
     """
     offset = jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
-    scheme = from_grid(xs=grid, order_derivative=order_derivative, kernel=kernel)
+    scheme = from_grid(
+        xs=grid,
+        order_derivative=order_derivative,
+        kernel=kernel,
+        noise_variance=noise_variance,
+    )
     return scheme, grid
 
 
@@ -151,7 +171,8 @@ def central(
     dx: float,
     order_derivative: int = 1,
     order_method: int = 2,
-    kernel: Optional[KernelFunctionLike] = None
+    kernel: Optional[KernelFunctionLike] = None,
+    noise_variance: float = _DEFAULT_NOISE_VARIANCE,
 ) -> Any:
     """Central coefficients in 1d.
 
@@ -165,6 +186,8 @@ def central(
         Desired accuracy.
     kernel
         Kernel function. Defines the function-model.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
@@ -175,7 +198,12 @@ def central(
     num_side = num_central // 2
     offset = jnp.arange(-num_side, num_side + 1, step=1)
     grid = offset * dx
-    scheme = from_grid(xs=grid, order_derivative=order_derivative, kernel=kernel)
+    scheme = from_grid(
+        xs=grid,
+        order_derivative=order_derivative,
+        kernel=kernel,
+        noise_variance=noise_variance,
+    )
     return scheme, grid
 
 
@@ -184,7 +212,8 @@ def from_grid(
     *,
     xs: ArrayLike,
     order_derivative: int = 1,
-    kernel: Optional[KernelFunctionLike] = None
+    kernel: Optional[KernelFunctionLike] = None,
+    noise_variance: float = _DEFAULT_NOISE_VARIANCE,
 ) -> Any:
     """Finite difference coefficients based on an array of offset indices.
 
@@ -196,6 +225,8 @@ def from_grid(
         Grid. Shape ``(n,)``.
     kernel
         Kernel function. Defines the function-model.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
@@ -209,7 +240,10 @@ def from_grid(
 
     x = jnp.zeros_like(xs[0])
     weights, cov_marginal = collocation.non_uniform_nd(
-        x=x[..., None], xs=xs[..., None], ks=ks
+        x=x[..., None],
+        xs=xs[..., None],
+        ks=ks,
+        noise_variance=noise_variance,
     )
     scheme = FiniteDifferenceScheme(
         weights,

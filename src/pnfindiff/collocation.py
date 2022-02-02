@@ -14,7 +14,8 @@ def non_uniform_nd(
     *,
     x: ArrayLike,
     xs: ArrayLike,
-    ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike]
+    ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike],
+    noise_variance: float,
 ) -> Tuple[Any, Any]:
     r"""Finite difference coefficients for non-uniform data in multiple dimensions.
 
@@ -26,6 +27,8 @@ def non_uniform_nd(
         Triple of kernel functions (:math:`\tilde k`, :math:`\tilde L k`, :math:`\tilde L L^*k`)
     xs
         Neighbourhood. Shape ``(N, d)``.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
@@ -34,7 +37,7 @@ def non_uniform_nd(
     """
 
     K, LK, LLK = prepare_gram(ks, x, xs)
-    return unsymmetric(K=K, LK0=LK, LLK=LLK)
+    return unsymmetric(K=K, LK0=LK, LLK=LLK, noise_variance=noise_variance)
 
 
 def prepare_gram(
@@ -68,7 +71,11 @@ def prepare_gram(
 
 @jax.jit
 def unsymmetric(
-    *, K: ArrayLike, LK0: ArrayLike, LLK: ArrayLike
+    *,
+    K: ArrayLike,
+    LK0: ArrayLike,
+    LLK: ArrayLike,
+    noise_variance: float,
 ) -> Tuple[ArrayLike, ArrayLike]:
     r"""Unsymmetric collocation.
 
@@ -80,20 +87,22 @@ def unsymmetric(
         Gram matrix associated with :math:`L k`. Shape ``(n,)``.
     LLK
         Gram matrix associated with :math:`L L^* k`. Shape ``()``.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
-    weights = jnp.linalg.solve(K, LK0.T).T
+    weights = jnp.linalg.solve(K + noise_variance * jnp.eye(*K.shape), LK0.T).T
     unc_base = LLK - weights @ LK0.T
     return weights, unc_base
 
 
 @jax.jit
 def symmetric(
-    *, K: ArrayLike, LK1: ArrayLike, LLK: ArrayLike
+    *, K: ArrayLike, LK1: ArrayLike, LLK: ArrayLike, noise_variance: float
 ) -> Tuple[ArrayLike, ArrayLike]:
     r"""Symmetric collocation.
 
@@ -105,12 +114,14 @@ def symmetric(
         Gram matrix associated with :math:`L^* k`. Shape ``(n,)``.
     LLK
         Gram matrix associated with :math:`L L^* k`. Shape ``(n,n)``.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
-    weights = jnp.linalg.solve(LLK, LK1.T).T
+    weights = jnp.linalg.solve(LLK + noise_variance * jnp.eye(*LLK.shape), LK1.T).T
     unc_base = K - weights @ LK1.T
     return weights, unc_base

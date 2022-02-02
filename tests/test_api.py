@@ -10,24 +10,48 @@ from pnfindiff.utils import kernel_zoo
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
-def case_backward(kernel):
-    return pnfindiff.backward(order_derivative=1, order_method=2, dx=1.0, kernel=kernel)
+@pytest_cases.parametrize("noise_variance", [1.0, 0.0])
+def case_backward(kernel, noise_variance):
+    return pnfindiff.backward(
+        order_derivative=1,
+        order_method=2,
+        dx=1.0,
+        kernel=kernel,
+        noise_variance=noise_variance,
+    )
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
-def case_forward(kernel):
-    return pnfindiff.forward(order_derivative=1, order_method=2, dx=1.0, kernel=kernel)
+@pytest_cases.parametrize("noise_variance", [1.0, 0.0])
+def case_forward(kernel, noise_variance):
+    return pnfindiff.forward(
+        order_derivative=1,
+        order_method=2,
+        dx=1.0,
+        kernel=kernel,
+        noise_variance=noise_variance,
+    )
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
-def case_center(kernel):
-    return pnfindiff.central(order_derivative=1, order_method=2, dx=1.0, kernel=kernel)
+@pytest_cases.parametrize("noise_variance", [1.0, 0.0])
+def case_center(kernel, noise_variance):
+    return pnfindiff.central(
+        order_derivative=1,
+        order_method=2,
+        dx=1.0,
+        kernel=kernel,
+        noise_variance=noise_variance,
+    )
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
-def case_from_grid(kernel):
+@pytest_cases.parametrize("noise_variance", [1.0, 0.0])
+def case_from_grid(kernel, noise_variance):
     xs = jnp.arange(-2.0, 3.0)
-    scheme = pnfindiff.from_grid(order_derivative=1, xs=xs, kernel=kernel)
+    scheme = pnfindiff.from_grid(
+        order_derivative=1, xs=xs, kernel=kernel, noise_variance=noise_variance
+    )
     return scheme, xs
 
 
@@ -66,7 +90,7 @@ def test_central_coefficients_polynomial():
     L = autodiff.compose(autodiff.derivative, autodiff.derivative)
     ks = kernel_module.differentiate(k=k, L=L)
     coeffs, unc_base = collocation.non_uniform_nd(
-        x=jnp.array([x]), xs=xs[:, None], ks=ks
+        x=jnp.array([x]), xs=xs[:, None], ks=ks, noise_variance=0.0
     )
 
     assert jnp.allclose(coeffs, jnp.array([1.0, -2.0, 1.0]))
