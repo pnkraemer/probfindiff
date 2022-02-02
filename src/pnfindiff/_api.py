@@ -92,7 +92,7 @@ def backward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> 
         Finite difference coefficients and base uncertainty.
     """
     offset = -jnp.arange(order_derivative + order_method, step=1)
-    return from_grid(xs=offset * dx, order_derivative=order_derivative)
+    return from_grid(x=0.0, xs=offset * dx, order_derivative=order_derivative)
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
@@ -114,7 +114,7 @@ def forward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
         Finite difference coefficients and base uncertainty.
     """
     offset = jnp.arange(order_derivative + order_method, step=1)
-    return from_grid(xs=offset * dx, order_derivative=order_derivative)
+    return from_grid(x=0.0, xs=offset * dx, order_derivative=order_derivative)
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
@@ -138,11 +138,11 @@ def central(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
     num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
     num_side = num_central // 2
     offset = jnp.arange(-num_side, num_side + 1, step=1)
-    return from_grid(xs=offset * dx, order_derivative=order_derivative)
+    return from_grid(x=0.0, xs=offset * dx, order_derivative=order_derivative)
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative",))
-def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
+def from_grid(x, *, xs: ArrayLike, order_derivative: int = 1) -> Any:
     """Finite difference coefficients based on an array of offset indices.
 
     Parameters
@@ -164,7 +164,7 @@ def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
 
     ks = kernel.differentiate(k=k, L=L)
     weights, cov_marginal = collocation.non_uniform_nd(
-        x=xs[0].reshape((-1,)), xs=xs[:, None], ks=ks
+        x=x[..., None], xs=xs[..., None], ks=ks
     )
     scheme = FiniteDifferenceScheme(
         weights,
