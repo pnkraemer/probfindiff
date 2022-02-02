@@ -17,6 +17,7 @@ Like traditional finite difference formulas, but with modelling flexibility and 
    notebooks/getting_started/custom_grid
    notebooks/getting_started/kernel_models
    notebooks/getting_started/partial_derivatives
+   notebooks/getting_started/noisy_schemes
 
 
 .. toctree::
