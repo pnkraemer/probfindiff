@@ -83,7 +83,7 @@ def backward(
     dx: float,
     order_derivative: int = 1,
     order_method: int = 2,
-    kernel: Optional[KernelFunctionLike] = None
+    kernel: Optional[KernelFunctionLike] = None,
 ) -> Any:
     """Backward coefficients in 1d.
 
@@ -117,7 +117,7 @@ def forward(
     dx: float,
     order_derivative: int = 1,
     order_method: int = 2,
-    kernel: Optional[KernelFunctionLike] = None
+    kernel: Optional[KernelFunctionLike] = None,
 ) -> Any:
     """Forward coefficients in 1d.
 
@@ -151,7 +151,7 @@ def central(
     dx: float,
     order_derivative: int = 1,
     order_method: int = 2,
-    kernel: Optional[KernelFunctionLike] = None
+    kernel: Optional[KernelFunctionLike] = None,
 ) -> Any:
     """Central coefficients in 1d.
 
@@ -179,12 +179,16 @@ def central(
     return scheme, grid
 
 
+_DEFAULT_NOISE_VARIANCE = 1e-12
+
+
 @functools.partial(jax.jit, static_argnames=("order_derivative", "kernel"))
 def from_grid(
     *,
     xs: ArrayLike,
     order_derivative: int = 1,
-    kernel: Optional[KernelFunctionLike] = None
+    kernel: Optional[KernelFunctionLike] = None,
+    noise_variance: float = _DEFAULT_NOISE_VARIANCE,
 ) -> Any:
     """Finite difference coefficients based on an array of offset indices.
 
@@ -209,7 +213,10 @@ def from_grid(
 
     x = jnp.zeros_like(xs[0])
     weights, cov_marginal = collocation.non_uniform_nd(
-        x=x[..., None], xs=xs[..., None], ks=ks
+        x=x[..., None],
+        xs=xs[..., None],
+        ks=ks,
+        noise_variance=noise_variance,
     )
     scheme = FiniteDifferenceScheme(
         weights,

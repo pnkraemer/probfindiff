@@ -32,7 +32,9 @@ def fixture_Ks(ks, num_xs):
 def test_unsymmetric(Ks, num_xs):
 
     K, LK, LLK = Ks
-    weights, unc_base = collocation.unsymmetric(K=K, LK0=LK, LLK=LLK)
+    weights, unc_base = collocation.unsymmetric(
+        K=K, LK0=LK, LLK=LLK, noise_variance=0.1
+    )
 
     assert weights.shape == (num_xs, num_xs)
     assert unc_base.shape == (num_xs, num_xs)
@@ -42,7 +44,9 @@ def test_unsymmetric(Ks, num_xs):
 def test_symmetric(Ks, num_xs):
 
     K, LK, LLK = Ks
-    weights, unc_base = collocation.symmetric(K=K, LK1=LK.T, LLK=LLK)
+    weights, unc_base = collocation.symmetric(
+        K=K, LK1=LK.T, LLK=LLK, noise_variance=0.1
+    )
 
     assert weights.shape == (num_xs, num_xs)
     assert unc_base.shape == (num_xs, num_xs)
