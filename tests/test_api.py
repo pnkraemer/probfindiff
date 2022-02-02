@@ -35,8 +35,14 @@ def test_coeff_shapes_and_cov_pos(scheme, _):
     assert scheme.weights.ndim == 1
     assert scheme.covs_marginal.ndim == 0
     assert scheme.covs_marginal >= 0.0
-
     assert scheme.offset_indices.ndim == 1
+
+
+@pytest_cases.parametrize_with_cases("scheme, xs", cases=".")
+def test_differentiate(scheme, xs):
+    fx = jnp.sin(xs)
+    dfx_approx, _ = pnfindiff.differentiate(fx, scheme=scheme)
+    assert dfx_approx.shape == ()
 
 
 def test_central_coefficients_polynomial():
