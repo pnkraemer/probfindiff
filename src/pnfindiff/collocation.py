@@ -27,6 +27,8 @@ def non_uniform_nd(
         Triple of kernel functions (:math:`\tilde k`, :math:`\tilde L k`, :math:`\tilde L L^*k`)
     xs
         Neighbourhood. Shape ``(N, d)``.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
@@ -85,6 +87,8 @@ def unsymmetric(
         Gram matrix associated with :math:`L k`. Shape ``(n,)``.
     LLK
         Gram matrix associated with :math:`L L^* k`. Shape ``()``.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
@@ -110,6 +114,8 @@ def symmetric(
         Gram matrix associated with :math:`L^* k`. Shape ``(n,)``.
     LLK
         Gram matrix associated with :math:`L L^* k`. Shape ``(n,n)``.
+    noise_variance
+        Variance of the observation noise.
 
     Returns
     -------
