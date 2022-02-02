@@ -92,7 +92,9 @@ def backward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> 
         Finite difference coefficients and base uncertainty.
     """
     offset = -jnp.arange(order_derivative + order_method, step=1)
-    return from_grid(xs=offset * dx, order_derivative=order_derivative)
+    grid = offset * dx
+    scheme = from_grid(xs=grid, order_derivative=order_derivative)
+    return scheme, grid
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
@@ -114,7 +116,9 @@ def forward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
         Finite difference coefficients and base uncertainty.
     """
     offset = jnp.arange(order_derivative + order_method, step=1)
-    return from_grid(xs=offset * dx, order_derivative=order_derivative)
+    grid = offset * dx
+    scheme = from_grid(xs=grid, order_derivative=order_derivative)
+    return scheme, grid
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
@@ -138,7 +142,9 @@ def central(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
     num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
     num_side = num_central // 2
     offset = jnp.arange(-num_side, num_side + 1, step=1)
-    return from_grid(xs=offset * dx, order_derivative=order_derivative)
+    grid = offset * dx
+    scheme = from_grid(xs=grid, order_derivative=order_derivative)
+    return scheme, grid
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative",))
@@ -163,12 +169,13 @@ def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
     L = functools.reduce(autodiff.compose, [autodiff.derivative] * order_derivative)
 
     ks = kernel.differentiate(k=k, L=L)
+    x = jnp.zeros_like(xs[0])
     weights, cov_marginal = collocation.non_uniform_nd(
-        x=xs[0].reshape((-1,)), xs=xs[:, None], ks=ks
+        x=x[..., None], xs=xs[..., None], ks=ks
     )
     scheme = FiniteDifferenceScheme(
         weights,
         cov_marginal,
         order_derivative=order_derivative,
     )
-    return scheme, xs
+    return scheme

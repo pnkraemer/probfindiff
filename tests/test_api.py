@@ -20,7 +20,9 @@ def case_center():
 
 
 def case_from_grid():
-    return pnfindiff.from_grid(order_derivative=1, xs=jnp.arange(-2.0, 3.0))
+    xs = jnp.arange(-2.0, 3.0)
+    scheme = pnfindiff.from_grid(order_derivative=1, xs=xs)
+    return scheme, xs
 
 
 @pytest_cases.parametrize_with_cases("scheme, xs", cases=".")
@@ -31,10 +33,9 @@ def test_coeff_type(scheme, xs):
 
 
 @pytest_cases.parametrize_with_cases("scheme, _", cases=".")
-def test_coeff_shapes_and_cov_pos(scheme, _):
+def test_coeff_shapes(scheme, _):
     assert scheme.weights.ndim == 1
     assert scheme.covs_marginal.ndim == 0
-    assert scheme.covs_marginal >= 0.0
 
 
 @pytest_cases.parametrize_with_cases("scheme, xs", cases=".")
