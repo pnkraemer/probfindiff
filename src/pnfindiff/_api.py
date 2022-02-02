@@ -75,7 +75,7 @@ def differentiate_along_axis(
     return jnp.apply_along_axis(fd, axis=axis, arr=fx)
 
 
-_DEFAULT_NOISE_VARIANCE = 1e-12
+_DEFAULT_NOISE_VARIANCE = 1e-14
 """We might change the defaults again soon, so we encapsulate it into a variable..."""
 
 
