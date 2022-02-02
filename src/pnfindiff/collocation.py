@@ -122,6 +122,6 @@ def symmetric(
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
-    weights = jnp.linalg.solve(LLK + noise_variance * jnp.eye(*K.shape), LK1.T).T
+    weights = jnp.linalg.solve(LLK + noise_variance * jnp.eye(*LLK.shape), LK1.T).T
     unc_base = K - weights @ LK1.T
     return weights, unc_base
