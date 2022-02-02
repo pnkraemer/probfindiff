@@ -93,7 +93,7 @@ def backward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> 
     """
     offset = -jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
-    scheme = from_grid(x=0.0, xs=grid, order_derivative=order_derivative)
+    scheme = from_grid(xs=grid, order_derivative=order_derivative)
     return scheme, grid
 
 
@@ -117,7 +117,7 @@ def forward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
     """
     offset = jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
-    scheme = from_grid(x=0.0, xs=grid, order_derivative=order_derivative)
+    scheme = from_grid(xs=grid, order_derivative=order_derivative)
     return scheme, grid
 
 
@@ -143,12 +143,12 @@ def central(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
     num_side = num_central // 2
     offset = jnp.arange(-num_side, num_side + 1, step=1)
     grid = offset * dx
-    scheme = from_grid(x=0.0, xs=grid, order_derivative=order_derivative)
+    scheme = from_grid(xs=grid, order_derivative=order_derivative)
     return scheme, grid
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative",))
-def from_grid(x, *, xs: ArrayLike, order_derivative: int = 1) -> Any:
+def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
     """Finite difference coefficients based on an array of offset indices.
 
     Parameters
@@ -169,6 +169,7 @@ def from_grid(x, *, xs: ArrayLike, order_derivative: int = 1) -> Any:
     L = functools.reduce(autodiff.compose, [autodiff.derivative] * order_derivative)
 
     ks = kernel.differentiate(k=k, L=L)
+    x = jnp.zeros_like(xs[0])
     weights, cov_marginal = collocation.non_uniform_nd(
         x=x[..., None], xs=xs[..., None], ks=ks
     )
