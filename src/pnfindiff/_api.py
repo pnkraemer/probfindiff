@@ -3,7 +3,7 @@
 import functools
 from collections import namedtuple
 from functools import partial
-from typing import Any
+from typing import Any, Callable
 
 import jax
 import jax.numpy as jnp
@@ -159,7 +159,9 @@ def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
     :
         Finite difference coefficients and base uncertainty.
     """
-    k = functools.partial(kernel_zoo.polynomial, p=jnp.ones((xs.shape[0],)))
+    k = functools.partial(
+        kernel_zoo.polynomial, p=jnp.ones((xs.shape[0],))
+    )  # type: Callable[[ArrayLike, ArrayLike], ArrayLike]
     L = functools.reduce(autodiff.compose, [autodiff.derivative] * order_derivative)
 
     ks = kernel.differentiate(k=k, L=L)

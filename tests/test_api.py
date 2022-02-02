@@ -1,10 +1,9 @@
 """Tests for the top-level API."""
 import jax.numpy as jnp
-import pytest
 import pytest_cases
 
 import pnfindiff
-from pnfindiff import collocation, schemes
+from pnfindiff import collocation
 from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
