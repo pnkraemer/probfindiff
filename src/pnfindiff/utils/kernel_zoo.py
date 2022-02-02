@@ -40,13 +40,20 @@ def exponentiated_quadratic(
 
 @partial(jax.jit, static_argnames=("scale", "order", "bias"))
 def polynomial(
-    x: Any, y: Any, *, order: int = 2, scale: float = 1.0, bias: float = 1.0
+    x: Any,
+    y: Any,
+    *,
+    order: int = 2,
+    scale_in: float = 1.0,
+    bias_in: float = 1.0,
+    scale_out: float = 1.0,
+    bias_out: float = 1.0
 ) -> Any:
     r"""Polynomial kernels.
 
     The kernel is defined as
 
-    .. math:: k(x,y) = (a \langle x, y\rangle + b)^c
+    .. math:: k(x,y) = a_\text{out}(a_\text{in} \langle x, y\rangle + b_\text{in})^c + b_\text{out}
 
     Parameters
     ----------
@@ -66,4 +73,4 @@ def polynomial(
     :
         Evaluation :math:`k(x,y)`.
     """
-    return (scale * x.dot(y) + bias) ** order
+    return scale_out * (scale_in * x.dot(y) * bias_in) ** order + bias_out
