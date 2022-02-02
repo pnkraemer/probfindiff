@@ -43,8 +43,8 @@ def differentiate(fx: ArrayLike, *, scheme: FiniteDifferenceScheme) -> ArrayLike
     :
         Finite difference approximation and the corresponding base-uncertainty. Shapes `` (n,), (n,)``.
     """
-    weights, unc_base, indices, *_ = scheme
-    dfx = jnp.einsum("nk,nk->n", weights, fx[indices])
+    weights, unc_base, *_ = scheme
+    dfx = jnp.einsum("...k,...k->...", weights, fx)
     return dfx, unc_base
 
 
