@@ -12,7 +12,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   pnfindiff/schemes
    pnfindiff/collocation
 
 Subpackages
