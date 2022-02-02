@@ -55,7 +55,7 @@ def derivative_higher(
         Tuple ``((a, b), c)`` of a tuple ``(a, b)`` containing the finite difference coefficients ``a`` and the base uncertainty ``b``,
         and the indices ``c`` of the neighbours of each point in the point set.
     """
-    neighbours, indices = _neighbours(num=num, xs=xs)
+    neighbours, _ = _neighbours(num=num, xs=xs)
 
     ks = kernel.differentiate(
         k=kernel_zoo.exponentiated_quadratic,
