@@ -34,14 +34,7 @@ def case_differentiate_2():
 
 
 def case_polynomial_builtin():
-    k = functools.partial(
-        kernel_zoo.polynomial,
-        order=3,
-        bias_in=2,
-        bias_out=1.0,
-        scale_in=2.0,
-        scale_out=1.0,
-    )
+    k = functools.partial(kernel_zoo.polynomial, p=jnp.ones((3,)))
     return kernel.batch_gram(k)[0]
 
 

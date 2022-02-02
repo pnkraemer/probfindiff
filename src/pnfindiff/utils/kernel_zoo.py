@@ -2,16 +2,17 @@
 
 
 from functools import partial
-from typing import Any
 
 import jax
 import jax.numpy as jnp
 
+from pnfindiff.typing import ArrayLike
+
 
 @jax.jit
 def exponentiated_quadratic(
-    x: Any, y: Any, input_scale: float = 1.0, output_scale: float = 1.0
-) -> Any:
+    x: ArrayLike, y: ArrayLike, input_scale: float = 1.0, output_scale: float = 1.0
+) -> ArrayLike:
     r"""Exponentiated quadratic kernel.
 
     The kernel is defined as
@@ -40,20 +41,17 @@ def exponentiated_quadratic(
 
 @partial(jax.jit, static_argnames=("scale", "order", "bias"))
 def polynomial(
-    x: Any,
-    y: Any,
+    x: ArrayLike,
+    y: ArrayLike,
     *,
-    order: int = 2,
-    scale_in: float = 1.0,
-    bias_in: float = 1.0,
-    scale_out: float = 1.0,
-    bias_out: float = 1.0
-) -> Any:
+    p: ArrayLike,
+) -> ArrayLike:
     r"""Polynomial kernels.
 
     The kernel is defined as
 
-    .. math:: k(x,y) = a_\text{out}(a_\text{in} \langle x, y\rangle + b_\text{in})^c + b_\text{out}
+    .. math::
+        k(x,y) = p[0]*\langle x, y\rangle^(N-1) + p[1]*\langle x, y\rangle^(N-2) + ... + p[N-2]*\langle x, y\rangle + p[N-1]
 
     Parameters
     ----------
@@ -61,16 +59,12 @@ def polynomial(
         Input variable.
     y
         Input variable.
-    scale
-        Scale :math:`a`.
-    bias
-        Bias :math:`b`.
-    order
-        Order :math:`c`.
+    p
+        Coeficients of the polynomial
 
     Returns
     -------
     :
         Evaluation :math:`k(x,y)`.
     """
-    return scale_out * (scale_in * x.dot(y) * bias_in) ** order + bias_out
+    return jnp.polyval(p, jnp.dot(x, y)) + 1
