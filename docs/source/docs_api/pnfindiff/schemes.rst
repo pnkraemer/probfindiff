@@ -1,7 +1,7 @@
-pnfindiff.coefficients
+pnfindiff.schemes
 =============================
 
-.. automodule:: pnfindiff.coefficients
+.. automodule:: pnfindiff.schemes
    :members:
    :undoc-members:
    :show-inheritance:

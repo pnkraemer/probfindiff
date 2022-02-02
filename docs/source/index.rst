@@ -13,6 +13,7 @@ Like traditional finite difference formulas, but with modelling flexibility and 
    :maxdepth: 1
    :caption: Getting started
 
+   notebooks/getting_started/quickstart
    notebooks/getting_started/basics
 
 

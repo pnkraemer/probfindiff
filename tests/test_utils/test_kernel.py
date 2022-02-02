@@ -20,21 +20,21 @@ def case_exponentiated_quadratic_builtin():
 
 def case_differentiate_0():
     k = lambda x, y: (x - y).dot(x - y)
-    return kernel.differentiate(k, L=autodiff.deriv_scalar)[0]
+    return kernel.differentiate(k, L=autodiff.derivative)[0]
 
 
 def case_differentiate_1():
     k = lambda x, y: (x - y).dot(x - y)
-    return kernel.differentiate(k, L=autodiff.deriv_scalar)[1]
+    return kernel.differentiate(k, L=autodiff.derivative)[1]
 
 
 def case_differentiate_2():
     k = lambda x, y: (x - y).dot(x - y)
-    return kernel.differentiate(k, L=autodiff.deriv_scalar)[2]
+    return kernel.differentiate(k, L=autodiff.derivative)[2]
 
 
 def case_polynomial_builtin():
-    k = functools.partial(kernel_zoo.polynomial, order=3, bias=2)
+    k = functools.partial(kernel_zoo.polynomial, p=jnp.ones((3,)))
     return kernel.batch_gram(k)[0]
 
 

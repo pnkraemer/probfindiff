@@ -1,73 +1,19 @@
-"""Finite difference coefficients."""
+"""Fancy finite difference coefficients."""
 
 from functools import partial, reduce
 from typing import Callable, Tuple
 
 import jax
-import jax.numpy as jnp
 import scipy.spatial
 
+import pnfindiff
 from pnfindiff import collocation
 from pnfindiff.typing import ArrayLike
 
 from .utils import autodiff, kernel, kernel_zoo
 
 
-@jax.jit
-def apply(
-    f: ArrayLike, *, coeffs: Tuple[ArrayLike, ArrayLike], indices: ArrayLike
-) -> ArrayLike:
-    """Apply a finite difference scheme to a vector of function evaluations.
-
-    Parameters
-    ----------
-    f
-        Array of function evaluated to be differentiated numerically. Shape ``(n,)``.
-    coeffs
-        PN finite difference coefficients. Shapes `` (n,k), (n,)``.
-    indices
-        Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
-
-
-    Returns
-    -------
-    :
-        Finite difference approximation and the corresponding base-uncertainty. Shapes `` (n,), (n,)``.
-    """
-    weights, unc_base = coeffs
-    dfx = jnp.einsum("nk,nk->n", weights, f[indices])
-    return dfx, unc_base
-
-
-def apply_along_axis(
-    f: ArrayLike, *, axis: int, coeffs: Tuple[ArrayLike, ArrayLike], indices: ArrayLike
-) -> ArrayLike:
-    """Apply a finite difference scheme along a specified axis.
-
-    Parameters
-    ----------
-    f
-        Array of function evaluated to be differentiated numerically. Shape ``(..., n, ...)``.
-    axis
-        Axis along which the scheme should be applied.
-    coeffs
-        PN finite difference coefficients. Shapes `` (n,k), (n,)``.
-    indices
-        Indices of the neighbours that shall be used for each derivative. Shape ``(n,k)``.
-
-
-    Returns
-    -------
-    :
-        Finite difference approximation and the corresponding base-uncertainty. Shapes `` (..., n, ...), (n,)``.
-    """
-    fd = partial(apply, coeffs=coeffs, indices=indices)
-    return jnp.apply_along_axis(fd, axis=axis, arr=f)
-
-
-def derivative(
-    *, xs: ArrayLike, num: int = 2
-) -> Tuple[Tuple[ArrayLike, ArrayLike], ArrayLike]:
+def derivative(*, xs: ArrayLike, num: int = 2) -> pnfindiff.FiniteDifferenceScheme:
     """Discretised first-order derivative.
 
     Parameters
@@ -90,7 +36,7 @@ def derivative(
 
 def derivative_higher(
     *, xs: ArrayLike, deriv: int = 1, num: int = 2
-) -> Tuple[Tuple[ArrayLike, ArrayLike], ArrayLike]:
+) -> pnfindiff.FiniteDifferenceScheme:
     """Discretised higher-order derivative.
 
     Parameters
@@ -113,13 +59,15 @@ def derivative_higher(
 
     ks = kernel.differentiate(
         k=kernel_zoo.exponentiated_quadratic,
-        L=reduce(autodiff.compose, [autodiff.deriv_scalar] * deriv),
+        L=reduce(autodiff.compose, [autodiff.derivative] * deriv),
     )
     coeff_fun_batched = jax.jit(
         jax.vmap(partial(collocation.non_uniform_nd, ks=ks))
     )  # type: Callable[..., Tuple[ArrayLike, ArrayLike]]
     coeffs = coeff_fun_batched(x=xs[..., None], xs=neighbours[..., None])
-    return coeffs, indices
+    return pnfindiff.FiniteDifferenceScheme(
+        *coeffs, indices, order_method=xs.shape[0] - deriv, order_derivative=deriv
+    )
 
 
 def _neighbours(*, num: int, xs: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
