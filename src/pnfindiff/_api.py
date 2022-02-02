@@ -17,8 +17,6 @@ FiniteDifferenceScheme = namedtuple(
     (
         "weights",
         "covs_marginal",
-        "offset_indices",
-        "order_method",
         "order_derivative",
     ),
 )
@@ -173,6 +171,5 @@ def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
         cov_marginal,
         offset_indices=jnp.arange(xs.shape[0] + 1),
         order_derivative=order_derivative,
-        order_method=len(xs),
     )
     return scheme, xs
