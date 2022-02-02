@@ -10,18 +10,39 @@ from pnfindiff.utils import kernel_zoo
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
-def case_backward(kernel):
-    return pnfindiff.backward(order_derivative=1, order_method=2, dx=1.0, kernel=kernel)
+@pytest_cases.parametrize("noise_variance", [1.0, 0.0])
+def case_backward(kernel, noise_variance):
+    return pnfindiff.backward(
+        order_derivative=1,
+        order_method=2,
+        dx=1.0,
+        kernel=kernel,
+        noise_variance=noise_variance,
+    )
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
-def case_forward(kernel):
-    return pnfindiff.forward(order_derivative=1, order_method=2, dx=1.0, kernel=kernel)
+@pytest_cases.parametrize("noise_variance", [1.0, 0.0])
+def case_forward(kernel, noise_variance):
+    return pnfindiff.forward(
+        order_derivative=1,
+        order_method=2,
+        dx=1.0,
+        kernel=kernel,
+        noise_variance=noise_variance,
+    )
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
-def case_center(kernel):
-    return pnfindiff.central(order_derivative=1, order_method=2, dx=1.0, kernel=kernel)
+@pytest_cases.parametrize("noise_variance", [1.0, 0.0])
+def case_center(kernel, noise_variance):
+    return pnfindiff.central(
+        order_derivative=1,
+        order_method=2,
+        dx=1.0,
+        kernel=kernel,
+        noise_variance=noise_variance,
+    )
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
