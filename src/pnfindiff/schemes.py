@@ -65,9 +65,7 @@ def derivative_higher(
         jax.vmap(partial(collocation.non_uniform_nd, ks=ks))
     )  # type: Callable[..., Tuple[ArrayLike, ArrayLike]]
     coeffs = coeff_fun_batched(x=xs[..., None], xs=neighbours[..., None])
-    return pnfindiff.FiniteDifferenceScheme(
-        *coeffs, indices, order_method=xs.shape[0] - deriv, order_derivative=deriv
-    )
+    return pnfindiff.FiniteDifferenceScheme(*coeffs, order_derivative=deriv)
 
 
 def _neighbours(*, num: int, xs: ArrayLike) -> Tuple[ArrayLike, ArrayLike]:
