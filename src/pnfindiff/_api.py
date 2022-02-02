@@ -3,7 +3,7 @@
 import functools
 from collections import namedtuple
 from functools import partial
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 import jax
 import jax.numpy as jnp
@@ -220,5 +220,4 @@ def from_grid(
 
 
 def _default_kernel(*, min_order: int) -> KernelFunctionLike:
-    k = functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
-    return k
+    return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))

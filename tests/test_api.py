@@ -4,7 +4,9 @@ import pytest_cases
 
 import pnfindiff
 from pnfindiff import collocation
-from pnfindiff.utils import autodiff, kernel, kernel_zoo
+from pnfindiff.utils import autodiff
+from pnfindiff.utils import kernel as kernel_module
+from pnfindiff.utils import kernel_zoo
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
@@ -55,7 +57,7 @@ def test_central_coefficients_polynomial():
 
     k = lambda x, y: kernel_zoo.polynomial(x, y, p=jnp.ones((3,)))
     L = autodiff.compose(autodiff.derivative, autodiff.derivative)
-    ks = kernel.differentiate(k=k, L=L)
+    ks = kernel_module.differentiate(k=k, L=L)
     coeffs, unc_base = collocation.non_uniform_nd(
         x=jnp.array([x]), xs=xs[:, None], ks=ks
     )
