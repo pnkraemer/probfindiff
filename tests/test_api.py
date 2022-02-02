@@ -51,6 +51,13 @@ def test_differentiate(scheme, xs):
     assert dfx_approx.shape == ()
 
 
+@pytest_cases.parametrize_with_cases("scheme, xs", cases=".")
+def test_differentiate_along_axis(scheme, xs):
+    fx = jnp.sin(xs)[:, None] * jnp.cos(xs)[None, :]
+    dfx_approx, _ = pnfindiff.differentiate_along_axis(fx, axis=1, scheme=scheme)
+    assert dfx_approx.ndim == 1
+
+
 def test_central_coefficients_polynomial():
 
     x, xs = jnp.array(0.0), jnp.array([-1.0, 0.0, 1.0])
