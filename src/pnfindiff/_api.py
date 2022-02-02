@@ -169,7 +169,6 @@ def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
     scheme = FiniteDifferenceScheme(
         weights,
         cov_marginal,
-        offset_indices=jnp.arange(xs.shape[0] + 1),
         order_derivative=order_derivative,
     )
     return scheme, xs
