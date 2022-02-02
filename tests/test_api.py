@@ -7,21 +7,25 @@ from pnfindiff import collocation
 from pnfindiff.utils import autodiff, kernel, kernel_zoo
 
 
-def case_backward():
-    return pnfindiff.backward(order_derivative=1, order_method=2, dx=1.0)
+@pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
+def case_backward(kernel):
+    return pnfindiff.backward(order_derivative=1, order_method=2, dx=1.0, kernel=kernel)
 
 
-def case_forward():
-    return pnfindiff.forward(order_derivative=1, order_method=2, dx=1.0)
+@pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
+def case_forward(kernel):
+    return pnfindiff.forward(order_derivative=1, order_method=2, dx=1.0, kernel=kernel)
 
 
-def case_center():
-    return pnfindiff.central(order_derivative=1, order_method=2, dx=1.0)
+@pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
+def case_center(kernel):
+    return pnfindiff.central(order_derivative=1, order_method=2, dx=1.0, kernel=kernel)
 
 
-def case_from_grid():
+@pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
+def case_from_grid(kernel):
     xs = jnp.arange(-2.0, 3.0)
-    scheme = pnfindiff.from_grid(order_derivative=1, xs=xs)
+    scheme = pnfindiff.from_grid(order_derivative=1, xs=xs, kernel=kernel)
     return scheme, xs
 
 
