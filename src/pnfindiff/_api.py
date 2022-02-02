@@ -137,8 +137,9 @@ def central(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
     :
         Finite difference coefficients and base uncertainty.
     """
-    num = (order_derivative + order_method) // 2
-    offset = jnp.arange(-num, num + 1, step=1)
+    num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
+    num_side = num_central // 2
+    offset = jnp.arange(-num_side, num_side + 1, step=1)
     return from_grid(xs=offset * dx, order_derivative=order_derivative)
 
 
@@ -158,7 +159,7 @@ def from_grid(*, xs: ArrayLike, order_derivative: int = 1) -> Any:
     :
         Finite difference coefficients and base uncertainty.
     """
-    k = kernel_zoo.exponentiated_quadratic
+    k = functools.partial(kernel_zoo.polynomial, p=jnp.ones((xs.shape[0],)))
     L = functools.reduce(autodiff.compose, [autodiff.derivative] * order_derivative)
 
     ks = kernel.differentiate(k=k, L=L)

@@ -35,7 +35,7 @@ def test_coeff_type(scheme, xs):
 def test_coeff_shapes_and_cov_pos(scheme, _):
     assert scheme.weights.ndim == 1
     assert scheme.covs_marginal.ndim == 0
-    assert scheme.covs_marginal > 0.0
+    assert scheme.covs_marginal >= 0.0
 
     assert scheme.offset_indices.ndim == 1
 
@@ -44,7 +44,7 @@ def test_central_coefficients_polynomial():
 
     x, xs = jnp.array(0.0), jnp.array([-1.0, 0.0, 1.0])
 
-    k = lambda x, y: kernel_zoo.polynomial(x, y, order=3)
+    k = lambda x, y: kernel_zoo.polynomial(x, y, p=jnp.ones((3,)))
     L = autodiff.compose(autodiff.derivative, autodiff.derivative)
     ks = kernel.differentiate(k=k, L=L)
     coeffs, unc_base = collocation.non_uniform_nd(
