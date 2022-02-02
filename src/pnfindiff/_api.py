@@ -92,7 +92,9 @@ def backward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> 
         Finite difference coefficients and base uncertainty.
     """
     offset = -jnp.arange(order_derivative + order_method, step=1)
-    return from_grid(x=0.0, xs=offset * dx, order_derivative=order_derivative)
+    grid = offset * dx
+    scheme = from_grid(x=0.0, xs=grid, order_derivative=order_derivative)
+    return scheme, grid
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
@@ -114,7 +116,9 @@ def forward(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
         Finite difference coefficients and base uncertainty.
     """
     offset = jnp.arange(order_derivative + order_method, step=1)
-    return from_grid(x=0.0, xs=offset * dx, order_derivative=order_derivative)
+    grid = offset * dx
+    scheme = from_grid(x=0.0, xs=grid, order_derivative=order_derivative)
+    return scheme, grid
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
@@ -138,7 +142,9 @@ def central(*, dx: float, order_derivative: int = 1, order_method: int = 2) -> A
     num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
     num_side = num_central // 2
     offset = jnp.arange(-num_side, num_side + 1, step=1)
-    return from_grid(x=0.0, xs=offset * dx, order_derivative=order_derivative)
+    grid = offset * dx
+    scheme = from_grid(x=0.0, xs=grid, order_derivative=order_derivative)
+    return scheme, grid
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative",))
@@ -171,4 +177,4 @@ def from_grid(x, *, xs: ArrayLike, order_derivative: int = 1) -> Any:
         cov_marginal,
         order_derivative=order_derivative,
     )
-    return scheme, xs
+    return scheme

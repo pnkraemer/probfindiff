@@ -20,7 +20,9 @@ def case_center():
 
 
 def case_from_grid():
-    return pnfindiff.from_grid(x=-1.0, order_derivative=1, xs=jnp.arange(-2.0, 3.0))
+    xs = jnp.arange(-2.0, 3.0)
+    scheme = pnfindiff.from_grid(x=-1.0, order_derivative=1, xs=xs)
+    return scheme, xs
 
 
 @pytest_cases.parametrize_with_cases("scheme, xs", cases=".")
