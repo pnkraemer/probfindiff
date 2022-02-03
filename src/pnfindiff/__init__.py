@@ -1,6 +1,6 @@
 """Probabilistic numerical finite difference methods."""
 
-from ._api import (
+from ._toplevel_api import (
     FiniteDifferenceScheme,
     backward,
     central,
