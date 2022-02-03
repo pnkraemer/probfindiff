@@ -1,4 +1,5 @@
 """Tests for the top-level API."""
+import jax
 import jax.numpy as jnp
 import pytest_cases
 
@@ -95,3 +96,29 @@ def test_central_coefficients_polynomial():
 
     assert jnp.allclose(coeffs, jnp.array([1.0, -2.0, 1.0]))
     assert jnp.allclose(unc_base, 0.0)
+
+
+def test_gradient():
+
+    # A simple function R^3 -> R
+    f = lambda x: x[0] + x[1]
+
+    # Some point x in R^3
+    x = jnp.array([1.0, 2.0])
+    assert f(x).shape == ()
+
+    # The gradient takes values in R^d
+    df = jax.grad(f)
+    assert df(x).shape == (2,)
+
+    scheme, xs = pnfindiff.central(dx=0.1)
+    xs_around_x = x[..., None] + xs[None, ...]
+    assert xs_around_x.shape == (2, 3)
+    xs_promoted = jnp.stack(jnp.meshgrid(*xs_around_x))
+    assert xs_promoted.shape == (2, 2, 3, 3)
+
+    fx = f(xs_promoted)
+    assert fx.shape == (2, 3, 3)
+    dfx, _ = pnfindiff.differentiate_along_axis(fx, axis=(-2, -1), scheme=scheme)
+    assert dfx.shape == df(x).shape == (2,)
+    assert jnp.allclose(dfx, df(x), rtol=1e-3, atol=1e-3)
