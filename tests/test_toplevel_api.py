@@ -111,7 +111,7 @@ def test_gradient2d():
     df = jax.grad(f)
     assert df(x).shape == (d,)
 
-    scheme, xs = pnfindiff.gradient(*pnfindiff.central(dx=0.1), ndim=2)
+    scheme, xs = pnfindiff.gradient(*pnfindiff.central(dx=0.1), dim=2)
     xs_shifted = x[..., None] + xs
     dfx, _ = pnfindiff.differentiate(f(xs_shifted), scheme=scheme)
 
@@ -132,7 +132,7 @@ def test_gradient3d():
     df = jax.grad(f)
     assert df(x).shape == (d,)
 
-    scheme, xs = pnfindiff.gradient(*pnfindiff.central(dx=0.1, order_method=3), ndim=3)
+    scheme, xs = pnfindiff.gradient(*pnfindiff.central(dx=0.1, order_method=3), dim=3)
     xs_shifted = x[..., None] + xs
     dfx, _ = pnfindiff.differentiate(f(xs_shifted), scheme=scheme)
 
