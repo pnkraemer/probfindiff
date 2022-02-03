@@ -257,8 +257,7 @@ def _default_kernel(*, min_order: int) -> KernelFunctionLike:
     return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
 
 
-def gradient(scheme, xs):
-    x_vary = jnp.stack((xs, jnp.zeros_like(xs)), axis=0)
-    y_vary = jnp.stack((jnp.zeros_like(xs), xs), axis=0)
-    pt = jnp.stack((x_vary, y_vary), axis=0)
+def gradient(scheme, xs, ndim):
+    n = xs.shape[0]
+    pt = (jnp.eye(ndim, n)[None, ...] * xs.reshape((-1, 1))[None, ..., None])[0].T
     return scheme, pt

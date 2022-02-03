@@ -98,7 +98,7 @@ def test_central_coefficients_polynomial():
     assert jnp.allclose(unc_base, 0.0)
 
 
-def test_gradient():
+def test_gradient2d():
 
     # A simple function R^d -> R
     f, d = lambda z: (z[0] + 1) ** 2 + (z[1] - 1) ** 2, 2
@@ -111,7 +111,28 @@ def test_gradient():
     df = jax.grad(f)
     assert df(x).shape == (d,)
 
-    scheme, xs = pnfindiff.gradient(*pnfindiff.central(dx=0.1))
+    scheme, xs = pnfindiff.gradient(*pnfindiff.central(dx=0.1), ndim=2)
+    xs_shifted = x[..., None] + xs
+    dfx, _ = pnfindiff.differentiate(f(xs_shifted), scheme=scheme)
+
+    assert dfx.shape == df(x).shape == (d,)
+    assert jnp.allclose(dfx, df(x), rtol=1e-4, atol=1e-4)
+
+
+def test_gradient3d():
+
+    # A simple function R^d -> R
+    f, d = lambda z: (z[0] + 1) ** 2 + (z[1] - 1) ** 2 + (z[2] - 1) ** 2, 3
+
+    # Some point x in R^d
+    x = jnp.array([1.0, 2.0, 3.0])
+    assert f(x).shape == ()
+
+    # The gradient takes values in R^d
+    df = jax.grad(f)
+    assert df(x).shape == (d,)
+
+    scheme, xs = pnfindiff.gradient(*pnfindiff.central(dx=0.1, order_method=3), ndim=3)
     xs_shifted = x[..., None] + xs
     dfx, _ = pnfindiff.differentiate(f(xs_shifted), scheme=scheme)
 
