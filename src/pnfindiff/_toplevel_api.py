@@ -257,6 +257,7 @@ def _default_kernel(*, min_order: int) -> KernelFunctionLike:
     return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
 
 
+@functools.partial(jax.jit, static_argnames=("shape_input",))
 def multivariate(
     scheme_1d: FiniteDifferenceScheme, xs_1d: ArrayLike, shape_input: Tuple[int]
 ) -> Tuple[FiniteDifferenceScheme, ArrayLike]:
@@ -318,6 +319,7 @@ def multivariate(
     return scheme_1d, xs_full
 
 
+@functools.partial(jax.jit, static_argnames=("shape_input",))
 def _stencils_for_all_partial_derivatives(
     *, stencil_1d: ArrayLike, shape_input: Tuple[int]
 ) -> ArrayLike:
@@ -382,6 +384,13 @@ def _stencils_for_all_partial_derivatives(
     )
 
 
+@functools.partial(
+    jax.jit,
+    static_argnames=(
+        "dimension",
+        "i",
+    ),
+)
 def _stencil_for_ith_partial_derivative(
     *, stencil_1d_as_row_matrix: ArrayLike, i: int, dimension: int
 ) -> ArrayLike:
