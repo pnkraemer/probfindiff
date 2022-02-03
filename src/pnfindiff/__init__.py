@@ -8,6 +8,7 @@ from ._toplevel_api import (
     differentiate_along_axis,
     forward,
     from_grid,
+    gradient,
 )
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "backward",
     "central",
     "from_grid",
+    "gradient",
 ]
