@@ -3,7 +3,7 @@
 import functools
 from collections import namedtuple
 from functools import partial
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 import jax
 import jax.numpy as jnp
@@ -257,9 +257,10 @@ def _default_kernel(*, min_order: int) -> KernelFunctionLike:
     return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
 
 
-def multivariate(scheme_1d, xs_1d, shape_input=()):
-    """Turn a univariate finite-difference scheme into a multivariate scheme.
-
+def multivariate(
+    scheme_1d: FiniteDifferenceScheme, xs_1d: ArrayLike, shape_input: Tuple[int]
+) -> Tuple[FiniteDifferenceScheme, ArrayLike]:
+    r"""Turn a univariate finite-difference scheme into a multivariate scheme.
 
     Parameters
     ----------
@@ -284,7 +285,7 @@ def multivariate(scheme_1d, xs_1d, shape_input=()):
         containing `c` `(n,)` shaped inputs to the function.
         (The final array-dimension ``c`` describes the length of the provided stencil;
         there are ``c`` elements in ``stencil_1d``.)
-        **To evaluate your function correctly on the new grid,
+        To evaluate your function correctly on the new grid,
         outer-loop over the zeroth index, and inner loop over the third index:
         ``for xs_per_deriv in xs: for fun_input in xs_per_deriv.T: f(fun_input)``
         and stack accordingly, i.e., so that the resulting function evaluation
@@ -314,19 +315,12 @@ def multivariate(scheme_1d, xs_1d, shape_input=()):
         shape_input=shape_input, stencil_1d=xs_1d
     )
 
-    # This is not a gradient, but something like an outer product, right?
-    # It would still work equally well if scheme.derivative_order was > 1.
-    # The functionality is still useful, but maybe it should not be called "gradient".
-
-    # And what if we want to compute different elements of the gradient
-    # with different orders.
-    # A) is this something that people might want? Does it make sense?
-    # B) how would one do it efficiently?
-    # Provided the shapes of the 'xs' match, it would still be efficient.
     return scheme_1d, xs_full
 
 
-def _stencils_for_all_partial_derivatives(*, stencil_1d, shape_input):
+def _stencils_for_all_partial_derivatives(
+    *, stencil_1d: ArrayLike, shape_input: Tuple[int]
+) -> ArrayLike:
     """Compute the stencils for all partial derivatives.
 
     Parameters
@@ -349,7 +343,6 @@ def _stencils_for_all_partial_derivatives(*, stencil_1d, shape_input):
         containing `c` `(n,)` shaped inputs to the function.
         (The final array-dimension ``c`` describes the length of the provided stencil;
         there are ``c`` elements in ``stencil_1d``.)
-
 
     Examples
     --------
@@ -389,7 +382,9 @@ def _stencils_for_all_partial_derivatives(*, stencil_1d, shape_input):
     )
 
 
-def _stencil_for_ith_partial_derivative(*, stencil_1d_as_row_matrix, i, dimension):
+def _stencil_for_ith_partial_derivative(
+    *, stencil_1d_as_row_matrix: ArrayLike, i: int, dimension: int
+) -> ArrayLike:
     """Compute the stencil for the ith partial derivative.
 
     This is done by padding the 1d stencil into zeros according to the index ``i`` and the spatial dimension.
