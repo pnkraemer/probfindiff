@@ -257,12 +257,61 @@ def _default_kernel(*, min_order: int) -> KernelFunctionLike:
     return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
 
 
-def gradient(scheme, xs, shape_input=()):
-    """Turn a derivative-scheme into a gradient-scheme."""
+def multivariate(scheme_1d, xs_1d, shape_input=()):
+    """Turn a univariate finite-difference scheme into a multivariate scheme.
+
+
+    Parameters
+    ----------
+    scheme_1d
+        Input finite-difference scheme in 1d.
+    xs_1d
+        Input finite-difference grid/stencil in 1d.
+    shape_input
+        Input dimension of the to-be-differentiated function as a shape-tuple.
+        If the goal is the gradient of an `n`-dimensional function, ``shape_input=(n,)``.
+
+    Returns
+    -------
+    :
+        Tuple of a new scheme and a new grid.
+        The new scheme consists of a 1d set of weights.
+        The new grid has shape ``(n, n, c)``.
+        The first two array-dimensions are determined by the ``shape_input`` (``n``).
+        The first one refers to each partial derivative index.
+        The second one refers to the *dimension of each nd-stencil-element*.
+        In other words, ``output[0, :, :]`` is an ``(n, c)``-shaped array
+        containing `c` `(n,)` shaped inputs to the function.
+        (The final array-dimension ``c`` describes the length of the provided stencil;
+        there are ``c`` elements in ``stencil_1d``.)
+        **To evaluate your function correctly on the new grid,
+        outer-loop over the zeroth index, and inner loop over the third index:
+        ``for xs_per_deriv in xs: for fun_input in xs_per_deriv.T: f(fun_input)``
+        and stack accordingly, i.e., so that the resulting function evaluation
+        has shape ``(n,c)``.
+
+    Examples
+    --------
+    >>> from pnfindiff import central
+    >>> scheme_1d, xs_1d = central(dx=1.)
+    >>> print(xs_1d)
+    [-1.  0.  1.]
+
+    >>> scheme, xs = multivariate(scheme_1d=scheme_1d, xs_1d=xs_1d, shape_input=(2,))
+    >>> print(xs.shape)
+    (2, 2, 3)
+    >>> print(xs)
+    [[[-1.  0.  1.]
+      [ 0.  0.  0.]]
+     [[ 0.  0.  0.]
+      [-1.  0.  1.]]]
+    >>> print(scheme.weights)
+    [-0.5  0.   0.5]
+    """
     assert len(shape_input) == 1
 
-    xs_full = _stencils_for_all_partial_derivarives(
-        shape_input=shape_input, stencil_1d=xs
+    xs_full = _stencils_for_all_partial_derivatives(
+        shape_input=shape_input, stencil_1d=xs_1d
     )
 
     # This is not a gradient, but something like an outer product, right?
@@ -274,10 +323,60 @@ def gradient(scheme, xs, shape_input=()):
     # A) is this something that people might want? Does it make sense?
     # B) how would one do it efficiently?
     # Provided the shapes of the 'xs' match, it would still be efficient.
-    return scheme, xs_full
+    return scheme_1d, xs_full
 
 
-def _stencils_for_all_partial_derivarives(*, stencil_1d, shape_input):
+def _stencils_for_all_partial_derivatives(*, stencil_1d, shape_input):
+    """Compute the stencils for all partial derivatives.
+
+    Parameters
+    ----------
+    stencil_1d
+        Finite difference stencil (i.e., the grid) to be turned into a stencil for higher derivatives.
+    shape_input
+        The "shape" of the input-domain of the function.
+        At the moment, only ``shape=(n,)`` is supported, where ``n`` is the dimension of the input space.
+        For a function :math:`f: R^5\rightarrow R`, ``n=5``.
+
+    Returns
+    -------
+    :
+        Batch/Stack of the stencils for each partial derivative. The shape is ``(n, n, c)``.
+        The first two array-dimensions are determined by the ``shape_input`` (``n``).
+        The first one refers to the partial derivative index.
+        The second one refers to the *dimension of each nd-stencil-element*.
+        In other words, ``output[0, :, :]`` is an ``(n, c)``-shaped array
+        containing `c` `(n,)` shaped inputs to the function.
+        (The final array-dimension ``c`` describes the length of the provided stencil;
+        there are ``c`` elements in ``stencil_1d``.)
+
+
+    Examples
+    --------
+    >>> _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2, 3]), shape_input=(2,))
+    DeviceArray([[[1, 2, 3],
+                  [0, 0, 0]],
+                 [[0, 0, 0],
+                  [1, 2, 3]]], dtype=int32)
+
+    >>> _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2]), shape_input=(4,))
+    DeviceArray([[[1, 2],
+                  [0, 0],
+                  [0, 0],
+                  [0, 0]],
+                 [[0, 0],
+                  [1, 2],
+                  [0, 0],
+                  [0, 0]],
+                 [[0, 0],
+                  [0, 0],
+                  [1, 2],
+                  [0, 0]],
+                 [[0, 0],
+                  [0, 0],
+                  [0, 0],
+                  [1, 2]]], dtype=int32)
+    """
     return jnp.stack(
         [
             _stencil_for_ith_partial_derivative(
@@ -291,5 +390,41 @@ def _stencils_for_all_partial_derivarives(*, stencil_1d, shape_input):
 
 
 def _stencil_for_ith_partial_derivative(*, stencil_1d_as_row_matrix, i, dimension):
-    """Compute the stencil for the ith partial derivative."""
+    """Compute the stencil for the ith partial derivative.
+
+    This is done by padding the 1d stencil into zeros according to the index ``i`` and the spatial dimension.
+    It constitutes a stencil for a partial derivative, because such stencils are only affected by
+    changes to the input along _a single_ dimension. The others remain unaffected, hence the zeros.
+
+    Examples
+    --------
+    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=0, dimension=4)
+    DeviceArray([[1, 2, 3],
+                 [0, 0, 0],
+                 [0, 0, 0],
+                 [0, 0, 0]], dtype=int32)
+    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=2, dimension=4)
+    DeviceArray([[0, 0, 0],
+                 [0, 0, 0],
+                 [1, 2, 3],
+                 [0, 0, 0]], dtype=int32)
+    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=1, dimension=8)
+    DeviceArray([[0, 0, 0, 0, 0],
+                 [1, 2, 3, 4, 5],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0]], dtype=int32)
+    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=7, dimension=8)
+    DeviceArray([[0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0],
+                 [1, 2, 3, 4, 5]], dtype=int32)
+    """
     return jnp.pad(stencil_1d_as_row_matrix, pad_width=((i, dimension - i - 1), (0, 0)))

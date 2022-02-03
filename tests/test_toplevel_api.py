@@ -98,7 +98,7 @@ def test_central_coefficients_polynomial():
     assert jnp.allclose(unc_base, 0.0)
 
 
-def test_gradient2d():
+def test_multivariate_2d():
 
     # A simple function R^d -> R
     f, d = lambda z: (z[0] + 1) ** 2 + (z[1] - 1) ** 2, 2
@@ -112,7 +112,7 @@ def test_gradient2d():
     assert df(x).shape == (d,)
 
     k = 4
-    scheme, xs = pnfindiff.gradient(
+    scheme, xs = pnfindiff.multivariate(
         *pnfindiff.central(dx=0.1, order_method=k), shape_input=(2,)
     )
     assert xs.shape == (d, d, k + 1)
@@ -126,7 +126,7 @@ def test_gradient2d():
     assert jnp.allclose(dfx, df(x), rtol=1e-4, atol=1e-4)
 
 
-def test_gradient3d():
+def test_multivariate_3d():
 
     # A simple function R^d -> R
     f, d = lambda z: (z[0] + 1) ** 2 + (z[1] - 1) ** 2 + (z[2] - 1) ** 2, 3
@@ -140,7 +140,7 @@ def test_gradient3d():
     assert df(x).shape == (d,)
 
     k = 2
-    scheme, xs = pnfindiff.gradient(
+    scheme, xs = pnfindiff.multivariate(
         *pnfindiff.central(dx=0.1, order_method=k), shape_input=(3,)
     )
     assert xs.shape == (d, d, k + 1)
