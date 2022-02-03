@@ -1,6 +1,6 @@
 """Probabilistic numerical finite difference methods."""
 
-from ._api import (
+from ._toplevel_api import (
     FiniteDifferenceScheme,
     backward,
     central,
@@ -8,11 +8,10 @@ from ._api import (
     differentiate_along_axis,
     forward,
     from_grid,
+    multivariate,
 )
 
 __all__ = [
-    # "derivative",
-    # "derivative_higher",
     "differentiate",
     "differentiate_along_axis",
     "FiniteDifferenceScheme",
@@ -20,4 +19,5 @@ __all__ = [
     "backward",
     "central",
     "from_grid",
+    "multivariate",
 ]
