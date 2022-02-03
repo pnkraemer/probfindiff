@@ -257,7 +257,39 @@ def _default_kernel(*, min_order: int) -> KernelFunctionLike:
     return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
 
 
-def gradient(scheme, xs, dim):
-    n = xs.shape[0]
-    pt = (jnp.eye(dim, n)[None, ...] * xs.reshape((-1, 1))[None, ..., None])[0].T
-    return scheme, pt
+def gradient(scheme, xs, shape_input=()):
+    """Turn a derivative-scheme into a gradient-scheme."""
+    assert len(shape_input) == 1
+
+    xs_full = _stencils_for_all_partial_derivarives(
+        shape_input=shape_input, stencil_1d=xs
+    )
+
+    # This is not a gradient, but something like an outer product, right?
+    # It would still work equally well if scheme.derivative_order was > 1.
+    # The functionality is still useful, but maybe it should not be called "gradient".
+
+    # And what if we want to compute different elements of the gradient
+    # with different orders.
+    # A) is this something that people might want? Does it make sense?
+    # B) how would one do it efficiently?
+    # Provided the shapes of the 'xs' match, it would still be efficient.
+    return scheme, xs_full
+
+
+def _stencils_for_all_partial_derivarives(*, stencil_1d, shape_input):
+    return jnp.stack(
+        [
+            _stencil_for_ith_partial_derivative(
+                stencil_1d_as_row_matrix=stencil_1d[None, ...],
+                i=i,
+                dimension=shape_input[0],
+            )
+            for i in range(shape_input[0])
+        ]
+    )
+
+
+def _stencil_for_ith_partial_derivative(*, stencil_1d_as_row_matrix, i, dimension):
+    """Compute the stencil for the ith partial derivative."""
+    return jnp.pad(stencil_1d_as_row_matrix, pad_width=((i, dimension - i - 1), (0, 0)))
