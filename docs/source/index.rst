@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-PNFinDiff reference documentation
-=================================
+probnum-findiff: reference documentation
+========================================
 
 Probabilistic numerical finite differences.
 Like traditional finite difference formulas, but with modelling flexibility and uncertainty quantification.
