@@ -8,7 +8,7 @@ from typing import Any, Optional
 import jax
 import jax.numpy as jnp
 
-from probfindiff import collocation
+from probfindiff import collocation, stencil
 from probfindiff.typing import ArrayLike, KernelFunctionLike
 from probfindiff.utils import autodiff
 from probfindiff.utils import kernel as kernel_module
@@ -110,8 +110,9 @@ def backward(
     :
         Finite difference coefficients and base uncertainty.
     """
-    offset = -jnp.arange(order_derivative + order_method, step=1)
-    grid = offset * dx
+    grid = stencil.backward(
+        dx=dx, order_derivative=order_derivative, order_method=order_method
+    )
     scheme = from_grid(
         xs=grid,
         order_derivative=order_derivative,
@@ -152,8 +153,9 @@ def forward(
     :
         Finite difference coefficients and base uncertainty.
     """
-    offset = jnp.arange(order_derivative + order_method, step=1)
-    grid = offset * dx
+    grid = stencil.forward(
+        dx=dx, order_derivative=order_derivative, order_method=order_method
+    )
     scheme = from_grid(
         xs=grid,
         order_derivative=order_derivative,
@@ -194,10 +196,9 @@ def central(
     :
         Finite difference coefficients and base uncertainty.
     """
-    num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
-    num_side = num_central // 2
-    offset = jnp.arange(-num_side, num_side + 1, step=1)
-    grid = offset * dx
+    grid = stencil.central(
+        dx=dx, order_derivative=order_derivative, order_method=order_method
+    )
     scheme = from_grid(
         xs=grid,
         order_derivative=order_derivative,

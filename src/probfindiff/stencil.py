@@ -173,3 +173,29 @@ def _stencil_for_ith_partial_derivative(
                  [1, 2, 3, 4, 5]], dtype=int32)
     """
     return jnp.pad(stencil_1d_as_row_matrix, pad_width=((i, dimension - i - 1), (0, 0)))
+
+
+@functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
+def backward(*, dx: float, order_derivative: int, order_method: int) -> ArrayLike:
+    """Create the stencil for backward finite difference schemes."""
+    offset = -jnp.arange(order_derivative + order_method, step=1)
+    grid = offset * dx
+    return grid
+
+
+@functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
+def forward(*, dx: float, order_derivative: int, order_method: int) -> ArrayLike:
+    """Create the stencil for forward finite difference schemes."""
+    offset = jnp.arange(order_derivative + order_method, step=1)
+    grid = offset * dx
+    return grid
+
+
+@functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
+def central(*, dx: float, order_derivative: int, order_method: int) -> ArrayLike:
+    """Create the stencil for central finite difference schemes."""
+    num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
+    num_side = num_central // 2
+    offset = jnp.arange(-num_side, num_side + 1, step=1)
+    grid = offset * dx
+    return grid
