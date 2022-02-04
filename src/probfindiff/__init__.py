@@ -8,7 +8,6 @@ from ._toplevel_api import (
     differentiate_along_axis,
     forward,
     from_grid,
-    multivariate,
 )
 
 __all__ = [
@@ -19,5 +18,4 @@ __all__ = [
     "backward",
     "central",
     "from_grid",
-    "multivariate",
 ]
