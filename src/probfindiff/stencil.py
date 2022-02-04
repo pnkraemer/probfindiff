@@ -173,3 +173,23 @@ def _stencil_for_ith_partial_derivative(
                  [1, 2, 3, 4, 5]], dtype=int32)
     """
     return jnp.pad(stencil_1d_as_row_matrix, pad_width=((i, dimension - i - 1), (0, 0)))
+
+
+def backward(dx, order_derivative, order_method):
+    offset = -jnp.arange(order_derivative + order_method, step=1)
+    grid = offset * dx
+    return grid
+
+
+def forward(dx, order_derivative, order_method):
+    offset = jnp.arange(order_derivative + order_method, step=1)
+    grid = offset * dx
+    return grid
+
+
+def central(dx, order_derivative, order_method):
+    num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
+    num_side = num_central // 2
+    offset = jnp.arange(-num_side, num_side + 1, step=1)
+    grid = offset * dx
+    return grid
