@@ -106,7 +106,7 @@ def unsymmetric(
     return weights, unc_base
 
 
-def _transpose(LK0):
+def _transpose(LK0: ArrayLike) -> ArrayLike:
     if LK0.ndim > 1:
         LKt = jnp.swapaxes(LK0, -2, -1)
     else:
