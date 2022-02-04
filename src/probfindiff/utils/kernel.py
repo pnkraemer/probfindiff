@@ -49,24 +49,5 @@ def batch_gram(k: KernelFunctionLike) -> Tuple[KernelFunctionLike, KernelFunctio
     :
         Tuple :math:`(\tilde k, k)` of the batched kernel function and the original kernel function.
     """
-    k_vmapped_x = jax.vmap(k, in_axes=(0, None), out_axes=0)
-
-    # Return the input again. This simplifies its usage drastically,
-    # because often, e.g., derivatives of kernels are defined inline only.
-    # For example, the following code
-    #
-    #     k = kernel_zoo.exponentiated_quadratic[1]
-    #     lk = L(k, argnums=0)
-    #     llk = L(lk, argnums=1)
-    #     k = kernel.batch_gram(k)
-    #     lk = kernel.batch_gram(lk)
-    #     llk = kernel.batch_gram(llk)
-    #
-    # becomes
-    #
-    #     k_batch, k = kernel_zoo.exponentiated_quadratic
-    #     lk_batch, lk = kernel.batch_gram(L(k, argnums=0))
-    #     llk_batch, llk = kernel.batch_gram(L(lk, argnums=1))
-    #
-    # which is so much more compact.
-    return jax.jit(jax.vmap(k_vmapped_x, in_axes=(None, 1), out_axes=1)), jax.jit(k)
+    k_vmapped_x = jax.vmap(k, in_axes=(0, None), out_axes=-1)
+    return jax.jit(jax.vmap(k_vmapped_x, in_axes=(None, -1), out_axes=-1)), jax.jit(k)
