@@ -10,11 +10,17 @@ import jax.numpy as jnp
 from probfindiff.typing import ArrayLike
 
 
-def multivariate(xs_1d, shape_input):
+def multivariate(xs_1d, shape_input, shape_output=(1,)):
     assert len(shape_input) == 1
+    assert len(shape_output) == 1
 
-    return _stencils_for_all_partial_derivatives(
-        shape_input=shape_input, stencil_1d=xs_1d
+    return jnp.stack(
+        [
+            _stencils_for_all_partial_derivatives(
+                shape_input=shape_input, stencil_1d=xs_1d
+            )
+            for _ in range(shape_output[0])
+        ]
     )
 
 

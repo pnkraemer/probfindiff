@@ -298,5 +298,7 @@ def multivariate(
     >>> print(scheme.weights)
     [-0.5  0.   0.5]
     """
-    xs_full = stencil.multivariate(xs_1d=xs_1d, shape_input=shape_input)
-    return scheme_1d, xs_full
+    xs_full = stencil.multivariate(
+        xs_1d=xs_1d, shape_input=shape_input, shape_output=(1,)
+    )
+    return scheme_1d, xs_full[0]
