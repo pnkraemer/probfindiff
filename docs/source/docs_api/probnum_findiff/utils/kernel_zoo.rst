@@ -1,7 +1,7 @@
-pnfindiff.utils.kernel\_zoo
+probnum_findiff.utils.kernel\_zoo
 ==================================
 
-.. automodule:: pnfindiff.utils.kernel_zoo
+.. automodule:: probnum_findiff.utils.kernel_zoo
    :members:
    :undoc-members:
    :show-inheritance:

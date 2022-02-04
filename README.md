@@ -1,4 +1,4 @@
-# pnfindiff: Probabilistic numerical finite differences.
+# probnum-findiff: Probabilistic numerical finite differences.
 
 Traditional finite difference schemes are great, but let's look at the whole picture.
 ## Why?

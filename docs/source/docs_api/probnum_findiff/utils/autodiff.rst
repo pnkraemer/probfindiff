@@ -1,7 +1,7 @@
-pnfindiff.utils.autodiff
+probnum_findiff.utils.autodiff
 ===============================
 
-.. automodule:: pnfindiff.utils.autodiff
+.. automodule:: probnum_findiff.utils.autodiff
    :members:
    :undoc-members:
    :show-inheritance:

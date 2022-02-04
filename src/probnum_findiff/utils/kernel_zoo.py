@@ -6,7 +6,7 @@ from functools import partial
 import jax
 import jax.numpy as jnp
 
-from pnfindiff.typing import ArrayLike
+from probnum_findiff.typing import ArrayLike
 
 
 @jax.jit

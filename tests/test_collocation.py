@@ -3,8 +3,8 @@
 import jax.numpy as jnp
 import pytest
 
-from pnfindiff import collocation
-from pnfindiff.utils import autodiff, kernel, kernel_zoo
+from probnum_findiff import collocation
+from probnum_findiff.utils import autodiff, kernel, kernel_zoo
 
 
 @pytest.fixture(name="ks")

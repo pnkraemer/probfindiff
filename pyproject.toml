@@ -71,7 +71,7 @@ norecursedirs = [
     ".tox"
 ]
 testpaths = [
-    "src/pnfindiff",
+    "src/probnum_findiff",
     "tests"
 ]
 doctest_optionflags = "NUMBER NORMALIZE_WHITESPACE"

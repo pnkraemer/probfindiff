@@ -8,7 +8,7 @@ from datetime import datetime
 
 # -- Project information -----------------------------------------------------
 
-project = "pnfindiff"
+project = "probnum-findiff"
 copyright = f"{str(datetime.utcnow().year)}, Nicholas Krämer"
 author = "Nicholas Krämer"
 
