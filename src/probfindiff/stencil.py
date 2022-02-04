@@ -12,6 +12,7 @@ from probfindiff.typing import ArrayLike
 
 @functools.partial(jax.jit, static_argnames=("shape_input", "shape_output"))
 def multivariate(
+    *,
     xs_1d: ArrayLike,
     shape_input: Tuple[int],
     shape_output: Union[Tuple[()], Tuple[int]] = (),
