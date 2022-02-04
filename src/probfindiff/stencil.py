@@ -10,18 +10,49 @@ import jax.numpy as jnp
 from probfindiff.typing import ArrayLike
 
 
-def multivariate(xs_1d, shape_input, shape_output=(1,)):
-    assert len(shape_input) == 1
-    assert len(shape_output) == 1
+def multivariate(xs_1d, shape_input, shape_output=()):
+    r"""Turn a univariate finite-difference stencil into a multivariate stencil.
 
-    return jnp.stack(
-        [
-            _stencils_for_all_partial_derivatives(
-                shape_input=shape_input, stencil_1d=xs_1d
-            )
-            for _ in range(shape_output[0])
-        ]
+    Parameters
+    ----------
+    xs_1d
+        Input finite-difference grid/stencil in 1d.
+    shape_input
+        Input dimension of the to-be-differentiated function as a shape-tuple.
+        If the goal is the gradient of an `n`-dimensional function, ``shape_input=(n,)``.
+    shape_output
+        Output dimension of the to-be-differentiated function as a shape-tuple.
+
+    Returns
+    -------
+    :
+        New grid with shape ``shape_output + (n, n, c)``.
+
+
+    Examples
+    --------
+    >>> from probfindiff import central
+    >>> _, xs_1d = central(dx=1.)
+    >>> print(xs_1d)
+    [-1.  0.  1.]
+
+    >>> xs = multivariate(xs_1d=xs_1d, shape_input=(2,))
+    >>> print(xs.shape)
+    (2, 2, 3)
+    >>> print(xs)
+    [[[-1.  0.  1.]
+      [ 0.  0.  0.]]
+     [[ 0.  0.  0.]
+      [-1.  0.  1.]]]
+    """
+    assert len(shape_input) == 1
+
+    coeffs = _stencils_for_all_partial_derivatives(
+        shape_input=shape_input, stencil_1d=xs_1d
     )
+    if shape_output == ():
+        return coeffs
+    return jnp.broadcast_to(coeffs, shape=shape_output + coeffs.shape)
 
 
 @functools.partial(jax.jit, static_argnames=("shape_input",))

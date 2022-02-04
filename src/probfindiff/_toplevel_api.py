@@ -280,23 +280,6 @@ def multivariate(
         The new scheme consists of a 1d set of weights.
         The new grid has shape ``(n, n, c)``.
 
-    Examples
-    --------
-    >>> from probfindiff import central
-    >>> scheme_1d, xs_1d = central(dx=1.)
-    >>> print(xs_1d)
-    [-1.  0.  1.]
-
-    >>> scheme, xs = multivariate(scheme_1d=scheme_1d, xs_1d=xs_1d, shape_input=(2,))
-    >>> print(xs.shape)
-    (2, 2, 3)
-    >>> print(xs)
-    [[[-1.  0.  1.]
-      [ 0.  0.  0.]]
-     [[ 0.  0.  0.]
-      [-1.  0.  1.]]]
-    >>> print(scheme.weights)
-    [-0.5  0.   0.5]
     """
     xs_full = stencil.multivariate(
         xs_1d=xs_1d, shape_input=shape_input, shape_output=(1,)

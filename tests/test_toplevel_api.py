@@ -4,7 +4,7 @@ import jax.numpy as jnp
 import pytest_cases
 
 import probfindiff
-from probfindiff import collocation
+from probfindiff import collocation, stencil
 from probfindiff.utils import autodiff
 from probfindiff.utils import kernel as kernel_module
 from probfindiff.utils import kernel_zoo
@@ -96,7 +96,7 @@ def test_multivariate(scheme, xs):
     # The gradient takes values in R^d
     df = jax.grad(f)
 
-    scheme, xs = probfindiff.multivariate(scheme_1d=scheme, xs_1d=xs, shape_input=(3,))
+    xs = stencil.multivariate(xs_1d=xs, shape_input=(3,))
     assert xs.ndim == 3
     assert xs.shape[0] == xs.shape[1] == 3
 
