@@ -176,7 +176,9 @@ def _stencil_for_ith_partial_derivative(
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
-def backward(*, dx: float, order_derivative: int, order_method: int) -> ArrayLike:
+def backward(
+    *, dx: float, order_derivative: int = 1, order_method: int = 2
+) -> ArrayLike:
     """Create the stencil for backward finite difference schemes."""
     offset = -jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
@@ -184,7 +186,9 @@ def backward(*, dx: float, order_derivative: int, order_method: int) -> ArrayLik
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
-def forward(*, dx: float, order_derivative: int, order_method: int) -> ArrayLike:
+def forward(
+    *, dx: float, order_derivative: int = 1, order_method: int = 2
+) -> ArrayLike:
     """Create the stencil for forward finite difference schemes."""
     offset = jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
@@ -192,7 +196,9 @@ def forward(*, dx: float, order_derivative: int, order_method: int) -> ArrayLike
 
 
 @functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
-def central(*, dx: float, order_derivative: int, order_method: int) -> ArrayLike:
+def central(
+    *, dx: float, order_derivative: int = 1, order_method: int = 2
+) -> ArrayLike:
     """Create the stencil for central finite difference schemes."""
     num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
     num_side = num_central // 2
