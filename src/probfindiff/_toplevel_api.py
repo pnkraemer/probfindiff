@@ -110,7 +110,9 @@ def backward(
     :
         Finite difference coefficients and base uncertainty.
     """
-    grid = stencil.backward(dx, order_derivative, order_method)
+    grid = stencil.backward(
+        dx=dx, order_derivative=order_derivative, order_method=order_method
+    )
     scheme = from_grid(
         xs=grid,
         order_derivative=order_derivative,
@@ -151,7 +153,9 @@ def forward(
     :
         Finite difference coefficients and base uncertainty.
     """
-    grid = stencil.forward(dx, order_derivative, order_method)
+    grid = stencil.forward(
+        dx=dx, order_derivative=order_derivative, order_method=order_method
+    )
     scheme = from_grid(
         xs=grid,
         order_derivative=order_derivative,
@@ -192,7 +196,9 @@ def central(
     :
         Finite difference coefficients and base uncertainty.
     """
-    grid = stencil.central(dx, order_derivative, order_method)
+    grid = stencil.central(
+        dx=dx, order_derivative=order_derivative, order_method=order_method
+    )
     scheme = from_grid(
         xs=grid,
         order_derivative=order_derivative,
