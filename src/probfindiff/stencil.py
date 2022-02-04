@@ -10,7 +10,10 @@ import jax.numpy as jnp
 from probfindiff.typing import ArrayLike
 
 
-def multivariate(xs_1d, shape_input, shape_output=()):
+@functools.partial(jax.jit, static_argnames=("shape_input", "shape_output"))
+def multivariate(
+    xs_1d: ArrayLike, shape_input: Tuple[int], shape_output: Tuple[int] = ()
+) -> ArrayLike:
     r"""Turn a univariate finite-difference stencil into a multivariate stencil.
 
     Parameters
@@ -50,8 +53,7 @@ def multivariate(xs_1d, shape_input, shape_output=()):
     coeffs = _stencils_for_all_partial_derivatives(
         shape_input=shape_input, stencil_1d=xs_1d
     )
-    if shape_output == ():
-        return coeffs
+    # Independent copies for each output dimension
     return jnp.broadcast_to(coeffs, shape=shape_output + coeffs.shape)
 
 
