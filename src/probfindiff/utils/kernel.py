@@ -4,7 +4,7 @@ from typing import Tuple
 
 import jax
 
-from probnum_findiff.typing import DifferentialOperatorLike, KernelFunctionLike
+from probfindiff.typing import DifferentialOperatorLike, KernelFunctionLike
 
 
 def differentiate(

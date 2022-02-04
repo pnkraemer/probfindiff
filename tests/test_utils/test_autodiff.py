@@ -2,7 +2,7 @@
 
 import pytest_cases
 
-from probnum_findiff.utils import autodiff
+from probfindiff.utils import autodiff
 
 
 def case_div():

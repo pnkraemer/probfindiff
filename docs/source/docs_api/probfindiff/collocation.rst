@@ -1,7 +1,7 @@
-probnum_findiff.collocation
+probfindiff.collocation
 ============================
 
-.. automodule:: probnum_findiff.collocation
+.. automodule:: probfindiff.collocation
    :members:
    :undoc-members:
    :show-inheritance:
