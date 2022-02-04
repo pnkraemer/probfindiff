@@ -8,11 +8,11 @@ from typing import Any, Optional, Tuple
 import jax
 import jax.numpy as jnp
 
-from pnfindiff import collocation
-from pnfindiff.typing import ArrayLike, KernelFunctionLike
-from pnfindiff.utils import autodiff
-from pnfindiff.utils import kernel as kernel_module
-from pnfindiff.utils import kernel_zoo
+from probfindiff import collocation
+from probfindiff.typing import ArrayLike, KernelFunctionLike
+from probfindiff.utils import autodiff
+from probfindiff.utils import kernel as kernel_module
+from probfindiff.utils import kernel_zoo
 
 FiniteDifferenceScheme = namedtuple(
     "FiniteDifferenceScheme",
@@ -294,7 +294,7 @@ def multivariate(
 
     Examples
     --------
-    >>> from pnfindiff import central
+    >>> from probfindiff import central
     >>> scheme_1d, xs_1d = central(dx=1.)
     >>> print(xs_1d)
     [-1.  0.  1.]

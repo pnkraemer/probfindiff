@@ -3,17 +3,17 @@ import jax
 import jax.numpy as jnp
 import pytest_cases
 
-import pnfindiff
-from pnfindiff import collocation
-from pnfindiff.utils import autodiff
-from pnfindiff.utils import kernel as kernel_module
-from pnfindiff.utils import kernel_zoo
+import probfindiff
+from probfindiff import collocation
+from probfindiff.utils import autodiff
+from probfindiff.utils import kernel as kernel_module
+from probfindiff.utils import kernel_zoo
 
 
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
 @pytest_cases.parametrize("noise_variance", [1e-5, 0.0])
 def case_backward(kernel, noise_variance):
-    return pnfindiff.backward(
+    return probfindiff.backward(
         order_derivative=1,
         order_method=3,
         dx=0.05,
@@ -25,7 +25,7 @@ def case_backward(kernel, noise_variance):
 @pytest_cases.parametrize("kernel", [kernel_zoo.exponentiated_quadratic, None])
 @pytest_cases.parametrize("noise_variance", [1e-5, 0.0])
 def case_forward(kernel, noise_variance):
-    return pnfindiff.forward(
+    return probfindiff.forward(
         order_derivative=1,
         order_method=3,
         dx=0.05,
@@ -38,7 +38,7 @@ def case_forward(kernel, noise_variance):
 @pytest_cases.parametrize("noise_variance", [1e-5, 0.0])
 @pytest_cases.case(tags=("central",))
 def case_central(kernel, noise_variance):
-    return pnfindiff.central(
+    return probfindiff.central(
         order_derivative=1,
         order_method=2,
         dx=0.1,
@@ -51,7 +51,7 @@ def case_central(kernel, noise_variance):
 @pytest_cases.parametrize("noise_variance", [1e-5, 0.0])
 def case_from_grid(kernel, noise_variance):
     xs = 0.02 * jnp.arange(-2.0, 3.0)
-    scheme = pnfindiff.from_grid(
+    scheme = probfindiff.from_grid(
         order_derivative=1, xs=xs, kernel=kernel, noise_variance=noise_variance
     )
     return scheme, xs
@@ -60,7 +60,7 @@ def case_from_grid(kernel, noise_variance):
 @pytest_cases.parametrize_with_cases("scheme, xs", cases=".")
 def test_scheme_types(scheme, xs):
 
-    assert isinstance(scheme, pnfindiff.FiniteDifferenceScheme)
+    assert isinstance(scheme, probfindiff.FiniteDifferenceScheme)
     assert isinstance(xs, jnp.ndarray)
 
 
@@ -73,14 +73,14 @@ def test_scheme_shapes(scheme, _):
 @pytest_cases.parametrize_with_cases("scheme, xs", cases=".")
 def test_differentiate(scheme, xs):
     fx = jnp.sin(xs)
-    dfx_approx, _ = pnfindiff.differentiate(fx, scheme=scheme)
+    dfx_approx, _ = probfindiff.differentiate(fx, scheme=scheme)
     assert dfx_approx.shape == ()
 
 
 @pytest_cases.parametrize_with_cases("scheme, xs", cases=".")
 def test_differentiate_along_axis(scheme, xs):
     fx = jnp.sin(xs)[:, None] * jnp.cos(xs)[None, :]
-    dfx_approx, _ = pnfindiff.differentiate_along_axis(fx, axis=1, scheme=scheme)
+    dfx_approx, _ = probfindiff.differentiate_along_axis(fx, axis=1, scheme=scheme)
     assert dfx_approx.ndim == 1
 
 
@@ -96,12 +96,12 @@ def test_multivariate(scheme, xs):
     # The gradient takes values in R^d
     df = jax.grad(f)
 
-    scheme, xs = pnfindiff.multivariate(scheme_1d=scheme, xs_1d=xs, shape_input=(3,))
+    scheme, xs = probfindiff.multivariate(scheme_1d=scheme, xs_1d=xs, shape_input=(3,))
     assert xs.ndim == 3
     assert xs.shape[0] == xs.shape[1] == 3
 
     xs_shifted = x[None, :, None] + xs
-    dfx, _ = pnfindiff.differentiate(f(xs_shifted), scheme=scheme)
+    dfx, _ = probfindiff.differentiate(f(xs_shifted), scheme=scheme)
 
     assert dfx.shape == df(x).shape == (d,)
     assert jnp.allclose(dfx, df(x), rtol=1e-2, atol=1e-2)

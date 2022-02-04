@@ -1,7 +1,7 @@
-API: pnfindiff package
-======================
+API: probfindiff package
+============================
 
-.. automodule:: pnfindiff
+.. automodule:: probfindiff
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,7 +12,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   pnfindiff/collocation
+   probfindiff/collocation
 
 Subpackages
 -----------
@@ -20,4 +20,4 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   pnfindiff/utils
+   probfindiff/utils

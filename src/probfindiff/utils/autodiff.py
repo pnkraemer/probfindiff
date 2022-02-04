@@ -5,7 +5,7 @@ from typing import Any, Callable
 import jax
 import jax.numpy as jnp
 
-from pnfindiff.typing import DifferentialOperatorLike
+from probfindiff.typing import DifferentialOperatorLike
 
 
 def derivative(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:

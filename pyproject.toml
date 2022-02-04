@@ -3,8 +3,9 @@ requires = [
     "setuptools>=42",
     "wheel",
 ]
-
 build-backend = "setuptools.build_meta"
+
+
 # Configuration of the black code style checker
 # For more information about Black's usage of this file, see
 # https://github.com/psf/black#pyprojecttoml
@@ -71,7 +72,7 @@ norecursedirs = [
     ".tox"
 ]
 testpaths = [
-    "src/pnfindiff",
+    "src/probfindiff",
     "tests"
 ]
 doctest_optionflags = "NUMBER NORMALIZE_WHITESPACE"

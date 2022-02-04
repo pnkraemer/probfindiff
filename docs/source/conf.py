@@ -8,7 +8,7 @@ from datetime import datetime
 
 # -- Project information -----------------------------------------------------
 
-project = "pnfindiff"
+project = "probfindiff"
 copyright = f"{str(datetime.utcnow().year)}, Nicholas Krämer"
 author = "Nicholas Krämer"
 
@@ -58,14 +58,12 @@ html_theme_options = {
 
 # (Optional) Logo. Should be small enough to fit the navbar (ideally 24x24).
 # Path should be relative to the ``_static`` files directory.
-html_logo = "_static/logo.png"
+# html_logo = "_static/logo.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = [
-    "_static",
-]
+html_static_path = []
 
 # These paths are either relative to html_static_path
 # or fully qualified paths (eg. https://...)

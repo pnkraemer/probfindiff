@@ -6,7 +6,7 @@ from typing import Any, Tuple
 import jax
 import jax.numpy as jnp
 
-from pnfindiff.typing import ArrayLike, KernelFunctionLike
+from probfindiff.typing import ArrayLike, KernelFunctionLike
 
 
 @functools.partial(jax.jit, static_argnames=("ks",))

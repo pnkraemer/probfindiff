@@ -6,7 +6,7 @@ import functools
 import jax.numpy as jnp
 import pytest_cases
 
-from pnfindiff.utils import autodiff, kernel, kernel_zoo
+from probfindiff.utils import autodiff, kernel, kernel_zoo
 
 
 def case_exponentiated_quadratic():

@@ -1,7 +1,7 @@
-pnfindiff.utils.kernel
+probfindiff.utils.kernel
 =============================
 
-.. automodule:: pnfindiff.utils.kernel
+.. automodule:: probfindiff.utils.kernel
    :members:
    :undoc-members:
    :show-inheritance:
