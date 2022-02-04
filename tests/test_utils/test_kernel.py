@@ -47,9 +47,7 @@ def test_vectorize_gram_shapes(k):
     assert k(xs, ys.T).shape == (4, 6)
 
 
-@pytest.mark.parametrize(
-    "L, d, diffop_shape", [(jax.jacfwd, 2, (2,)), (jax.hessian, 2, (2, 2))]
-)
+@pytest.mark.parametrize("L, d, diffop_shape", ([jax.jacfwd, 2, (2,)],))
 def test_kernel_batch_shape(L, d, diffop_shape):
 
     k = kernel_zoo.exponentiated_quadratic

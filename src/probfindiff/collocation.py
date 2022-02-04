@@ -95,8 +95,20 @@ def unsymmetric(
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
-    weights = jnp.linalg.solve(K + noise_variance * jnp.eye(*K.shape), LK0.T).T
-    unc_base = LLK - weights @ LK0.T
+
+    noise_matrix = jnp.broadcast_to(
+        noise_variance * jnp.eye(K.shape[-1]), shape=K.shape
+    )
+    if LK0.ndim > 1:
+        LKt = jnp.swapaxes(LK0, -2, -1)
+    else:
+        LKt = LK0
+    weights_t = jnp.linalg.solve(K + noise_matrix, LKt)
+    if weights_t.ndim > 1:
+        weights = jnp.swapaxes(weights_t, -2, -1)
+    else:
+        weights = weights_t
+    unc_base = LLK - weights @ LKt
     return weights, unc_base
 
 
