@@ -255,33 +255,3 @@ def from_grid(
 
 def _default_kernel(*, min_order: int) -> KernelFunctionLike:
     return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
-
-
-@functools.partial(jax.jit, static_argnames=("shape_input",))
-def multivariate(
-    scheme_1d: FiniteDifferenceScheme, xs_1d: ArrayLike, shape_input: Tuple[int]
-) -> Tuple[FiniteDifferenceScheme, ArrayLike]:
-    r"""Turn a univariate finite-difference scheme into a multivariate scheme.
-
-    Parameters
-    ----------
-    scheme_1d
-        Input finite-difference scheme in 1d.
-    xs_1d
-        Input finite-difference grid/stencil in 1d.
-    shape_input
-        Input dimension of the to-be-differentiated function as a shape-tuple.
-        If the goal is the gradient of an `n`-dimensional function, ``shape_input=(n,)``.
-
-    Returns
-    -------
-    :
-        Tuple of a new scheme and a new grid.
-        The new scheme consists of a 1d set of weights.
-        The new grid has shape ``(n, n, c)``.
-
-    """
-    xs_full = stencil.multivariate(
-        xs_1d=xs_1d, shape_input=shape_input, shape_output=(1,)
-    )
-    return scheme_1d, xs_full[0]
