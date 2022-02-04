@@ -5,6 +5,7 @@ import functools
 
 import jax
 import jax.numpy as jnp
+import pytest
 import pytest_cases
 
 from probfindiff.utils import autodiff, kernel, kernel_zoo
@@ -46,29 +47,19 @@ def test_vectorize_gram_shapes(k):
     assert k(xs, ys.T).shape == (4, 6)
 
 
-def test_kernel_jacfwd_batch_shape():
+@pytest.mark.parametrize(
+    "L, d, diffop_shape", [(jax.jacfwd, 2, (2,)), (jax.hessian, 2, (2, 2))]
+)
+def test_kernel_batch_shape(L, d, diffop_shape):
 
     k = kernel_zoo.exponentiated_quadratic
-    k_batch, lk_batch, llk_batch = kernel.differentiate(k, L=jax.jacfwd)
+    k_batch, lk_batch, llk_batch = kernel.differentiate(k, L=L)
 
-    d, num_xs, num_ys = 2, 4, 3
+    num_xs, num_ys = 4, 3
     xs = jnp.arange(1, 1 + d * num_xs, dtype=float).reshape((num_xs, d))
     ys = jnp.arange(1, 1 + d * num_ys, dtype=float).reshape((num_ys, d))
 
-    assert k_batch(xs, ys.T).shape == (num_xs, num_ys)
-    assert lk_batch(xs, ys.T).shape == (d, num_xs, num_ys)
-    assert llk_batch(xs, ys.T).shape == (d, d, num_xs, num_ys)
-
-
-def test_kernel_hessian_batch_shape():
-
-    k = kernel_zoo.exponentiated_quadratic
-    k_batch, lk_batch, llk_batch = kernel.differentiate(k, L=jax.hessian)
-
-    d, num_xs, num_ys = 2, 4, 3
-    xs = jnp.arange(1, 1 + d * num_xs, dtype=float).reshape((num_xs, d))
-    ys = jnp.arange(1, 1 + d * num_ys, dtype=float).reshape((num_ys, d))
-
-    assert k_batch(xs, ys.T).shape == (num_xs, num_ys)
-    assert lk_batch(xs, ys.T).shape == (d, d, num_xs, num_ys)
-    assert llk_batch(xs, ys.T).shape == (d, d, d, d, num_xs, num_ys)
+    k_shape = (num_xs, num_ys)
+    assert k_batch(xs, ys.T).shape == k_shape
+    assert lk_batch(xs, ys.T).shape == diffop_shape + k_shape
+    assert llk_batch(xs, ys.T).shape == diffop_shape + diffop_shape + k_shape
