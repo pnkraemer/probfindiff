@@ -12,6 +12,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   probfindiff/stencil
    probfindiff/collocation
 
 Subpackages
