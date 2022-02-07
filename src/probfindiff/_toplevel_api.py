@@ -8,11 +8,10 @@ from typing import Any, Optional
 import jax
 import jax.numpy as jnp
 
-from probfindiff import collocation, stencil
+from probfindiff import collocation, defaults, stencil
 from probfindiff.typing import ArrayLike, KernelFunctionLike
 from probfindiff.utils import autodiff
 from probfindiff.utils import kernel as kernel_module
-from probfindiff.utils import kernel_zoo
 
 FiniteDifferenceScheme = namedtuple(
     "FiniteDifferenceScheme",
@@ -75,20 +74,16 @@ def differentiate_along_axis(
     return jnp.apply_along_axis(fd, axis=axis, arr=fx)
 
 
-_DEFAULT_NOISE_VARIANCE = 1e-14
-"""We might change the defaults again soon, so we encapsulate it into a variable..."""
-
-
 @functools.partial(
     jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
 )
 def backward(
     *,
     dx: float,
-    order_derivative: int = 1,
-    order_method: int = 2,
+    order_derivative: int = defaults.ORDER_DERIVATIVE,
+    order_method: int = defaults.ORDER_METHOD,
     kernel: Optional[KernelFunctionLike] = None,
-    noise_variance: float = _DEFAULT_NOISE_VARIANCE,
+    noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Any:
     """Backward coefficients in 1d.
 
@@ -128,10 +123,10 @@ def backward(
 def forward(
     *,
     dx: float,
-    order_derivative: int = 1,
-    order_method: int = 2,
+    order_derivative: int = defaults.ORDER_DERIVATIVE,
+    order_method: int = defaults.ORDER_METHOD,
     kernel: Optional[KernelFunctionLike] = None,
-    noise_variance: float = _DEFAULT_NOISE_VARIANCE,
+    noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Any:
     """Forward coefficients in 1d.
 
@@ -171,10 +166,10 @@ def forward(
 def central(
     *,
     dx: float,
-    order_derivative: int = 1,
-    order_method: int = 2,
+    order_derivative: int = defaults.ORDER_DERIVATIVE,
+    order_method: int = defaults.ORDER_METHOD_CENTRAL,
     kernel: Optional[KernelFunctionLike] = None,
-    noise_variance: float = _DEFAULT_NOISE_VARIANCE,
+    noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Any:
     """Central coefficients in 1d.
 
@@ -212,9 +207,9 @@ def central(
 def from_grid(
     *,
     xs: ArrayLike,
-    order_derivative: int = 1,
+    order_derivative: int = defaults.ORDER_DERIVATIVE,
     kernel: Optional[KernelFunctionLike] = None,
-    noise_variance: float = _DEFAULT_NOISE_VARIANCE,
+    noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Any:
     """Finite difference coefficients based on an array of offset indices.
 
@@ -235,7 +230,7 @@ def from_grid(
         Finite difference coefficients and base uncertainty.
     """
     if kernel is None:
-        kernel = _default_kernel(min_order=xs.shape[0])
+        kernel = defaults.kernel(min_order=xs.shape[0])
     L = functools.reduce(autodiff.compose, [autodiff.derivative] * order_derivative)
     ks = kernel_module.differentiate(k=kernel, L=L)
 
@@ -252,7 +247,3 @@ def from_grid(
         order_derivative=order_derivative,
     )
     return scheme
-
-
-def _default_kernel(*, min_order: int) -> KernelFunctionLike:
-    return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
