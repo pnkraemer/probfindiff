@@ -1,4 +1,4 @@
-# probfindiff: Probabilistic numerical finite differences.
+# probfindiff: Probabilistic numerical finite differences
 
 [![PyPi Version](https://img.shields.io/pypi/v/probfindiff.svg?style=flat-square)](https://pypi.org/project/probfindiff/)
 [![Docs](https://readthedocs.org/projects/pip/badge/?version=latest&style=flat-square)](https://github.com/pnkraemer/probfindiff)
