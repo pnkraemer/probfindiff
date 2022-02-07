@@ -10,12 +10,17 @@ Is your function _really_ a polynomial? If not, read on.
 
 Installation:
 ```commandline
-pip install .
+pip install probfindiff
 ```
-With all dev-related setups
+With all dev-related setups:
 ```commandline
-pip install .[ci]
+pip install probfindiff[ci]
 ```
+Or from github directly:
+```commandline
+pip install git+https://github.com/pnkraemer/probfindiff.git
+```
+
 
 ## Background
 The technical background is explained in the paper:
@@ -31,6 +36,7 @@ Please consider citing it if you use this repository for your research.
 
 ## Related work finite difference methods
 Finite difference schemes are not new, obviously.
+
 #### Python
 
 * FinDiff (https://findiff.readthedocs.io/en/latest/)
@@ -65,7 +71,7 @@ Finite difference schemes are not new, obviously.
   and implies fewer corner cases ("Have you provided a vectorised function?";
   "What if my data is hand-gathered or points to some weird black-box-simulator?").
 
-At the time of writing, there has been much more work on the packages above than on `pnfindiff`
+At the time of writing, there has been much more work on the packages above than on `probfindiff`
 (which clearly shows -- they're all great and have been big inspiration for this package!), so
 interfaces may be more stable with the other packages for now. 
 Numerical stability may also not be where it could be. 
