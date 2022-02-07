@@ -13,6 +13,7 @@ Like traditional finite difference formulas, but with modelling flexibility and 
    :maxdepth: 1
    :caption: Getting started
 
+   getting_started/installation
    getting_started/quickstart
 
 .. toctree::
