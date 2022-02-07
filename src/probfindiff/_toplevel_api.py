@@ -12,7 +12,6 @@ from probfindiff import collocation, defaults, stencil
 from probfindiff.typing import ArrayLike, KernelFunctionLike
 from probfindiff.utils import autodiff
 from probfindiff.utils import kernel as kernel_module
-from probfindiff.utils import kernel_zoo
 
 FiniteDifferenceScheme = namedtuple(
     "FiniteDifferenceScheme",
@@ -231,7 +230,7 @@ def from_grid(
         Finite difference coefficients and base uncertainty.
     """
     if kernel is None:
-        kernel = _default_kernel(min_order=xs.shape[0])
+        kernel = defaults.kernel(min_order=xs.shape[0])
     L = functools.reduce(autodiff.compose, [autodiff.derivative] * order_derivative)
     ks = kernel_module.differentiate(k=kernel, L=L)
 
@@ -248,7 +247,3 @@ def from_grid(
         order_derivative=order_derivative,
     )
     return scheme
-
-
-def _default_kernel(*, min_order: int) -> KernelFunctionLike:
-    return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
