@@ -23,10 +23,10 @@ Probabilistic numerical finite difference schemes can be applied to function eva
 WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)
 >>> f = lambda x: (x-1.)**2.
 >>> dfx, cov = probfindiff.differentiate(f(xs), scheme=scheme)
->>> print(jnp.round(dfx, 2))
+>>> print(jnp.round(dfx, 1))
 -2.0
->>> print(jnp.round(jnp.log10(cov), 2))
--6.75
+>>> print(jnp.round(jnp.log10(cov), 0))
+-7.0
 >>> print(scheme)
 FiniteDifferenceScheme(weights=DeviceArray([-2.5000930e+00,  1.8709671e-04,  2.4999061e+00], dtype=float32), covs_marginal=DeviceArray(1.7881393e-07, dtype=float32), order_derivative=DeviceArray(1, dtype=int32, weak_type=True))
 ```
