@@ -81,7 +81,7 @@ def differentiate_along_axis(
 def backward(
     *,
     dx: float,
-    order_derivative: int = 1,
+    order_derivative: int = defaults.ORDER_DERIVATIVE,
     order_method: int = 2,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
@@ -124,7 +124,7 @@ def backward(
 def forward(
     *,
     dx: float,
-    order_derivative: int = 1,
+    order_derivative: int = defaults.ORDER_DERIVATIVE,
     order_method: int = 2,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
@@ -167,7 +167,7 @@ def forward(
 def central(
     *,
     dx: float,
-    order_derivative: int = 1,
+    order_derivative: int = defaults.ORDER_DERIVATIVE,
     order_method: int = 2,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
@@ -208,7 +208,7 @@ def central(
 def from_grid(
     *,
     xs: ArrayLike,
-    order_derivative: int = 1,
+    order_derivative: int = defaults.ORDER_DERIVATIVE,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Any:
