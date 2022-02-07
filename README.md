@@ -13,9 +13,28 @@ Because when using traditional finite difference coefficients, one implicitly as
 Is your function _really_ a polynomial? If not, read on.
 
 
-## Getting started
 
-Installation:
+## How?
+Probabilistic numerical finite difference schemes can be applied to function evaluations as follows.
+```python
+>>> import jax.numpy as jnp
+>>> import probfindiff
+>>> scheme, xs = probfindiff.central(dx=0.2)
+WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)
+>>> f = lambda x: (x-1.)**2.
+>>> dfx, cov = probfindiff.differentiate(f(xs), scheme=scheme)
+>>> print(jnp.round(dfx, 2))
+-2.0
+>>> print(jnp.round(jnp.log10(cov), 2))
+-6.75
+>>> print(scheme)
+FiniteDifferenceScheme(weights=DeviceArray([-2.5000930e+00,  1.8709671e-04,  2.4999061e+00], dtype=float32), covs_marginal=DeviceArray(1.7881393e-07, dtype=float32), order_derivative=DeviceArray(1, dtype=int32, weak_type=True))
+```
+See [**this page**](https://probfindiff.readthedocs.io/en/latest/notebooks/getting_started/quickstart.html) for more examples.
+
+
+## Installation
+
 ```commandline
 pip install probfindiff
 ```
