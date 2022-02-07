@@ -13,14 +13,20 @@ Like traditional finite difference formulas, but with modelling flexibility and 
    :maxdepth: 1
    :caption: Getting started
 
-   notebooks/getting_started/quickstart
-   notebooks/getting_started/custom_grid
-   notebooks/getting_started/kernel_models
-   notebooks/getting_started/partial_derivatives
-   notebooks/getting_started/noisy_schemes
-   notebooks/getting_started/batched_evaluations
-   notebooks/getting_started/multivariate_derivatives
-   notebooks/getting_started/calibration
+   getting_started/installation
+   getting_started/quickstart
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Tutorials
+
+   notebooks/custom_grid
+   notebooks/kernel_models
+   notebooks/partial_derivatives
+   notebooks/noisy_schemes
+   notebooks/batched_evaluations
+   notebooks/multivariate_derivatives
+   notebooks/calibration
 
 
 .. toctree::
@@ -28,6 +34,21 @@ Like traditional finite difference formulas, but with modelling flexibility and 
    :caption: API documentation
 
    docs_api/probfindiff
+
+
+.. toctree::
+   :maxdepth: 4
+   :caption: Developer documentation
+
+   docs_dev/contribution_guide
+   docs_dev/examples
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Other
+
+   GitHub Repository <https://github.com/pnkraemer/probfindiff>
 
 
 Indices and tables
