@@ -21,4 +21,5 @@ ORDER_METHOD = ORDER_METHOD_CENTRAL + 1
 
 
 def kernel(*, min_order: int) -> KernelFunctionLike:
+    """Default kernel function."""
     return functools.partial(kernel_zoo.polynomial, p=jnp.ones((min_order,)))
