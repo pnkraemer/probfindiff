@@ -82,7 +82,7 @@ def backward(
     *,
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
-    order_method: int = 2,
+    order_method: int = defaults.ORDER_METHOD,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Any:
@@ -125,7 +125,7 @@ def forward(
     *,
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
-    order_method: int = 2,
+    order_method: int = defaults.ORDER_METHOD,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Any:
@@ -168,7 +168,7 @@ def central(
     *,
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
-    order_method: int = 2,
+    order_method: int = defaults.ORDER_METHOD_CENTRAL,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Any:

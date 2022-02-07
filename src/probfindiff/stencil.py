@@ -181,7 +181,7 @@ def backward(
     *,
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
-    order_method: int = 2,
+    order_method: int = defaults.ORDER_METHOD,
 ) -> ArrayLike:
     """Create the stencil for backward finite difference schemes."""
     offset = -jnp.arange(order_derivative + order_method, step=1)
@@ -194,7 +194,7 @@ def forward(
     *,
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
-    order_method: int = 2,
+    order_method: int = defaults.ORDER_METHOD,
 ) -> ArrayLike:
     """Create the stencil for forward finite difference schemes."""
     offset = jnp.arange(order_derivative + order_method, step=1)
@@ -207,7 +207,7 @@ def central(
     *,
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
-    order_method: int = 2,
+    order_method: int = defaults.ORDER_METHOD_CENTRAL,
 ) -> ArrayLike:
     """Create the stencil for central finite difference schemes."""
     num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
