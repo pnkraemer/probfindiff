@@ -1,5 +1,6 @@
 """Probabilistic numerical finite difference methods."""
 
+
 from ._toplevel_api import (
     FiniteDifferenceScheme,
     backward,
@@ -9,6 +10,7 @@ from ._toplevel_api import (
     forward,
     from_grid,
 )
+from ._version import version as __version__
 
 __all__ = [
     "differentiate",
