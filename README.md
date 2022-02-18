@@ -79,7 +79,7 @@ Finite difference schemes are not new, obviously.
 
 #### Distinction
 
-`pnfindiff` does many things similarly to the above, but differs in more than one points:
+`probfindiff` does many things similarly to the above, but differs in more than one points:
 
 * We do _probabilistic numerical_ finite differences. 
   Essentially, this encompasses a Gaussian process perspective 
@@ -87,10 +87,10 @@ Finite difference schemes are not new, obviously.
   As such, different to _all_ of the above, we treat uncertainty quantification and modelling 
   as first-class-citizens. In some sense, PN finite differences generalise
   traditional schemes (for specific kernels and grids), which is easily accessible
-  in `pnfindiff`'s implementation, but a few flavours of methods are different 
+  in `probfindiff`'s implementation, but a few flavours of methods are different 
   because of the probability theory.
-* `pnfindiff` uses JAX, which brings with it automatic differentiation, JIT-compilation, GPUs, and more.
-* `pnfindiff` does not evaluate functions. There is also no internal state. 
+* `probfindiff` uses JAX, which brings with it automatic differentiation, JIT-compilation, GPUs, and more.
+* `probfindiff` does not evaluate functions. There is also no internal state. 
   Finite difference schemes are plain tuples of coefficient vectors,
   and not callables that call the to-be-differentiated function. 
   This is more efficient (schemes are reused; functions are easy to JIT-compile; 
