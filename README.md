@@ -53,7 +53,7 @@ pip install git+https://github.com/pnkraemer/probfindiff.git
 ## Background
 The technical background is explained in the paper:
 ```
-@article{kramer2021probabilistic,
+@article{kramer2022probabilistic,
   title={Probabilistic Numerical Method of Lines for Time-Dependent Partial Differential Equations},
   author={Kr{\"a}mer, Nicholas and Schmidt, Jonathan and Hennig, Philipp},
   journal={AISTATS},
