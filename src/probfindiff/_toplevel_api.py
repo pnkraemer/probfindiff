@@ -5,6 +5,7 @@ from collections import namedtuple
 from functools import partial
 from typing import Optional, Tuple
 
+import jax
 import jax.numpy as jnp
 
 from probfindiff import collocation, defaults, stencil
@@ -26,6 +27,7 @@ A finite difference scheme consists of a weight-vector, marginal covariances, an
 """
 
 
+@jax.jit
 def differentiate(
     fx: ArrayLike, *, scheme: FiniteDifferenceScheme
 ) -> Tuple[Array, Array]:
@@ -51,6 +53,7 @@ def differentiate(
     return dfx, unc_base
 
 
+@jax.jit
 def differentiate_along_axis(
     fx: ArrayLike, *, axis: int, scheme: FiniteDifferenceScheme
 ) -> Array:
@@ -78,6 +81,9 @@ def differentiate_along_axis(
     return differentiated
 
 
+@functools.partial(
+    jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
+)
 def backward(
     *,
     dx: float,
@@ -118,6 +124,9 @@ def backward(
     return scheme, grid
 
 
+@functools.partial(
+    jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
+)
 def forward(
     *,
     dx: float,
@@ -158,6 +167,9 @@ def forward(
     return scheme, grid
 
 
+@functools.partial(
+    jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
+)
 def central(
     *,
     dx: float,
