@@ -21,7 +21,7 @@ jobs:
         pip install --upgrade pip
     - name: Build and install package
       run: |
-        pip install .
+        pip install .[cpu]
     - name: Lint through tox
       run: |
         pip install --upgrade tox
@@ -38,7 +38,7 @@ jobs:
         pip install --upgrade pip
     - name: Build and install package
       run: |
-        pip install .
+        pip install .[cpu]
     - name: Build documentation with sphinx through tox
       run: |
         pip install --upgrade tox
@@ -56,7 +56,7 @@ jobs:
         pip install --upgrade pip
     - name: Build and install package
       run: |
-        pip install .
+        pip install .[cpu]
     - name: Run tests with pytest through tox
       run: |
         pip install --upgrade tox
@@ -73,7 +73,7 @@ jobs:
         pip install --upgrade pip
     - name: Build and install package
       run: |
-        pip install .
+        pip install .[cpu]
     - name: Run example snippets with byexample through tox
       run: |
         pip install --upgrade tox

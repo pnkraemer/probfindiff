@@ -7,7 +7,8 @@
 <a href="https://github.com/pnkraemer/probfindiff/blob/master/LICENSE"><img src="https://img.shields.io/github/license/pnkraemer/probfindiff?style=flat-square&color=2b9348" alt="License Badge"/></a>
 
 
-Traditional finite difference schemes are useful, probabilistic finite difference schemes are even better.
+Traditional finite difference schemes are absolutely crucial for scientific computing.
+If you like uncertainty quantification, transparent algorithm assumptions, and next-level flexibility in your function evaluations, you need probabilistic numerical finite differences.
 
 ## Why?
 Because when using traditional finite difference coefficients, one implicitly assumes that the function to-be-differentiated is a polynomial and evaluated on an equidistant grid.
