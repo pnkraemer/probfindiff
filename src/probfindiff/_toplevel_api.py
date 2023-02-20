@@ -53,6 +53,7 @@ def differentiate(
     return dfx, unc_base
 
 
+@functools.partial(jax.jit, static_argnames=["axis"])
 def differentiate_along_axis(
     fx: ArrayLike, *, axis: int, scheme: FiniteDifferenceScheme
 ) -> Array:
@@ -209,7 +210,6 @@ def central(
     return scheme, grid
 
 
-@functools.partial(jax.jit, static_argnames=("order_derivative", "kernel"))
 def from_grid(
     *,
     xs: ArrayLike,

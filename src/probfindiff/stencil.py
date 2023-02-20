@@ -1,17 +1,14 @@
 """Stencil functionality."""
 
 
-import functools
 from typing import Tuple, Union
 
-import jax
 import jax.numpy as jnp
 
 from probfindiff import defaults
 from probfindiff.typing import Array, ArrayLike
 
 
-@functools.partial(jax.jit, static_argnames=("shape_input", "shape_output"))
 def multivariate(
     *,
     xs_1d: ArrayLike,
@@ -62,7 +59,6 @@ def multivariate(
     return jnp.broadcast_to(coeffs, shape=shape_output + coeffs.shape)
 
 
-@functools.partial(jax.jit, static_argnames=("shape_input",))
 def _stencils_for_all_partial_derivatives(
     *, stencil_1d: ArrayLike, shape_input: Tuple[int]
 ) -> Array:
@@ -131,13 +127,6 @@ def _stencils_for_all_partial_derivatives(
     )
 
 
-@functools.partial(
-    jax.jit,
-    static_argnames=(
-        "dimension",
-        "i",
-    ),
-)
 def _stencil_for_ith_partial_derivative(
     *, stencil_1d_as_row_matrix: ArrayLike, i: int, dimension: int
 ) -> Array:
@@ -186,7 +175,6 @@ def _stencil_for_ith_partial_derivative(
     return jnp.pad(stencil_1d_as_row_matrix, pad_width=((i, dimension - i - 1), (0, 0)))
 
 
-@functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
 def backward(
     *,
     dx: float,
@@ -199,7 +187,6 @@ def backward(
     return grid
 
 
-@functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
 def forward(
     *,
     dx: float,
@@ -212,7 +199,6 @@ def forward(
     return grid
 
 
-@functools.partial(jax.jit, static_argnames=("order_derivative", "order_method"))
 def central(
     *,
     dx: float,

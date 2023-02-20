@@ -27,7 +27,7 @@ def differentiate(
     k_batch, _ = batch_gram(k)
     lk_batch, lk = batch_gram(L(k, argnums=0))
     llk_batch, _ = batch_gram(L(lk, argnums=1))
-    return jax.jit(k_batch), jax.jit(lk_batch), jax.jit(llk_batch)
+    return k_batch, lk_batch, llk_batch
 
 
 def batch_gram(k: KernelFunctionLike) -> Tuple[KernelFunctionLike, KernelFunctionLike]:
@@ -50,4 +50,4 @@ def batch_gram(k: KernelFunctionLike) -> Tuple[KernelFunctionLike, KernelFunctio
         Tuple :math:`(\tilde k, k)` of the batched kernel function and the original kernel function.
     """
     k_vmapped_x = jax.vmap(k, in_axes=(0, None), out_axes=-1)
-    return jax.jit(jax.vmap(k_vmapped_x, in_axes=(None, -1), out_axes=-1)), jax.jit(k)
+    return jax.vmap(k_vmapped_x, in_axes=(None, -1), out_axes=-1), k

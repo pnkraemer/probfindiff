@@ -1,15 +1,12 @@
 """Finite differences and collocation with Gaussian processes."""
 
-import functools
 from typing import Tuple
 
-import jax
 import jax.numpy as jnp
 
 from probfindiff.typing import Array, ArrayLike, KernelFunctionLike
 
 
-@functools.partial(jax.jit, static_argnames=("ks",))
 def non_uniform_nd(
     *,
     x: ArrayLike,
@@ -75,7 +72,6 @@ def prepare_gram(
     return K, LK, LLK
 
 
-@jax.jit
 def unsymmetric(
     *,
     K: ArrayLike,
@@ -125,7 +121,6 @@ def _transpose(LK0: ArrayLike) -> Array:
     return LKt
 
 
-@jax.jit
 def symmetric(
     *, K: ArrayLike, LK1: ArrayLike, LLK: ArrayLike, noise_variance: float
 ) -> Tuple[Array, Array]:
