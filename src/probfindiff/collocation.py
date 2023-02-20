@@ -6,7 +6,7 @@ from typing import Any, Tuple
 import jax
 import jax.numpy as jnp
 
-from probfindiff.typing import ArrayLike, KernelFunctionLike
+from probfindiff.typing import Array, ArrayLike, KernelFunctionLike
 
 
 @functools.partial(jax.jit, static_argnames=("ks",))
@@ -16,7 +16,7 @@ def non_uniform_nd(
     xs: ArrayLike,
     ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike],
     noise_variance: float,
-) -> Tuple[Any, Any]:
+) -> Tuple[Array, Array]:
     r"""Finite difference coefficients for non-uniform data in multiple dimensions.
 
     Parameters
@@ -37,14 +37,15 @@ def non_uniform_nd(
     """
 
     K, LK, LLK = prepare_gram(ks, x, xs)
-    return unsymmetric(K=K, LK0=LK, LLK=LLK, noise_variance=noise_variance)
+    weights, unc_base = unsymmetric(K=K, LK0=LK, LLK=LLK, noise_variance=noise_variance)
+    return weights, unc_base
 
 
 def prepare_gram(
     ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike],
     x: ArrayLike,
     xs: ArrayLike,
-) -> Tuple[ArrayLike, ArrayLike, ArrayLike]:
+) -> Tuple[Array, Array, Array]:
     r"""Prepare the Gram matrices that are used for collocation approaches.
 
     Parameters
@@ -76,7 +77,7 @@ def unsymmetric(
     LK0: ArrayLike,
     LLK: ArrayLike,
     noise_variance: float,
-) -> Tuple[ArrayLike, ArrayLike]:
+) -> Tuple[Array, Array]:
     r"""Unsymmetric collocation.
 
     Parameters
@@ -117,7 +118,7 @@ def _transpose(LK0: ArrayLike) -> ArrayLike:
 @jax.jit
 def symmetric(
     *, K: ArrayLike, LK1: ArrayLike, LLK: ArrayLike, noise_variance: float
-) -> Tuple[ArrayLike, ArrayLike]:
+) -> Tuple[Array, Array]:
     r"""Symmetric collocation.
 
     Parameters

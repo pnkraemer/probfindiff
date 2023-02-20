@@ -3,13 +3,13 @@
 import functools
 from collections import namedtuple
 from functools import partial
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 import jax
 import jax.numpy as jnp
 
 from probfindiff import collocation, defaults, stencil
-from probfindiff.typing import ArrayLike, KernelFunctionLike
+from probfindiff.typing import Array, ArrayLike, KernelFunctionLike
 from probfindiff.utils import autodiff
 from probfindiff.utils import kernel as kernel_module
 
@@ -28,7 +28,9 @@ A finite difference scheme consists of a weight-vector, marginal covariances, an
 
 
 @jax.jit
-def differentiate(fx: ArrayLike, *, scheme: FiniteDifferenceScheme) -> ArrayLike:
+def differentiate(
+    fx: ArrayLike, *, scheme: FiniteDifferenceScheme
+) -> Tuple[Array, Array]:
     """Apply a finite difference scheme to a vector of function evaluations.
 
     Parameters
@@ -44,14 +46,14 @@ def differentiate(fx: ArrayLike, *, scheme: FiniteDifferenceScheme) -> ArrayLike
     :
         Finite difference approximation and the corresponding base-uncertainty. Shapes `` (n,), (n,)``.
     """
-    weights, unc_base, *_ = scheme
-    dfx = jnp.einsum("...k,...k->...", weights, fx)
+    weights, unc_base = scheme.weights, scheme.covs_marginal
+    dfx = jnp.einsum("...k,...k->...", weights, fx)  # type: ignore  # (einsum not typed)
     return dfx, unc_base
 
 
 def differentiate_along_axis(
     fx: ArrayLike, *, axis: int, scheme: FiniteDifferenceScheme
-) -> ArrayLike:
+) -> Array:
     """Apply a finite difference scheme along a specified axis.
 
     Parameters
@@ -71,7 +73,8 @@ def differentiate_along_axis(
     """
 
     fd = partial(differentiate, scheme=scheme)
-    return jnp.apply_along_axis(fd, axis=axis, arr=fx)
+    differentiated: Array = jnp.apply_along_axis(fd, axis=axis, arr=fx)
+    return differentiated
 
 
 @functools.partial(
@@ -84,7 +87,7 @@ def backward(
     order_method: int = defaults.ORDER_METHOD,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
-) -> Any:
+) -> Tuple[FiniteDifferenceScheme, Array]:
     """Backward coefficients in 1d.
 
     Parameters
@@ -127,7 +130,7 @@ def forward(
     order_method: int = defaults.ORDER_METHOD,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
-) -> Any:
+) -> Tuple[FiniteDifferenceScheme, Array]:
     """Forward coefficients in 1d.
 
     Parameters
@@ -170,7 +173,7 @@ def central(
     order_method: int = defaults.ORDER_METHOD_CENTRAL,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
-) -> Any:
+) -> Tuple[FiniteDifferenceScheme, Array]:
     """Central coefficients in 1d.
 
     Parameters
@@ -210,7 +213,7 @@ def from_grid(
     order_derivative: int = defaults.ORDER_DERIVATIVE,
     kernel: Optional[KernelFunctionLike] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
-) -> Any:
+) -> FiniteDifferenceScheme:
     """Finite difference coefficients based on an array of offset indices.
 
     Parameters

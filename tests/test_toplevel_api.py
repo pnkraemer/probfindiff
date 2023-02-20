@@ -59,7 +59,6 @@ def case_from_grid(kernel, noise_variance):
 
 @pytest_cases.parametrize_with_cases("scheme, xs", cases=".")
 def test_scheme_types(scheme, xs):
-
     assert isinstance(scheme, probfindiff.FiniteDifferenceScheme)
     assert isinstance(xs, jnp.ndarray)
 
@@ -86,7 +85,6 @@ def test_differentiate_along_axis(scheme, xs):
 
 @pytest_cases.parametrize_with_cases("scheme, xs", cases=".", has_tag=("central",))
 def test_multivariate(scheme, xs):
-
     # A simple function R^d -> R
     f, d = lambda z: (z[0] + 1) ** 2 + (z[1] - 1) ** 2 + (z[2] - 1) ** 2, 3
 

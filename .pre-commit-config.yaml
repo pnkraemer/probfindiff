@@ -43,6 +43,6 @@ repos:
     rev: 1.6.3
     hooks:
      - id: nbqa-black
-       additional_dependencies: [black==22.1.0]
+       additional_dependencies: [black]
      - id: nbqa-isort
-       additional_dependencies: [isort==5.10.1]
+       additional_dependencies: [isort]

@@ -49,7 +49,6 @@ def test_vectorize_gram_shapes(k):
 
 @pytest.mark.parametrize("L, d, diffop_shape", ([jax.jacfwd, 2, (2,)],))
 def test_kernel_batch_shape(L, d, diffop_shape):
-
     k = kernel_zoo.exponentiated_quadratic
     k_batch, lk_batch, llk_batch = kernel.differentiate(k, L=L)
 
