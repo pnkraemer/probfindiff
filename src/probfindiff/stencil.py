@@ -90,29 +90,31 @@ def _stencils_for_all_partial_derivatives(
 
     Examples
     --------
-    >>> _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2, 3]), shape_input=(2,))
-    DeviceArray([[[1, 2, 3],
-                  [0, 0, 0]],
-                 [[0, 0, 0],
-                  [1, 2, 3]]], dtype=int32)
+    >>> stencils = _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2, 3]), shape_input=(2,))
+    >>> print(stencils)
+    [[[1 2 3]
+      [0 0 0]]
+     [[0 0 0]
+      [1 2 3]]]
 
-    >>> _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2]), shape_input=(4,))
-    DeviceArray([[[1, 2],
-                  [0, 0],
-                  [0, 0],
-                  [0, 0]],
-                 [[0, 0],
-                  [1, 2],
-                  [0, 0],
-                  [0, 0]],
-                 [[0, 0],
-                  [0, 0],
-                  [1, 2],
-                  [0, 0]],
-                 [[0, 0],
-                  [0, 0],
-                  [0, 0],
-                  [1, 2]]], dtype=int32)
+    >>> stencils = _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2]), shape_input=(4,))
+    >>> print(stencils)
+    [[[1 2]
+      [0 0]
+      [0 0]
+      [0 0]]
+     [[0 0]
+      [1 2]
+      [0 0]
+      [0 0]]
+     [[0 0]
+      [0 0]
+      [1 2]
+      [0 0]]
+     [[0 0]
+      [0 0]
+      [0 0]
+      [1 2]]]
     """
     return jnp.stack(
         [
@@ -144,34 +146,38 @@ def _stencil_for_ith_partial_derivative(
 
     Examples
     --------
-    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=0, dimension=4)
-    DeviceArray([[1, 2, 3],
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0]], dtype=int32)
-    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=2, dimension=4)
-    DeviceArray([[0, 0, 0],
-                 [0, 0, 0],
-                 [1, 2, 3],
-                 [0, 0, 0]], dtype=int32)
-    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=1, dimension=8)
-    DeviceArray([[0, 0, 0, 0, 0],
-                 [1, 2, 3, 4, 5],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0]], dtype=int32)
-    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=7, dimension=8)
-    DeviceArray([[0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [1, 2, 3, 4, 5]], dtype=int32)
+    >>> stencils = _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=0, dimension=4)
+    >>> print(stencils)
+    [[1 2 3]
+     [0 0 0]
+     [0 0 0]
+     [0 0 0]]
+    >>> stencils = _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=2, dimension=4)
+    >>> print(stencils)
+    [[0 0 0]
+     [0 0 0]
+     [1 2 3]
+     [0 0 0]]
+    >>> stencils = _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=1, dimension=8)
+    >>> print(stencils)
+    [[0 0 0 0 0]
+     [1 2 3 4 5]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]]
+    >>> stencils =  _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=7, dimension=8)
+    >>> print(stencils)
+    [[0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [1 2 3 4 5]]
     """
     return jnp.pad(stencil_1d_as_row_matrix, pad_width=((i, dimension - i - 1), (0, 0)))
 
