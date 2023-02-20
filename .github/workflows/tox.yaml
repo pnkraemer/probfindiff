@@ -21,10 +21,9 @@ jobs:
         pip install --upgrade pip
     - name: Build and install package
       run: |
-        pip install .[cpu]
+        pip install .[ci]
     - name: Lint through tox
       run: |
-        pip install --upgrade tox
         tox -e lint
   docs:
     runs-on: ubuntu-latest
@@ -38,10 +37,9 @@ jobs:
         pip install --upgrade pip
     - name: Build and install package
       run: |
-        pip install .[cpu]
+        pip install .[ci]
     - name: Build documentation with sphinx through tox
       run: |
-        pip install --upgrade tox
         sudo apt-get install pandoc
         tox -e docs
   tests:
@@ -56,10 +54,9 @@ jobs:
         pip install --upgrade pip
     - name: Build and install package
       run: |
-        pip install .[cpu]
+        pip install .[ci]
     - name: Run tests with pytest through tox
       run: |
-        pip install --upgrade tox
         tox -e pytest
   byexample:
     runs-on: ubuntu-latest
@@ -73,8 +70,7 @@ jobs:
         pip install --upgrade pip
     - name: Build and install package
       run: |
-        pip install .[cpu]
+        pip install .[ci]
     - name: Run example snippets with byexample through tox
       run: |
-        pip install --upgrade tox
         tox -e byexample
