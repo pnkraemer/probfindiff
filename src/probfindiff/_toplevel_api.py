@@ -27,7 +27,6 @@ A finite difference scheme consists of a weight-vector, marginal covariances, an
 """
 
 
-@jax.jit
 def differentiate(
     fx: ArrayLike, *, scheme: FiniteDifferenceScheme
 ) -> Tuple[Array, Array]:
@@ -80,9 +79,6 @@ def differentiate_along_axis(
     return differentiated
 
 
-@functools.partial(
-    jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
-)
 def backward(
     *,
     dx: float,
@@ -123,9 +119,6 @@ def backward(
     return scheme, grid
 
 
-@functools.partial(
-    jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
-)
 def forward(
     *,
     dx: float,
@@ -166,9 +159,6 @@ def forward(
     return scheme, grid
 
 
-@functools.partial(
-    jax.jit, static_argnames=("order_derivative", "order_method", "kernel")
-)
 def central(
     *,
     dx: float,
@@ -209,7 +199,6 @@ def central(
     return scheme, grid
 
 
-@functools.partial(jax.jit, static_argnames=("order_derivative", "kernel"))
 def from_grid(
     *,
     xs: ArrayLike,

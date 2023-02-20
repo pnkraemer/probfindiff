@@ -25,7 +25,7 @@ def derivative(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]
     """
 
     grad = jax.grad(fun, **kwargs)
-    return jax.jit(lambda *args: grad(*args)[0])
+    return lambda *args: grad(*args)[0]
 
 
 def div(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:
@@ -45,7 +45,7 @@ def div(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:
     """
 
     jac = jax.jacrev(fun, **kwargs)
-    return jax.jit(lambda *args: jnp.trace(jac(*args)))
+    return lambda *args: jnp.trace(jac(*args))
 
 
 def laplace(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:

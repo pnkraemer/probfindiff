@@ -7,7 +7,6 @@ import jax.numpy as jnp
 from probfindiff.typing import Array, ArrayLike
 
 
-@jax.jit
 def exponentiated_quadratic(
     x: ArrayLike, y: ArrayLike, input_scale: float = 1.0, output_scale: float = 1.0
 ) -> ArrayLike:
@@ -41,7 +40,6 @@ def exponentiated_quadratic(
     return output_scale * jnp.exp(-input_scale * jnp.dot(difference, difference) / 2.0)
 
 
-@jax.jit
 def polynomial(
     x: ArrayLike,
     y: ArrayLike,
