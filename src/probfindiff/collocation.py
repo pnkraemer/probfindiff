@@ -1,9 +1,7 @@
 """Finite differences and collocation with Gaussian processes."""
 
-import functools
 from typing import Tuple
 
-import jax
 import jax.numpy as jnp
 
 from probfindiff.typing import Array, ArrayLike, KernelFunctionLike

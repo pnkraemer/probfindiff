@@ -5,7 +5,6 @@ from collections import namedtuple
 from functools import partial
 from typing import Optional, Tuple
 
-import jax
 import jax.numpy as jnp
 
 from probfindiff import collocation, defaults, stencil

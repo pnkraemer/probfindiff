@@ -1,10 +1,8 @@
 """Stencil functionality."""
 
 
-import functools
 from typing import Tuple, Union
 
-import jax
 import jax.numpy as jnp
 
 from probfindiff import defaults

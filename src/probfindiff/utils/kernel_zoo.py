@@ -1,7 +1,6 @@
 """Kernel zoo."""
 
 
-import jax
 import jax.numpy as jnp
 
 from probfindiff.typing import Array, ArrayLike
