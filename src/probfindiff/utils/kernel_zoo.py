@@ -43,7 +43,7 @@ def exponentiated_quadratic(
     return output_scale * jnp.exp(-input_scale * jnp.dot(difference, difference) / 2.0)
 
 
-@partial(jax.jit, static_argnames=("scale", "order", "bias"))
+@jax.jit
 def polynomial(
     x: ArrayLike,
     y: ArrayLike,
