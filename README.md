@@ -3,7 +3,7 @@
 [![PyPi Version](https://img.shields.io/pypi/v/probfindiff.svg?style=flat-square)](https://pypi.org/project/probfindiff/)
 [![Docs](https://readthedocs.org/projects/pip/badge/?version=latest&style=flat-square)](https://github.com/pnkraemer/probfindiff)
 [![GitHub stars](https://img.shields.io/github/stars/pnkraemer/probfindiff.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/pnkraemer/probfindiff)
-[![gh-actions](https://img.shields.io/github/workflow/status/pnkraemer/probfindiff/ci?style=flat-square)](https://github.com/pnkraemer/probfindiff/actions?query=workflow%3Aci)
+[![gh-actions](https://img.shields.io/github/actions/workflow/status/pnkraemer/probfindiff/tox.yaml?branch=main?style=flat-square)](https://github.com/pnkraemer/probfindiff/actions?query=workflow%3Aci)
 <a href="https://github.com/pnkraemer/probfindiff/blob/master/LICENSE"><img src="https://img.shields.io/github/license/pnkraemer/probfindiff?style=flat-square&color=2b9348" alt="License Badge"/></a>
 
 
