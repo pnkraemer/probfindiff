@@ -7,10 +7,20 @@
 <a href="https://github.com/pnkraemer/probfindiff/blob/master/LICENSE"><img src="https://img.shields.io/github/license/pnkraemer/probfindiff?style=flat-square&color=2b9348" alt="License Badge"/></a>
 
 
-Traditional finite difference schemes are great, but let's look at the whole picture.
+Traditional finite difference schemes are absolutely crucial for scientific computing.
+If you like uncertainty quantification, transparent algorithm assumptions, and next-level flexibility in your function evaluations, you need probabilistic numerical finite differences.
+
 ## Why?
-Because when using traditional finite difference coefficients, one implicitly assumes that the function to-be-differentiated is a polynomial.
-Is your function _really_ a polynomial? If not, read on.
+Because when using traditional finite difference coefficients, one implicitly assumes that the function to-be-differentiated is a polynomial and evaluated on an equidistant grid.
+Is your function _really_ a polynomial? Are you satisfied with evaluating your function on equidistant grids?
+If not, read on.
+
+
+## In a nutshell
+Traditional, non-probabilistic finite difference schemes fit a polynomial to function evaluations and differentiate the polynomial to compute finite difference weights (Fornberg, 1988).
+But why use a polynomial? 
+If we use a Gaussian process, we get uncertainty quantification, scattered point sets, transparent modelling assumptions, and many more benefits for free!
+
 
 
 
@@ -43,14 +53,30 @@ See [**this page**](https://probfindiff.readthedocs.io/en/latest/notebooks/getti
 ```commandline
 pip install probfindiff
 ```
+This assumes that JAX is already installed. If not, use
+```commandline
+pip install probfindiff[cpu]
+```
+to combine `probfindiff` with `jax[cpu]`.
+
+
 With all dev-related setups:
 ```commandline
 pip install probfindiff[ci]
 ```
-Or from github directly:
-```commandline
-pip install git+https://github.com/pnkraemer/probfindiff.git
-```
+
+## Features
+* Forward, backward, central probabilistic numerical finite differences
+* Finite differences on arbitrarily scattered point sets and in high dimensions
+* Finite difference schemes for observation noise
+* Symmetric and unsymmetric collocation ("Kansa's method")
+* Polynomial kernels, exponentiated quadratic kernels, and an API for custom kernels
+* Partial derivatives, Laplacians, divergences, compositions of differential operators, and an API for custom differential operators
+* Tutorials that explain how to use all of the above
+* Compilation, vectorisation, automatic differentiation, and everything else that JAX provides.
+
+Check the tutorials on [**this page**](https://probfindiff.readthedocs.io/en/latest/) for examples.
+
 
 
 ## Background
@@ -88,22 +114,11 @@ Finite difference schemes are not new, obviously.
   Essentially, this encompasses a Gaussian process perspective
   on radial-basis-function-generated finite differences (provided by "RBF" above).
   As such, different to _all_ of the above, we treat uncertainty quantification and modelling
-  as first-class-citizens. In some sense, PN finite differences generalise
-  traditional schemes (for specific kernels and grids), which is easily accessible
-  in `probfindiff`'s implementation, but a few flavours of methods are different
-  because of the probability theory.
+  as first-class-citizens.
 * `probfindiff` uses JAX, which brings with it automatic differentiation, JIT-compilation, GPUs, and more.
-* `probfindiff` does not evaluate functions. There is also no internal state.
-  Finite difference schemes are plain tuples of coefficient vectors,
-  and not callables that call the to-be-differentiated function.
-  This is more efficient (schemes are reused; functions are easy to JIT-compile;
-  we cannot call your function more efficiently than you can),
-  more transparent (we do not recompute stencils for new points, because we only provide coefficient vectors),
-  and implies fewer corner cases ("Have you provided a vectorised function?";
-  "What if my data is hand-gathered or points to some weird black-box-simulator?").
+* `probfindiff` does not evaluate functions. Most of the packages above have an API
+  `differentiate(fn, x, scheme)` whereas we use `differentiate(fn(x), scheme.weights)`.
+  We choose the latter because implementations simplify (we pass around arrays instead of callables),
+  gain efficiency (it becomes obvious which quantities to reuse in multiple applications),
+  and because users know best how to evaluate their functions (for example, whether the function is vectorised).
 
-At the time of writing, there has been much more work on the packages above than on `probfindiff`
-(which clearly shows -- they're all great and have been big inspiration for this package!), so
-interfaces may be more stable with the other packages for now.
-Numerical stability may also not be where it could be.
-Therefore, choose your package with these thoughts in mind.
