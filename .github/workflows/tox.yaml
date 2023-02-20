@@ -9,12 +9,31 @@ on:
     - main
 
 jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.8","3.9","3.10" ]
+        os: [ ubuntu-latest, macOS-latest ]
+    steps:
+      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v2
+      - name: Upgrade pip
+        run: |
+          pip install --upgrade pip
+      - name: Build and install package
+        run: |
+          pip install .[ci]
+      - name: Run tests with pytest through tox
+        run: |
+          tox -e pytest
   lint:
     runs-on: ubuntu-latest
+    with:
+      python-version: '3.10'
     steps:
     - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
     - uses: actions/checkout@v2
     - name: Upgrade pip
       run: |
@@ -27,10 +46,10 @@ jobs:
         tox -e lint
   docs:
     runs-on: ubuntu-latest
+    with:
+      python-version: '3.10'
     steps:
     - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
     - uses: actions/checkout@v2
     - name: Upgrade pip
       run: |
@@ -42,34 +61,12 @@ jobs:
       run: |
         sudo apt-get install pandoc
         tox -e docs
-  tests:
-
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.8,3.9,3.10]
-        os: [ubuntu-latest, macOS-latest]
-    steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
-    - uses: actions/checkout@v2
-    - name: Upgrade pip
-      run: |
-        pip install --upgrade pip
-    - name: Build and install package
-      run: |
-        pip install .[ci]
-    - name: Run tests with pytest through tox
-      run: |
-        tox -e pytest
   byexample:
     runs-on: ubuntu-latest
+    with:
+      python-version: '3.10'
     steps:
     - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
     - uses: actions/checkout@v2
     - name: Upgrade pip
       run: |
