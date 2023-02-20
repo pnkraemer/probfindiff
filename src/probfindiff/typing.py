@@ -4,13 +4,16 @@ from typing import Any, Callable
 from jax import Array as _Array  # temp
 from jax.typing import ArrayLike as _ArrayLike  # temp
 
+# Expose JAX's Array types.
+
 Array = _Array
+"""Array output type."""
 
 ArrayLike = _ArrayLike
-"""Array type. JAX's arrays cannot be assigned a strict type, so we use 'Any'."""
+"""Array input type."""
 
 
-KernelFunctionLike = Callable[[Any, Any], Any]
+KernelFunctionLike = Callable[[ArrayLike, ArrayLike], Array]
 """Kernel function type."""
 
 

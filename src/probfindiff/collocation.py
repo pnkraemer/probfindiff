@@ -35,6 +35,8 @@ def non_uniform_nd(
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
+    x = jnp.asarray(x)
+    xs = jnp.asarray(xs)
 
     K, LK, LLK = prepare_gram(ks, x, xs)
     weights, unc_base = unsymmetric(K=K, LK0=LK, LLK=LLK, noise_variance=noise_variance)
@@ -62,6 +64,9 @@ def prepare_gram(
     :
         Triple of kernel Gram matrices (:math:`K`, :math:`LK`, :math:`L L^*K`) with shapes ``(n,n)``, ``(n,)``, ``()``.
     """
+    x = jnp.asarray(x)
+    xs = jnp.asarray(xs)
+
     k, lk, llk = ks
     n = xs.shape[0]
     K = k(xs, xs.T).reshape((n, n))
@@ -96,6 +101,9 @@ def unsymmetric(
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
+    K = jnp.asarray(K)
+    LK0 = jnp.asarray(LK0)
+    LLK = jnp.asarray(LLK)
 
     noise_matrix = jnp.broadcast_to(
         noise_variance * jnp.eye(K.shape[-1]), shape=K.shape
@@ -107,9 +115,11 @@ def unsymmetric(
     return weights, unc_base
 
 
-def _transpose(LK0: ArrayLike) -> ArrayLike:
+def _transpose(LK0: ArrayLike) -> Array:
+    LK0 = jnp.asarray(LK0)
+
     if LK0.ndim > 1:
-        LKt = jnp.swapaxes(LK0, -2, -1)
+        LKt: Array = jnp.swapaxes(LK0, -2, -1)
     else:
         LKt = LK0
     return LKt
@@ -137,6 +147,10 @@ def symmetric(
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
+    K = jnp.asarray(K)
+    LK1 = jnp.asarray(LK1)
+    LLK = jnp.asarray(LLK)
+
     weights = jnp.linalg.solve(LLK + noise_variance * jnp.eye(*LLK.shape), LK1.T).T
     unc_base = K - weights @ LK1.T
     return weights, unc_base

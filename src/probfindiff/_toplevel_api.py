@@ -46,6 +46,8 @@ def differentiate(
     :
         Finite difference approximation and the corresponding base-uncertainty. Shapes `` (n,), (n,)``.
     """
+    fx = jnp.asarray(fx)
+
     weights, unc_base = scheme.weights, scheme.covs_marginal
     dfx = jnp.einsum("...k,...k->...", weights, fx)  # type: ignore  # (einsum not typed)
     return dfx, unc_base
@@ -71,6 +73,7 @@ def differentiate_along_axis(
     :
         Finite difference approximation and the corresponding base-uncertainty. Shapes `` (..., n, ...), (n,)``.
     """
+    fx = jnp.asarray(fx)
 
     fd = partial(differentiate, scheme=scheme)
     differentiated: Array = jnp.apply_along_axis(fd, axis=axis, arr=fx)
@@ -232,6 +235,8 @@ def from_grid(
     :
         Finite difference coefficients and base uncertainty.
     """
+    xs = jnp.asarray(xs)
+
     if kernel is None:
         kernel = defaults.kernel(min_order=xs.shape[0])
     L = functools.reduce(autodiff.compose, [autodiff.derivative] * order_derivative)
