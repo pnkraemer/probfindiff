@@ -53,7 +53,7 @@ def differentiate(
     return dfx, unc_base
 
 
-@jax.jit
+@functools.partial(jax.jit, static_argnames=["axis"])
 def differentiate_along_axis(
     fx: ArrayLike, *, axis: int, scheme: FiniteDifferenceScheme
 ) -> Array:

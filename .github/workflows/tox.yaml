@@ -62,7 +62,7 @@ jobs:
         pip install .[ci]
     - name: Run tests with pytest through tox
       run: |
-        tox -e pytest
+        tox -e py3
   byexample:
     runs-on: ubuntu-latest
     steps:
