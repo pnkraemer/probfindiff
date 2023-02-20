@@ -8,7 +8,7 @@ import jax
 import jax.numpy as jnp
 
 from probfindiff import defaults
-from probfindiff.typing import ArrayLike
+from probfindiff.typing import Array, ArrayLike
 
 
 @functools.partial(jax.jit, static_argnames=("shape_input", "shape_output"))
@@ -17,7 +17,7 @@ def multivariate(
     xs_1d: ArrayLike,
     shape_input: Tuple[int],
     shape_output: Union[Tuple[()], Tuple[int]] = (),
-) -> ArrayLike:
+) -> Array:
     r"""Turn a univariate finite-difference stencil into a multivariate stencil.
 
     Parameters
@@ -53,6 +53,7 @@ def multivariate(
       [-1.  0.  1.]]]
     """
     assert len(shape_input) == 1
+    xs_1d = jnp.asarray(xs_1d)
 
     coeffs = _stencils_for_all_partial_derivatives(
         shape_input=shape_input, stencil_1d=xs_1d
@@ -64,7 +65,7 @@ def multivariate(
 @functools.partial(jax.jit, static_argnames=("shape_input",))
 def _stencils_for_all_partial_derivatives(
     *, stencil_1d: ArrayLike, shape_input: Tuple[int]
-) -> ArrayLike:
+) -> Array:
     """Compute the stencils for all partial derivatives.
 
     Parameters
@@ -90,30 +91,34 @@ def _stencils_for_all_partial_derivatives(
 
     Examples
     --------
-    >>> _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2, 3]), shape_input=(2,))
-    DeviceArray([[[1, 2, 3],
-                  [0, 0, 0]],
-                 [[0, 0, 0],
-                  [1, 2, 3]]], dtype=int32)
+    >>> stencils = _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2, 3]), shape_input=(2,))
+    >>> print(stencils)
+    [[[1 2 3]
+      [0 0 0]]
+     [[0 0 0]
+      [1 2 3]]]
 
-    >>> _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2]), shape_input=(4,))
-    DeviceArray([[[1, 2],
-                  [0, 0],
-                  [0, 0],
-                  [0, 0]],
-                 [[0, 0],
-                  [1, 2],
-                  [0, 0],
-                  [0, 0]],
-                 [[0, 0],
-                  [0, 0],
-                  [1, 2],
-                  [0, 0]],
-                 [[0, 0],
-                  [0, 0],
-                  [0, 0],
-                  [1, 2]]], dtype=int32)
+    >>> stencils = _stencils_for_all_partial_derivatives(stencil_1d=jnp.array([1, 2]), shape_input=(4,))
+    >>> print(stencils)
+    [[[1 2]
+      [0 0]
+      [0 0]
+      [0 0]]
+     [[0 0]
+      [1 2]
+      [0 0]
+      [0 0]]
+     [[0 0]
+      [0 0]
+      [1 2]
+      [0 0]]
+     [[0 0]
+      [0 0]
+      [0 0]
+      [1 2]]]
     """
+    stencil_1d = jnp.asarray(stencil_1d)
+
     return jnp.stack(
         [
             _stencil_for_ith_partial_derivative(
@@ -135,7 +140,7 @@ def _stencils_for_all_partial_derivatives(
 )
 def _stencil_for_ith_partial_derivative(
     *, stencil_1d_as_row_matrix: ArrayLike, i: int, dimension: int
-) -> ArrayLike:
+) -> Array:
     """Compute the stencil for the ith partial derivative.
 
     This is done by padding the 1d stencil into zeros according to the index ``i`` and the spatial dimension.
@@ -144,35 +149,40 @@ def _stencil_for_ith_partial_derivative(
 
     Examples
     --------
-    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=0, dimension=4)
-    DeviceArray([[1, 2, 3],
-                 [0, 0, 0],
-                 [0, 0, 0],
-                 [0, 0, 0]], dtype=int32)
-    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=2, dimension=4)
-    DeviceArray([[0, 0, 0],
-                 [0, 0, 0],
-                 [1, 2, 3],
-                 [0, 0, 0]], dtype=int32)
-    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=1, dimension=8)
-    DeviceArray([[0, 0, 0, 0, 0],
-                 [1, 2, 3, 4, 5],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0]], dtype=int32)
-    >>> _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=7, dimension=8)
-    DeviceArray([[0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0],
-                 [1, 2, 3, 4, 5]], dtype=int32)
+    >>> stencils = _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=0, dimension=4)
+    >>> print(stencils)
+    [[1 2 3]
+     [0 0 0]
+     [0 0 0]
+     [0 0 0]]
+    >>> stencils = _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3]]), i=2, dimension=4)
+    >>> print(stencils)
+    [[0 0 0]
+     [0 0 0]
+     [1 2 3]
+     [0 0 0]]
+    >>> stencils = _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=1, dimension=8)
+    >>> print(stencils)
+    [[0 0 0 0 0]
+     [1 2 3 4 5]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]]
+    >>> stencils =  _stencil_for_ith_partial_derivative(stencil_1d_as_row_matrix=jnp.array([[1, 2, 3, 4, 5]]), i=7, dimension=8)
+    >>> print(stencils)
+    [[0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [0 0 0 0 0]
+     [1 2 3 4 5]]
     """
+    stencil_1d_as_row_matrix = jnp.asarray(stencil_1d_as_row_matrix)
     return jnp.pad(stencil_1d_as_row_matrix, pad_width=((i, dimension - i - 1), (0, 0)))
 
 
@@ -182,7 +192,7 @@ def backward(
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
     order_method: int = defaults.ORDER_METHOD,
-) -> ArrayLike:
+) -> Array:
     """Create the stencil for backward finite difference schemes."""
     offset = -jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
@@ -195,7 +205,7 @@ def forward(
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
     order_method: int = defaults.ORDER_METHOD,
-) -> ArrayLike:
+) -> Array:
     """Create the stencil for forward finite difference schemes."""
     offset = jnp.arange(order_derivative + order_method, step=1)
     grid = offset * dx
@@ -208,7 +218,7 @@ def central(
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
     order_method: int = defaults.ORDER_METHOD_CENTRAL,
-) -> ArrayLike:
+) -> Array:
     """Create the stencil for central finite difference schemes."""
     num_central = (2 * ((order_derivative + 1.0) / 2.0) // 2) - 1 + order_method
     num_side = num_central // 2

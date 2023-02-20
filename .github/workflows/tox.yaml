@@ -9,7 +9,7 @@ on:
     - main
 
 jobs:
-  black:
+  lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/setup-python@v2
@@ -22,61 +22,10 @@ jobs:
     - name: Build and install package
       run: |
         pip install .
-    - name: Lint with black through tox
+    - name: Lint through tox
       run: |
         pip install --upgrade tox
-        tox -e black
-  isort:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
-    - uses: actions/checkout@v2
-    - name: Upgrade pip
-      run: |
-        pip install --upgrade pip
-    - name: Build and install package
-      run: |
-        pip install .
-    - name: Lint with isort through tox
-      run: |
-        pip install --upgrade tox
-        tox -e isort
-  pylint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
-    - uses: actions/checkout@v2
-    - name: Upgrade pip
-      run: |
-        pip install --upgrade pip
-    - name: Build and install package
-      run: |
-        pip install .
-    - name: Lint with pylint through tox
-      run: |
-        pip install --upgrade tox
-        tox -e pylint
-  mypy:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
-    - uses: actions/checkout@v2
-    - name: Upgrade pip
-      run: |
-        pip install --upgrade pip
-    - name: Build and install package
-      run: |
-        pip install .
-    - name: Check types with mypy through tox
-      run: |
-        pip install --upgrade tox
-        tox -e mypy
+        tox -e lint
   docs:
     runs-on: ubuntu-latest
     steps:

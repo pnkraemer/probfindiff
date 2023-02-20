@@ -1,12 +1,12 @@
 """Finite differences and collocation with Gaussian processes."""
 
 import functools
-from typing import Any, Tuple
+from typing import Tuple
 
 import jax
 import jax.numpy as jnp
 
-from probfindiff.typing import ArrayLike, KernelFunctionLike
+from probfindiff.typing import Array, ArrayLike, KernelFunctionLike
 
 
 @functools.partial(jax.jit, static_argnames=("ks",))
@@ -16,7 +16,7 @@ def non_uniform_nd(
     xs: ArrayLike,
     ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike],
     noise_variance: float,
-) -> Tuple[Any, Any]:
+) -> Tuple[Array, Array]:
     r"""Finite difference coefficients for non-uniform data in multiple dimensions.
 
     Parameters
@@ -35,16 +35,19 @@ def non_uniform_nd(
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
+    x = jnp.asarray(x)
+    xs = jnp.asarray(xs)
 
     K, LK, LLK = prepare_gram(ks, x, xs)
-    return unsymmetric(K=K, LK0=LK, LLK=LLK, noise_variance=noise_variance)
+    weights, unc_base = unsymmetric(K=K, LK0=LK, LLK=LLK, noise_variance=noise_variance)
+    return weights, unc_base
 
 
 def prepare_gram(
     ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike],
     x: ArrayLike,
     xs: ArrayLike,
-) -> Tuple[ArrayLike, ArrayLike, ArrayLike]:
+) -> Tuple[Array, Array, Array]:
     r"""Prepare the Gram matrices that are used for collocation approaches.
 
     Parameters
@@ -61,6 +64,9 @@ def prepare_gram(
     :
         Triple of kernel Gram matrices (:math:`K`, :math:`LK`, :math:`L L^*K`) with shapes ``(n,n)``, ``(n,)``, ``()``.
     """
+    x = jnp.asarray(x)
+    xs = jnp.asarray(xs)
+
     k, lk, llk = ks
     n = xs.shape[0]
     K = k(xs, xs.T).reshape((n, n))
@@ -76,7 +82,7 @@ def unsymmetric(
     LK0: ArrayLike,
     LLK: ArrayLike,
     noise_variance: float,
-) -> Tuple[ArrayLike, ArrayLike]:
+) -> Tuple[Array, Array]:
     r"""Unsymmetric collocation.
 
     Parameters
@@ -95,6 +101,9 @@ def unsymmetric(
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
+    K = jnp.asarray(K)
+    LK0 = jnp.asarray(LK0)
+    LLK = jnp.asarray(LLK)
 
     noise_matrix = jnp.broadcast_to(
         noise_variance * jnp.eye(K.shape[-1]), shape=K.shape
@@ -106,9 +115,11 @@ def unsymmetric(
     return weights, unc_base
 
 
-def _transpose(LK0: ArrayLike) -> ArrayLike:
+def _transpose(LK0: ArrayLike) -> Array:
+    LK0 = jnp.asarray(LK0)
+
     if LK0.ndim > 1:
-        LKt = jnp.swapaxes(LK0, -2, -1)
+        LKt: Array = jnp.swapaxes(LK0, -2, -1)
     else:
         LKt = LK0
     return LKt
@@ -117,7 +128,7 @@ def _transpose(LK0: ArrayLike) -> ArrayLike:
 @jax.jit
 def symmetric(
     *, K: ArrayLike, LK1: ArrayLike, LLK: ArrayLike, noise_variance: float
-) -> Tuple[ArrayLike, ArrayLike]:
+) -> Tuple[Array, Array]:
     r"""Symmetric collocation.
 
     Parameters
@@ -136,6 +147,10 @@ def symmetric(
     :
         Weights and base-uncertainty. Shapes ``(n,n)``, ``(n,)``.
     """
+    K = jnp.asarray(K)
+    LK1 = jnp.asarray(LK1)
+    LLK = jnp.asarray(LLK)
+
     weights = jnp.linalg.solve(LLK + noise_variance * jnp.eye(*LLK.shape), LK1.T).T
     unc_base = K - weights @ LK1.T
     return weights, unc_base

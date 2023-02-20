@@ -1,11 +1,21 @@
 """Common types."""
 from typing import Any, Callable
 
-KernelFunctionLike = Callable[[Any, Any], Any]
+from jax import Array as _Array  # temp
+from jax.typing import ArrayLike as _ArrayLike  # temp
+
+# Expose JAX's Array types.
+
+Array = _Array
+"""Array output type."""
+
+ArrayLike = _ArrayLike
+"""Array input type."""
+
+
+KernelFunctionLike = Callable[[ArrayLike, ArrayLike], Array]
 """Kernel function type."""
 
-ArrayLike = Any
-"""Array type. JAX's arrays cannot be assigned a strict type, so we use 'Any'."""
 
 DifferentialOperatorLike = Callable[..., Callable[..., Any]]
 """Differential operators transform functions.

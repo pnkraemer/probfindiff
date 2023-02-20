@@ -31,7 +31,6 @@ def fixture_Ks(ks, num_xs):
 
 @pytest.mark.parametrize("num_xs", (1, 3))
 def test_unsymmetric(Ks, num_xs):
-
     K, LK, LLK = Ks
     weights, unc_base = collocation.unsymmetric(
         K=K, LK0=LK, LLK=LLK, noise_variance=0.1
@@ -43,7 +42,6 @@ def test_unsymmetric(Ks, num_xs):
 
 @pytest.mark.parametrize("num_xs", (1, 3))
 def test_symmetric(Ks, num_xs):
-
     K, LK, LLK = Ks
     weights, unc_base = collocation.symmetric(
         K=K, LK1=LK.T, LLK=LLK, noise_variance=0.1

@@ -1,12 +1,10 @@
 """Kernel zoo."""
 
 
-from functools import partial
-
 import jax
 import jax.numpy as jnp
 
-from probfindiff.typing import ArrayLike
+from probfindiff.typing import Array, ArrayLike
 
 
 @jax.jit
@@ -36,16 +34,20 @@ def exponentiated_quadratic(
     :
         Evaluation :math:`k(x,y)`.
     """
-    return output_scale * jnp.exp(-input_scale * (x - y).dot(x - y) / 2.0)
+    x = jnp.asarray(x)
+    y = jnp.asarray(y)
+    difference = x - y
+
+    return output_scale * jnp.exp(-input_scale * jnp.dot(difference, difference) / 2.0)
 
 
-@partial(jax.jit, static_argnames=("scale", "order", "bias"))
+@jax.jit
 def polynomial(
     x: ArrayLike,
     y: ArrayLike,
     *,
     p: ArrayLike,
-) -> ArrayLike:
+) -> Array:
     r"""Polynomial kernels.
 
     The kernel is defined as
@@ -67,4 +69,8 @@ def polynomial(
     :
         Evaluation :math:`k(x,y)`.
     """
-    return jnp.polyval(p, jnp.dot(x, y)) + 1
+    x = jnp.asarray(x)
+    y = jnp.asarray(y)
+    p = jnp.asarray(p)
+    val: Array = jnp.polyval(p, jnp.dot(x, y)) + 1
+    return val

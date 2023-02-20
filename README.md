@@ -18,9 +18,12 @@ Is your function _really_ a polynomial? If not, read on.
 Probabilistic numerical finite difference schemes can be applied to function evaluations as follows.
 ```python
 >>> import jax.numpy as jnp
+>>> from jax.config import config
 >>> import probfindiff
+>>>
+>>> config.update("jax_platform_name", "cpu")
+>>>
 >>> scheme, xs = probfindiff.central(dx=0.2)
-WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)
 >>> f = lambda x: (x-1.)**2.
 >>> dfx, cov = probfindiff.differentiate(f(xs), scheme=scheme)
 >>> print(jnp.round(dfx, 1))
