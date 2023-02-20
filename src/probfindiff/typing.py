@@ -6,7 +6,7 @@ from jax.typing import ArrayLike as _ArrayLike  # temp
 
 Array = _Array
 
-ArrayLike = Any
+ArrayLike = _ArrayLike
 """Array type. JAX's arrays cannot be assigned a strict type, so we use 'Any'."""
 
 
