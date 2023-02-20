@@ -1,7 +1,7 @@
 """Finite differences and collocation with Gaussian processes."""
 
 import functools
-from typing import Any, Tuple
+from typing import Tuple
 
 import jax
 import jax.numpy as jnp

@@ -3,7 +3,7 @@
 import functools
 from collections import namedtuple
 from functools import partial
-from typing import Any, Optional, Tuple
+from typing import Optional, Tuple
 
 import jax
 import jax.numpy as jnp
