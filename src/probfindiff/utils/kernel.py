@@ -1,15 +1,11 @@
 """Kernel function functionality."""
 
-from typing import Tuple
-
 import jax
 
-from probfindiff.typing import DifferentialOperatorLike, KernelFunctionLike
+from probfindiff.backend.typing import Callable, Tuple
 
 
-def differentiate(
-    k: KernelFunctionLike, *, L: DifferentialOperatorLike
-) -> Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike]:
+def differentiate(k: Callable, *, L: Callable) -> Tuple[Callable, Callable, Callable]:
     """Differentiate (and batch) a kernel function.
 
     Parameters
@@ -30,7 +26,7 @@ def differentiate(
     return k_batch, lk_batch, llk_batch
 
 
-def batch_gram(k: KernelFunctionLike) -> Tuple[KernelFunctionLike, KernelFunctionLike]:
+def batch_gram(k: Callable) -> Tuple[Callable, Callable]:
     r"""Vectorise a kernel function such that it returns Gram matrices.
 
     A function :math:`k: R^d \times R^d \rightarrow R` becomes

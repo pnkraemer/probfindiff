@@ -3,12 +3,11 @@
 import functools
 from collections import namedtuple
 from functools import partial
-from typing import Optional, Tuple
 
 import jax.numpy as jnp
 
 from probfindiff import collocation, defaults, stencil
-from probfindiff.typing import Array, ArrayLike, KernelFunctionLike
+from probfindiff.backend.typing import Array, ArrayLike, Callable, Optional, Tuple
 from probfindiff.utils import autodiff
 from probfindiff.utils import kernel as kernel_module
 
@@ -83,7 +82,7 @@ def backward(
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
     order_method: int = defaults.ORDER_METHOD,
-    kernel: Optional[KernelFunctionLike] = None,
+    kernel: Optional[Callable] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Tuple[FiniteDifferenceScheme, Array]:
     """Backward coefficients in 1d.
@@ -123,7 +122,7 @@ def forward(
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
     order_method: int = defaults.ORDER_METHOD,
-    kernel: Optional[KernelFunctionLike] = None,
+    kernel: Optional[Callable] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Tuple[FiniteDifferenceScheme, Array]:
     """Forward coefficients in 1d.
@@ -163,7 +162,7 @@ def central(
     dx: float,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
     order_method: int = defaults.ORDER_METHOD_CENTRAL,
-    kernel: Optional[KernelFunctionLike] = None,
+    kernel: Optional[Callable] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> Tuple[FiniteDifferenceScheme, Array]:
     """Central coefficients in 1d.
@@ -202,7 +201,7 @@ def from_grid(
     *,
     xs: ArrayLike,
     order_derivative: int = defaults.ORDER_DERIVATIVE,
-    kernel: Optional[KernelFunctionLike] = None,
+    kernel: Optional[Callable] = None,
     noise_variance: float = defaults.NOISE_VARIANCE,
 ) -> FiniteDifferenceScheme:
     """Finite difference coefficients based on an array of offset indices.

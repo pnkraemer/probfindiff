@@ -1,11 +1,9 @@
 """Differential operators that are not part of common autodiff frameworks."""
 
-from typing import Any, Callable
-
 import jax
 import jax.numpy as jnp
 
-from probfindiff.typing import DifferentialOperatorLike
+from probfindiff.backend.typing import Any, Callable
 
 
 def derivative(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:
@@ -66,9 +64,7 @@ def laplace(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:
     return compose(div, jax.grad)(fun, **kwargs)
 
 
-def compose(
-    op1: DifferentialOperatorLike, op2: DifferentialOperatorLike
-) -> DifferentialOperatorLike:
+def compose(op1: Callable, op2: Callable) -> Callable:
     """Compose two differential operators.
 
     Parameters

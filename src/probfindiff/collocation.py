@@ -1,17 +1,15 @@
 """Finite differences and collocation with Gaussian processes."""
 
-from typing import Tuple
-
 import jax.numpy as jnp
 
-from probfindiff.typing import Array, ArrayLike, KernelFunctionLike
+from probfindiff.backend.typing import Array, ArrayLike, Callable, Tuple
 
 
 def non_uniform_nd(
     *,
     x: ArrayLike,
     xs: ArrayLike,
-    ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike],
+    ks: Tuple[Callable, Callable, Callable],
     noise_variance: float,
 ) -> Tuple[Array, Array]:
     r"""Finite difference coefficients for non-uniform data in multiple dimensions.
@@ -41,7 +39,7 @@ def non_uniform_nd(
 
 
 def prepare_gram(
-    ks: Tuple[KernelFunctionLike, KernelFunctionLike, KernelFunctionLike],
+    ks: Tuple[Callable, Callable, Callable],
     x: ArrayLike,
     xs: ArrayLike,
 ) -> Tuple[Array, Array, Array]:
