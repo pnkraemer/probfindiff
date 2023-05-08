@@ -1,10 +1,8 @@
 """Kernel function functionality."""
 
-from typing import Tuple
-
 import jax
 
-from probfindiff.backend.typing import Callable
+from probfindiff.backend.typing import Callable, Tuple
 
 
 def differentiate(k: Callable, *, L: Callable) -> Tuple[Callable, Callable, Callable]:

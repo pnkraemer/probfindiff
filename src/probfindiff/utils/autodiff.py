@@ -1,11 +1,9 @@
 """Differential operators that are not part of common autodiff frameworks."""
 
-from typing import Any, Callable
-
 import jax
 import jax.numpy as jnp
 
-from probfindiff.backend.typing import Callable
+from probfindiff.backend.typing import Any, Callable
 
 
 def derivative(fun: Callable[[Any], Any], **kwargs: Any) -> Callable[[Any], Any]:

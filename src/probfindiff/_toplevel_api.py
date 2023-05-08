@@ -3,12 +3,11 @@
 import functools
 from collections import namedtuple
 from functools import partial
-from typing import Optional, Tuple
 
 import jax.numpy as jnp
 
 from probfindiff import collocation, defaults, stencil
-from probfindiff.backend.typing import Array, ArrayLike, Callable
+from probfindiff.backend.typing import Array, ArrayLike, Callable, Optional, Tuple
 from probfindiff.utils import autodiff
 from probfindiff.utils import kernel as kernel_module
 

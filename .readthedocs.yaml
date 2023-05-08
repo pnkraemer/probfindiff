@@ -20,6 +20,5 @@ formats:
 python:
   install:
     - requirements: docs/requirements-sphinx-build.txt
-  # We need to install tueplots in order to make autodoc find the modules
     - method: pip
       path: .

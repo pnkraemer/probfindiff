@@ -1,12 +1,10 @@
 """Stencil functionality."""
 
 
-from typing import Tuple, Union
-
 import jax.numpy as jnp
 
 from probfindiff import defaults
-from probfindiff.backend.typing import Array, ArrayLike
+from probfindiff.backend.typing import Array, ArrayLike, Tuple, Union
 
 
 def multivariate(

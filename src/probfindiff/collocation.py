@@ -1,10 +1,8 @@
 """Finite differences and collocation with Gaussian processes."""
 
-from typing import Tuple
-
 import jax.numpy as jnp
 
-from probfindiff.backend.typing import Array, ArrayLike, Callable
+from probfindiff.backend.typing import Array, ArrayLike, Callable, Tuple
 
 
 def non_uniform_nd(
