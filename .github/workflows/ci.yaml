@@ -1,65 +1,62 @@
+---
 name: ci
-
 on:
   push:
-    branches:
-    - main
+    branches: [main]
   pull_request:
-    branches:
-    - main
-
+    branches: [main]
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
-    - uses: actions/checkout@v2
-    - name: Upgrade pip
-      run: |
-        pip install --upgrade pip
-    - name: Build and install package
-      run: |
-        pip install .[ci]
-    - name: Lint through tox
-      run: |
-        tox -e lint
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - uses: actions/checkout@v2
+      - name: Upgrade pip
+        run: |
+          pip install --upgrade pip
+      - name: Build and install package
+        run: |
+          pip install .[ci]
+      - name: Lint through tox
+        run: |
+          tox -e lint
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
-    - uses: actions/checkout@v2
-    - name: Upgrade pip
-      run: |
-        pip install --upgrade pip
-    - name: Build and install package
-      run: |
-        pip install .[ci]
-    - name: Build documentation with sphinx through tox
-      run: |
-        sudo apt-get install pandoc
-        tox -e docs
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - uses: actions/checkout@v2
+      - name: Upgrade pip
+        run: |
+          pip install --upgrade pip
+      - name: Build and install package
+        run: |
+          pip install .[ci]
+      - name: Build documentation with sphinx through tox
+        run: |
+          sudo apt-get install pandoc
+          tox -e docs
   tests:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8","3.9","3.10"]
+        python-version: ['3.8', '3.9', '3.10']
         os: [ubuntu-latest, macOS-latest]
     steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
-    - uses: actions/checkout@v2
-    - name: Upgrade pip
-      run: |
-        pip install --upgrade pip
-    - name: Build and install package
-      run: |
-        pip install .[ci]
-    - name: Run tests with pytest through tox
-      run: |
-        tox -e test
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - uses: actions/checkout@v2
+      - name: Upgrade pip
+        run: |
+          pip install --upgrade pip
+      - name: Build and install package
+        run: |
+          pip install .[ci]
+      - name: Run tests with pytest through tox
+        run: |-
+          tox -e test
