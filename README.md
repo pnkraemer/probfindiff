@@ -44,6 +44,7 @@ Probabilistic numerical finite difference schemes can be applied to function eva
 True
 >>> print(jnp.round(scheme.weights, 1))
 [-2.5  0.   2.5]
+
 ```
 See [**this page**](https://probfindiff.readthedocs.io/en/latest/notebooks/getting_started/quickstart.html) for more examples.
 

@@ -62,20 +62,4 @@ jobs:
         pip install .[ci]
     - name: Run tests with pytest through tox
       run: |
-        tox -e py3
-  byexample:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
-    - uses: actions/checkout@v2
-    - name: Upgrade pip
-      run: |
-        pip install --upgrade pip
-    - name: Build and install package
-      run: |
-        pip install .[ci]
-    - name: Run example snippets with byexample through tox
-      run: |
-        tox -e byexample
+        tox -e test
