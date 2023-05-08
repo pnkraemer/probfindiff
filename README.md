@@ -27,15 +27,17 @@ If we use a Gaussian process, we get uncertainty quantification, scattered point
 ## How?
 Probabilistic numerical finite difference schemes can be applied to function evaluations as follows.
 ```python
+>>> import jax
 >>> import jax.numpy as jnp
 >>> from jax.config import config
+>>>
 >>> import probfindiff
 >>>
 >>> config.update("jax_platform_name", "cpu")
 >>>
->>> scheme, xs = probfindiff.central(dx=0.2)
+>>> scheme, xs = jax.jit(probfindiff.central)(dx=0.2)
 >>> f = lambda x: (x-1.)**2.
->>> dfx, cov = probfindiff.differentiate(f(xs), scheme=scheme)
+>>> dfx, cov = jax.jit(probfindiff.differentiate)(f(xs), scheme=scheme)
 >>> print(jnp.round(dfx, 1))
 -2.0
 >>> print(jnp.round(jnp.log10(cov), 0))
