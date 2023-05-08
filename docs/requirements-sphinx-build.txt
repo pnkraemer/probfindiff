@@ -1,6 +1,6 @@
 nbsphinx
 m2r2
 jupyter
-sphinx
-sphinx-rtd-theme
+sphinx<=6.2.1
+sphinx-book-theme
 sphinx-autodoc-typehints
