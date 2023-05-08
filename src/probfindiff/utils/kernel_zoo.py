@@ -3,7 +3,7 @@
 
 import jax.numpy as jnp
 
-from probfindiff.typing import Array, ArrayLike
+from probfindiff.backend.typing import Array, ArrayLike
 
 
 def exponentiated_quadratic(
